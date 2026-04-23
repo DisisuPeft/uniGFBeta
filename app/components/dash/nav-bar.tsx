@@ -1,36 +1,36 @@
 "use client";
 
-import { useRetrieveUserQuery } from "@/redux/features/auth/authApiSlice";
+// import { useRetrieveUserQuery } from "@/redux/features/auth/authApiSlice";
 // import { useEffect, useState } from "react";
 // import { useAppSelector } from "@/redux/hooks";
 // import User
 // import { Settings } from "lucide-react";
-import Logout from "@/app/utils/auth/logout";
+// import Logout from "@/app/utils/auth/logout";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+// import { usePathname } from "next/navigation";
 import Badge from "../plataforma/badge";
-import { IconSearch, IconGlobe, IconBell } from "../plataforma/iconst";
+// import { IconSearch, IconGlobe, IconBell } from "../plataforma/iconst";
 import { UserMenu } from "../plataforma/drop-down-menu";
 
-type NavItem = {
-  id: number;
-  nav: string;
-  label: string;
-};
+// type NavItem = {
+//   id: number;
+//   nav: string;
+//   label: string;
+// };
 
-const navItems: NavItem[] = [
-  // { id: 1, nav: "/plataforma", label: "Dashboard", icon: IconDashboard },
-  {
-    id: 2,
-    nav: "/plataforma/educacion",
-    label: "Mi Aprendizaje",
-  },
-  // { id: 3, nav: "perfil", label: "Mi Perfil", icon: IconUser },
-];
+// const navItems: NavItem[] = [
+// { id: 1, nav: "/plataforma", label: "Dashboard", icon: IconDashboard },
+// {
+//   id: 2,
+//   nav: "/plataforma/educacion",
+//   label: "Mi Aprendizaje",
+// },
+// { id: 3, nav: "perfil", label: "Mi Perfil", icon: IconUser },
+// ];
 
 export default function Navbar() {
-  const { data: user } = useRetrieveUserQuery();
+  // const { data: user } = useRetrieveUserQuery();
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
@@ -40,16 +40,16 @@ export default function Navbar() {
           <Link href={"/dashboard"}>
             <div className="flex items-center gap-1.5 sm:gap-2">
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0">
-                <Image
+                {/* <Image
                   src="/assets/logos/Logo CINFA-01.webp"
                   alt="Logo CINFA"
                   width={40}
                   height={40}
                   loading="eager"
-                />
+                /> */}
               </div>
               <span className="text-lg sm:text-xl font-bold text-gray-900">
-                CINFA
+                Universidad Farrera
               </span>
             </div>
           </Link>

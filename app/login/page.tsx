@@ -9,8 +9,7 @@ export default function Page() {
           <div
             className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full mb-3 sm:mb-4"
             style={{
-              background:
-                "linear-gradient(135deg, #0f1f65ff 0%, #699cdbff 100%)",
+              background: "linear-gradient(135deg, #18202C 0%, #2E3846 100%)",
             }}
           >
             <svg
