@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useGetCursoQuery } from "@/redux/features/control-escolar/programasApiSlice";
 import { MODULOS_MOCK } from "./types";
-import { Clock, BookOpen, User, ChevronRight } from "lucide-react";
+import { Clock, BookOpen, User, ChevronRight, CheckCircle, Circle, Trophy } from "lucide-react";
+import { useCursoProgress } from "./use-curso-progress";
+import Swal from "sweetalert2";
 
 const TIPO_BADGE: Record<string, string> = {
   lectura: "bg-blue-50 text-blue-600",
@@ -12,8 +14,49 @@ const TIPO_BADGE: Record<string, string> = {
   evaluación: "bg-green-50 text-green-700",
 };
 
+const modulosConEval = MODULOS_MOCK.filter((m) => m.tieneEvaluacion);
+
 export default function CursoBienvenida({ cursoId }: { cursoId: number }) {
   const { data: curso, isLoading } = useGetCursoQuery(cursoId);
+  const { getScore, allCompleted, finalScore } = useCursoProgress(cursoId);
+
+  const handleFinalizar = () => {
+    if (!allCompleted) {
+      Swal.fire({
+        icon: "info",
+        title: "Evaluaciones pendientes",
+        text: "Completa todas las evaluaciones de módulos y la Evaluación Final antes de finalizar.",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#0ea5e9",
+      });
+      return;
+    }
+    if (finalScore !== null && finalScore >= 70) {
+      Swal.fire({
+        icon: "success",
+        title: "¡Felicitaciones!",
+        html: `
+          <p style="font-size:3rem;font-weight:700;color:#10b981;margin:8px 0">${finalScore}%</p>
+          <p style="color:#6b7280;font-size:0.85rem;margin-bottom:12px">Evaluación Final del Curso</p>
+          <p style="color:#374151">Completaste el <strong>Curso Básico BDC</strong> exitosamente.<br/>¡Bienvenido al equipo!</p>
+        `,
+        confirmButtonText: "¡Listo! 🎉",
+        confirmButtonColor: "#0ea5e9",
+      });
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Sigue intentando",
+        html: `
+          <p style="font-size:3rem;font-weight:700;color:#f59e0b;margin:8px 0">${finalScore ?? 0}%</p>
+          <p style="color:#6b7280;font-size:0.85rem;margin-bottom:12px">Evaluación Final del Curso</p>
+          <p style="color:#374151">Necesitas al menos <strong>70%</strong> en la Evaluación Final.<br/>Revisa el contenido y vuelve a intentarlo.</p>
+        `,
+        confirmButtonText: "Continuar estudiando",
+        confirmButtonColor: "#0ea5e9",
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -142,6 +185,87 @@ export default function CursoBienvenida({ cursoId }: { cursoId: number }) {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Progreso de evaluaciones */}
+      <div className="border border-gray-200 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-3 px-5 py-4 bg-gray-50 border-b border-gray-200">
+          <Trophy className="w-5 h-5 text-sky-500" />
+          <div>
+            <p className="text-sm font-bold text-gray-900">Progreso de evaluaciones</p>
+            <p className="text-xs text-gray-400">
+              {[...modulosConEval.map((m) => getScore(`modulo_${m.id}`)), getScore("final")].filter(
+                (s) => s !== null
+              ).length}{" "}
+              / {modulosConEval.length + 1} completadas
+            </p>
+          </div>
+        </div>
+        <div className="divide-y divide-gray-100">
+          {modulosConEval.map((m) => {
+            const score = getScore(`modulo_${m.id}`);
+            return (
+              <div key={m.id} className="flex items-center gap-3 px-5 py-3">
+                {score !== null ? (
+                  <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                ) : (
+                  <Circle className="w-4 h-4 text-gray-300 flex-shrink-0" />
+                )}
+                <span className="text-sm text-gray-700 flex-1">
+                  Módulo {m.id} — {m.titulo}
+                </span>
+                {score !== null ? (
+                  <span
+                    className={`text-xs font-semibold ${
+                      score >= 70 ? "text-emerald-600" : "text-red-500"
+                    }`}
+                  >
+                    {score}%
+                  </span>
+                ) : (
+                  <span className="text-xs text-gray-400">Pendiente</span>
+                )}
+              </div>
+            );
+          })}
+          {/* Evaluación Final */}
+          <div className="flex items-center gap-3 px-5 py-3">
+            {finalScore !== null ? (
+              <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+            ) : (
+              <Circle className="w-4 h-4 text-gray-300 flex-shrink-0" />
+            )}
+            <span className="text-sm font-semibold text-gray-700 flex-1">
+              Evaluación Final del Curso
+            </span>
+            {finalScore !== null ? (
+              <span
+                className={`text-xs font-semibold ${
+                  finalScore >= 70 ? "text-emerald-600" : "text-red-500"
+                }`}
+              >
+                {finalScore}%
+              </span>
+            ) : (
+              <span className="text-xs text-gray-400">Pendiente</span>
+            )}
+          </div>
+        </div>
+        <div className="px-5 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-4">
+          <p className="text-xs text-gray-500">
+            {allCompleted
+              ? "Todas las evaluaciones completadas. ¡Ya puedes finalizar!"
+              : "Completa todas las evaluaciones de módulos y la Evaluación Final."}
+          </p>
+          <button
+            onClick={handleFinalizar}
+            disabled={!allCompleted}
+            className="flex items-center gap-2 px-5 py-2.5 bg-sky-500 text-white text-sm font-medium rounded-lg hover:bg-sky-500/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+          >
+            <Trophy className="w-4 h-4" />
+            Finalizar curso
+          </button>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { MODULOS_MOCK, EVALUACIONES_MOCK } from "./types";
 import { CheckCircle, XCircle, ChevronLeft, Trophy } from "lucide-react";
+import { useCursoProgress, type ProgressKey } from "./use-curso-progress";
 
 interface Props {
   cursoId: number;
@@ -17,6 +18,8 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
   const preguntas = EVALUACIONES_MOCK[moduloId] ?? [];
   const base = `/dashboard/cursos/${cursoId}`;
 
+  const { saveResult } = useCursoProgress(cursoId);
+
   const [respuestas, setRespuestas] = useState<Record<number, number>>({});
   const [estado, setEstado] = useState<Estado>("pendiente");
   const [puntaje, setPuntaje] = useState(0);
@@ -27,6 +30,7 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
     const correctas = preguntas.filter((p) => respuestas[p.id] === p.correcta).length;
     setPuntaje(Math.round((correctas / preguntas.length) * 100));
     setEstado("completado");
+    saveResult(`modulo_${moduloId}` as ProgressKey, correctas, preguntas.length);
   };
 
   const handleReintentar = () => {
