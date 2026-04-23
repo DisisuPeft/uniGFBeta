@@ -1,0 +1,573 @@
+"use client";
+
+import {
+  useFieldArray,
+  useWatch,
+  UseFormRegister,
+  Control,
+} from "react-hook-form";
+import type { ProgramaEducativoForm } from "@/redux/features/types/control-escolar/type";
+import Select from "@/app/ui/components/select";
+import useEditProgramaForm from "@/hooks/control-escolar/use-edit-programa-form";
+import { PencilIcon, Upload } from "lucide-react";
+import Button from "@/app/ui/components/button";
+import { useState } from "react";
+import { Modal } from "@/app/components/common/modal";
+import MaterialUpload from "../../upload-files";
+import Acordeon from "@/app/ui/components/acordeon";
+
+interface Props {
+  uuid: string;
+}
+
+export default function EditProgramaPage({ uuid }: Props) {
+  const {
+    // onSubmit,
+    // handleSubmit,
+    register,
+    errors,
+    modulosFields,
+    appendModulo,
+    removeModulo,
+    control,
+    watch,
+    modalidades,
+    tiposProgramas,
+    instituciones,
+    disabled,
+    setDisabled,
+    // programa,
+  } = useEditProgramaForm(uuid);
+
+  const [openMaterial, setOpenMaterial] = useState(false);
+  const modulosWatch = watch("modulos");
+
+  const handleEdit = () => {
+    setDisabled((prev) => !prev);
+  };
+
+  return (
+    <div className="p-4 md:p-6 lg:p-8">
+      <div className="max-w-5xl mx-auto">
+        {/* Toolbar */}
+        <div className="flex justify-between mb-4">
+          <Button onClick={() => setOpenMaterial(true)}>
+            <Upload />
+          </Button>
+          <Button onClick={handleEdit}>
+            <PencilIcon />
+          </Button>
+        </div>
+
+        <Modal show={openMaterial} onClose={() => setOpenMaterial(false)}>
+          <div className="p-4">
+            {/* <MaterialUpload
+              programaId={uuid}
+              modulos={programa?.modulos_obj ?? []}
+            /> */}
+          </div>
+        </Modal>
+
+        <form className="space-y-8">
+          {/* Información General */}
+          <section className="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
+              Información General
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nombre del Programa *
+                </label>
+                <input
+                  disabled={disabled}
+                  {...register("nombre", {
+                    required: "Este campo es requerido",
+                  })}
+                  type="text"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Ej: Desarrollo Web Full Stack"
+                />
+                {errors.nombre && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.nombre.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Descripción
+                </label>
+                <textarea
+                  disabled={disabled}
+                  {...register("descripcion")}
+                  rows={4}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Describe el programa educativo..."
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <Select
+                  disabled={disabled}
+                  label="Selecciona una institucion"
+                  options={instituciones ?? []}
+                  labelKey="nombre"
+                  valueKey="id"
+                  {...register("institucion")}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tipo
+                </label>
+                <select
+                  disabled={disabled}
+                  {...register("tipo")}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Seleccionar tipo</option>
+                  {tiposProgramas?.map((tipo) => (
+                    <option key={tipo.id} value={tipo.id}>
+                      {tipo.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Modalidad
+                </label>
+                <select
+                  disabled={disabled}
+                  {...register("modalidad")}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Seleccionar modalidad</option>
+                  {modalidades?.map((modalidad) => (
+                    <option key={modalidad.id} value={modalidad.id}>
+                      {modalidad.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Duración (Horas)
+                </label>
+                <input
+                  disabled={disabled}
+                  {...register("duracion_horas", { valueAsNumber: true })}
+                  type="number"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="120"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Duración (Meses)
+                </label>
+                <input
+                  disabled={disabled}
+                  {...register("duracion_meses", { valueAsNumber: true })}
+                  type="number"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="6"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Fecha de Inicio
+                </label>
+                <input
+                  disabled={disabled}
+                  {...register("fecha_inicio")}
+                  type="date"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Fecha de Fin
+                </label>
+                <input
+                  disabled={disabled}
+                  {...register("fecha_fin")}
+                  type="date"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Horario
+                </label>
+                <input
+                  disabled={disabled}
+                  {...register("horario")}
+                  type="text"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Lun-Vie 9:00 AM - 1:00 PM"
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Costos */}
+          <section className="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Costos</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Costo de Inscripción
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-2 text-gray-500">$</span>
+                  <input
+                    disabled={disabled}
+                    {...register("costo_inscripcion", { valueAsNumber: true })}
+                    type="number"
+                    step="0.01"
+                    className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mensualidad
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-2 text-gray-500">$</span>
+                  <input
+                    disabled={disabled}
+                    {...register("costo_mensualidad", { valueAsNumber: true })}
+                    type="number"
+                    step="0.01"
+                    className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Documentación
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-2 text-gray-500">$</span>
+                  <input
+                    disabled={disabled}
+                    {...register("costo_documentacion", {
+                      valueAsNumber: true,
+                    })}
+                    type="number"
+                    step="0.01"
+                    className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Módulos */}
+          <section className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                Módulos Educativos
+              </h2>
+              <button
+                type="button"
+                onClick={() =>
+                  appendModulo({
+                    nombre: "",
+                    horas_teoricas: 0,
+                    horas_practicas: 0,
+                    horas_totales: 0,
+                    creditos: 0,
+                    submodulos: [{ titulo: "", descripcion: "", orden: 1 }],
+                  })
+                }
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm"
+              >
+                Agregar Módulo
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {modulosFields.map((modulo, moduloIndex) => {
+                const nombre = modulosWatch?.[moduloIndex]?.nombre;
+                const titulo = nombre?.trim()
+                  ? `Módulo ${moduloIndex + 1}: ${nombre}`
+                  : `Módulo ${moduloIndex + 1}`;
+                return (
+                  <Acordeon
+                    key={modulo.id}
+                    title={titulo}
+                    defaultOpen={moduloIndex === 0}
+                  >
+                    <ModuloSection
+                      moduloIndex={moduloIndex}
+                      register={register}
+                      control={control}
+                      removeModulo={removeModulo}
+                      disabled={disabled}
+                    />
+                  </Acordeon>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Acciones */}
+          <div className="flex justify-end gap-4">
+            <button
+              type="button"
+              onClick={() => window.history.back()}
+              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={disabled}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ── Módulo section ────────────────────────────────────────────────────
+
+interface ModuloSectionProps {
+  moduloIndex: number;
+  register: UseFormRegister<ProgramaEducativoForm>;
+  control: Control<ProgramaEducativoForm>;
+  removeModulo: (index: number) => void;
+  disabled?: boolean;
+}
+
+function ModuloSection({
+  moduloIndex,
+  register,
+  control,
+  removeModulo,
+  disabled,
+}: ModuloSectionProps) {
+  const {
+    fields: submodulosFields,
+    append: appendSubmodulo,
+    remove: removeSubmodulo,
+  } = useFieldArray({
+    control,
+    name: `modulos.${moduloIndex}.submodulos`,
+  });
+
+  const submodulosWatch = useWatch({
+    control,
+    name: `modulos.${moduloIndex}.submodulos`,
+  });
+
+  return (
+    <div className="space-y-4">
+      {moduloIndex > 0 && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => removeModulo(moduloIndex)}
+            className="text-red-600 hover:text-red-700 text-sm font-medium"
+          >
+            Eliminar Módulo
+          </button>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Nombre del Módulo *
+          </label>
+          <input
+            {...register(`modulos.${moduloIndex}.nombre`, { required: true })}
+            disabled={disabled}
+            type="text"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Ej: Fundamentos de Programación"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Horas Teóricas
+          </label>
+          <input
+            {...register(`modulos.${moduloIndex}.horas_teoricas`, {
+              valueAsNumber: true,
+            })}
+            disabled={disabled}
+            type="number"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="0"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Horas Prácticas
+          </label>
+          <input
+            {...register(`modulos.${moduloIndex}.horas_practicas`, {
+              valueAsNumber: true,
+            })}
+            disabled={disabled}
+            type="number"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="0"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Horas Totales
+          </label>
+          <input
+            {...register(`modulos.${moduloIndex}.horas_totales`, {
+              valueAsNumber: true,
+            })}
+            disabled={disabled}
+            type="number"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="0"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Créditos
+          </label>
+          <input
+            {...register(`modulos.${moduloIndex}.creditos`, {
+              valueAsNumber: true,
+            })}
+            disabled={disabled}
+            type="number"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="0"
+          />
+        </div>
+      </div>
+
+      {/* Submódulos */}
+      <div className="border-t border-gray-300 pt-4">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-md font-semibold text-gray-800">Submódulos</h4>
+          <button
+            type="button"
+            onClick={() =>
+              appendSubmodulo({
+                titulo: "",
+                descripcion: "",
+                orden: submodulosFields.length + 1,
+              })
+            }
+            className="px-3 py-1 bg-white border border-blue-600 text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors text-sm"
+          >
+            + Agregar Submódulo
+          </button>
+        </div>
+
+        <div className="space-y-2">
+          {submodulosFields.map((submodulo, submoduloIndex) => {
+            const titulo = submodulosWatch?.[submoduloIndex]?.titulo?.trim()
+              ? `Submódulo ${submoduloIndex + 1}: ${submodulosWatch[submoduloIndex].titulo}`
+              : `Submódulo ${submoduloIndex + 1}`;
+            return (
+              <Acordeon
+                key={submodulo.id}
+                title={titulo}
+                defaultOpen={submoduloIndex === 0}
+              >
+                <div className="space-y-3">
+                  {submoduloIndex > 0 && (
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => removeSubmodulo(submoduloIndex)}
+                        className="text-red-600 hover:text-red-700 text-xs font-medium"
+                      >
+                        Eliminar Submódulo
+                      </button>
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Título *
+                    </label>
+                    <input
+                      {...register(
+                        `modulos.${moduloIndex}.submodulos.${submoduloIndex}.titulo`,
+                        { required: true },
+                      )}
+                      disabled={disabled}
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      placeholder="Ej: Introducción a HTML"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Descripción
+                    </label>
+                    <textarea
+                      {...register(
+                        `modulos.${moduloIndex}.submodulos.${submoduloIndex}.descripcion`,
+                      )}
+                      disabled={disabled}
+                      rows={2}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      placeholder="Describe el contenido..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Orden
+                    </label>
+                    <input
+                      {...register(
+                        `modulos.${moduloIndex}.submodulos.${submoduloIndex}.orden`,
+                        { valueAsNumber: true },
+                      )}
+                      disabled={disabled}
+                      type="number"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      placeholder="1"
+                    />
+                  </div>
+                </div>
+              </Acordeon>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
