@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { useGetCursoQuery } from "@/redux/features/control-escolar/programasApiSlice";
 import { MODULOS_MOCK } from "./types";
-import { Clock, BookOpen, User, ChevronRight, CheckCircle, Circle, Trophy } from "lucide-react";
+import {
+  Clock,
+  BookOpen,
+  User,
+  ChevronRight,
+  CheckCircle,
+  Circle,
+  Trophy,
+} from "lucide-react";
 import { useCursoProgress } from "./use-curso-progress";
 import Swal from "sweetalert2";
 
@@ -18,7 +26,8 @@ const modulosConEval = MODULOS_MOCK.filter((m) => m.tieneEvaluacion);
 
 export default function CursoBienvenida({ cursoId }: { cursoId: number }) {
   const { data: curso, isLoading } = useGetCursoQuery(cursoId);
-  const { getScore, allCompleted, overallScore, coursePassed } = useCursoProgress(cursoId);
+  const { getScore, allCompleted, overallScore, coursePassed } =
+    useCursoProgress(cursoId);
 
   const handleFinalizar = () => {
     if (coursePassed) {
@@ -30,7 +39,7 @@ export default function CursoBienvenida({ cursoId }: { cursoId: number }) {
           <p style="color:#6b7280;font-size:0.85rem;margin-bottom:12px">Calificación total del curso</p>
           <p style="color:#374151">Completaste el <strong>Curso Básico BDC</strong> exitosamente.<br/>¡Bienvenido al equipo!</p>
         `,
-        confirmButtonText: "¡Listo! 🎉",
+        confirmButtonText: "¡Listo!",
         confirmButtonColor: "#0ea5e9",
       });
     } else {
@@ -183,10 +192,16 @@ export default function CursoBienvenida({ cursoId }: { cursoId: number }) {
         <div className="flex items-center gap-3 px-5 py-4 bg-gray-50 border-b border-gray-200">
           <Trophy className="w-5 h-5 text-sky-500" />
           <div>
-            <p className="text-sm font-bold text-gray-900">Progreso de evaluaciones</p>
+            <p className="text-sm font-bold text-gray-900">
+              Progreso de evaluaciones
+            </p>
             <p className="text-xs text-gray-400">
-              {modulosConEval.filter((m) => getScore(`modulo_${m.id}`) !== null).length}
-              {" "}/ {modulosConEval.length} completadas
+              {
+                modulosConEval.filter(
+                  (m) => getScore(`modulo_${m.id}`) !== null,
+                ).length
+              }{" "}
+              / {modulosConEval.length} completadas
             </p>
           </div>
         </div>
@@ -204,7 +219,9 @@ export default function CursoBienvenida({ cursoId }: { cursoId: number }) {
                   Módulo {m.id} — {m.titulo}
                 </span>
                 {score !== null ? (
-                  <span className={`text-xs font-semibold ${score >= 70 ? "text-emerald-600" : "text-red-500"}`}>
+                  <span
+                    className={`text-xs font-semibold ${score >= 70 ? "text-emerald-600" : "text-red-500"}`}
+                  >
                     {score}%
                   </span>
                 ) : (

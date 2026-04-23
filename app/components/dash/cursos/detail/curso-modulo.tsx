@@ -10,6 +10,7 @@ import {
   ClipboardList,
   ChevronLeft,
   ChevronRight,
+  Trophy,
 } from "lucide-react";
 
 const TIPO_ICON = {
@@ -136,6 +137,29 @@ export default function CursoModuloView({ cursoId, moduloId }: Props) {
             className="flex-shrink-0 px-4 py-2 bg-sky-500 text-white text-sm font-medium rounded-lg hover:bg-sky-500/90 transition-colors"
           >
             Ir a evaluación
+          </Link>
+        </div>
+      )}
+
+      {/* Finalizar curso — solo en el último módulo */}
+      {!nextModulo && (
+        <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-5 flex items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Trophy className="w-4 h-4 text-emerald-600" />
+              <p className="font-semibold text-sm text-gray-900">
+                ¡Llegaste al final del curso!
+              </p>
+            </div>
+            <p className="text-xs text-gray-500">
+              Revisa tu progreso y finaliza la capacitación desde la página de inicio.
+            </p>
+          </div>
+          <Link
+            href={`${base}/bienvenida`}
+            className="flex-shrink-0 px-4 py-2 bg-emerald-500 text-white text-sm font-medium rounded-lg hover:bg-emerald-500/90 transition-colors"
+          >
+            Finalizar curso
           </Link>
         </div>
       )}
