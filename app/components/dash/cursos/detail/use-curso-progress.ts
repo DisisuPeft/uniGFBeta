@@ -8,13 +8,12 @@ export interface EvalResult {
   total: number;
 }
 
-export type ProgressKey = `modulo_${number}` | "final";
+export type ProgressKey = `modulo_${number}`;
 export type CursoProgress = Partial<Record<ProgressKey, EvalResult>>;
 
-export const MODULO_EVAL_KEYS: ProgressKey[] = Object.keys(EVALUACIONES_MOCK).map(
+export const ALL_PROGRESS_KEYS: ProgressKey[] = Object.keys(EVALUACIONES_MOCK).map(
   (id) => `modulo_${id}` as ProgressKey
 );
-export const ALL_PROGRESS_KEYS: ProgressKey[] = [...MODULO_EVAL_KEYS, "final"];
 
 const storageKey = (cursoId: number) => `cursoProgress_${cursoId}`;
 const PROGRESS_EVENT = "cursoProgressUpdate";
@@ -53,10 +52,25 @@ export function useCursoProgress(cursoId: number) {
 
   const allCompleted = ALL_PROGRESS_KEYS.every((k) => progress[k] !== undefined);
 
-  const finalResult = progress["final"];
-  const finalScore = finalResult
-    ? Math.round((finalResult.correctas / finalResult.total) * 100)
-    : null;
+  const totalCorrectas = ALL_PROGRESS_KEYS.reduce(
+    (sum, k) => sum + (progress[k]?.correctas ?? 0),
+    0
+  );
+  const totalPreguntas = ALL_PROGRESS_KEYS.reduce(
+    (sum, k) => sum + (progress[k]?.total ?? 0),
+    0
+  );
+  const overallScore = totalPreguntas > 0
+    ? Math.round((totalCorrectas / totalPreguntas) * 100)
+    : 0;
 
-  return { progress, saveResult, getScore, allCompleted, finalScore };
+  const eachPassed = ALL_PROGRESS_KEYS.every((k) => {
+    const r = progress[k];
+    if (!r) return false;
+    return Math.round((r.correctas / r.total) * 100) >= 70;
+  });
+
+  const coursePassed = allCompleted && eachPassed && overallScore >= 70;
+
+  return { progress, saveResult, getScore, allCompleted, overallScore, coursePassed };
 }

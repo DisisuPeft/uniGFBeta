@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { EVALUACION_FINAL_MOCK } from "./types";
 import { CheckCircle, XCircle, Trophy, Medal, ChevronLeft } from "lucide-react";
-import { useCursoProgress } from "./use-curso-progress";
 
 type Estado = "pendiente" | "completado";
 
@@ -18,8 +17,6 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
   const preguntas = EVALUACION_FINAL_MOCK;
   const base = `/dashboard/cursos/${cursoId}`;
 
-  const { saveResult } = useCursoProgress(cursoId);
-
   const [respuestas, setRespuestas] = useState<Record<number, number>>({});
   const [estado, setEstado] = useState<Estado>("pendiente");
   const [puntaje, setPuntaje] = useState(0);
@@ -30,7 +27,6 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
     const correctas = preguntas.filter((p) => respuestas[p.id] === p.correcta).length;
     setPuntaje(Math.round((correctas / preguntas.length) * 100));
     setEstado("completado");
-    saveResult("final", correctas, preguntas.length);
   };
 
   const handleReintentar = () => {

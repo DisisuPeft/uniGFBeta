@@ -18,26 +18,16 @@ const modulosConEval = MODULOS_MOCK.filter((m) => m.tieneEvaluacion);
 
 export default function CursoBienvenida({ cursoId }: { cursoId: number }) {
   const { data: curso, isLoading } = useGetCursoQuery(cursoId);
-  const { getScore, allCompleted, finalScore } = useCursoProgress(cursoId);
+  const { getScore, allCompleted, overallScore, coursePassed } = useCursoProgress(cursoId);
 
   const handleFinalizar = () => {
-    if (!allCompleted) {
-      Swal.fire({
-        icon: "info",
-        title: "Evaluaciones pendientes",
-        text: "Completa todas las evaluaciones de módulos y la Evaluación Final antes de finalizar.",
-        confirmButtonText: "Entendido",
-        confirmButtonColor: "#0ea5e9",
-      });
-      return;
-    }
-    if (finalScore !== null && finalScore >= 70) {
+    if (coursePassed) {
       Swal.fire({
         icon: "success",
         title: "¡Felicitaciones!",
         html: `
-          <p style="font-size:3rem;font-weight:700;color:#10b981;margin:8px 0">${finalScore}%</p>
-          <p style="color:#6b7280;font-size:0.85rem;margin-bottom:12px">Evaluación Final del Curso</p>
+          <p style="font-size:3rem;font-weight:700;color:#10b981;margin:8px 0">${overallScore}%</p>
+          <p style="color:#6b7280;font-size:0.85rem;margin-bottom:12px">Calificación total del curso</p>
           <p style="color:#374151">Completaste el <strong>Curso Básico BDC</strong> exitosamente.<br/>¡Bienvenido al equipo!</p>
         `,
         confirmButtonText: "¡Listo! 🎉",
@@ -46,13 +36,13 @@ export default function CursoBienvenida({ cursoId }: { cursoId: number }) {
     } else {
       Swal.fire({
         icon: "warning",
-        title: "Sigue intentando",
+        title: "Necesitas repetir el curso",
         html: `
-          <p style="font-size:3rem;font-weight:700;color:#f59e0b;margin:8px 0">${finalScore ?? 0}%</p>
-          <p style="color:#6b7280;font-size:0.85rem;margin-bottom:12px">Evaluación Final del Curso</p>
-          <p style="color:#374151">Necesitas al menos <strong>70%</strong> en la Evaluación Final.<br/>Revisa el contenido y vuelve a intentarlo.</p>
+          <p style="font-size:3rem;font-weight:700;color:#f59e0b;margin:8px 0">${overallScore}%</p>
+          <p style="color:#6b7280;font-size:0.85rem;margin-bottom:12px">Calificación total del curso</p>
+          <p style="color:#374151">Necesitas al menos <strong>70%</strong> en cada módulo y en total.<br/>Revisa el contenido de los módulos reprobados e intenta de nuevo.</p>
         `,
-        confirmButtonText: "Continuar estudiando",
+        confirmButtonText: "Revisar módulos",
         confirmButtonColor: "#0ea5e9",
       });
     }
@@ -195,10 +185,8 @@ export default function CursoBienvenida({ cursoId }: { cursoId: number }) {
           <div>
             <p className="text-sm font-bold text-gray-900">Progreso de evaluaciones</p>
             <p className="text-xs text-gray-400">
-              {[...modulosConEval.map((m) => getScore(`modulo_${m.id}`)), getScore("final")].filter(
-                (s) => s !== null
-              ).length}{" "}
-              / {modulosConEval.length + 1} completadas
+              {modulosConEval.filter((m) => getScore(`modulo_${m.id}`) !== null).length}
+              {" "}/ {modulosConEval.length} completadas
             </p>
           </div>
         </div>
@@ -216,11 +204,7 @@ export default function CursoBienvenida({ cursoId }: { cursoId: number }) {
                   Módulo {m.id} — {m.titulo}
                 </span>
                 {score !== null ? (
-                  <span
-                    className={`text-xs font-semibold ${
-                      score >= 70 ? "text-emerald-600" : "text-red-500"
-                    }`}
-                  >
+                  <span className={`text-xs font-semibold ${score >= 70 ? "text-emerald-600" : "text-red-500"}`}>
                     {score}%
                   </span>
                 ) : (
@@ -229,34 +213,12 @@ export default function CursoBienvenida({ cursoId }: { cursoId: number }) {
               </div>
             );
           })}
-          {/* Evaluación Final */}
-          <div className="flex items-center gap-3 px-5 py-3">
-            {finalScore !== null ? (
-              <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-            ) : (
-              <Circle className="w-4 h-4 text-gray-300 flex-shrink-0" />
-            )}
-            <span className="text-sm font-semibold text-gray-700 flex-1">
-              Evaluación Final del Curso
-            </span>
-            {finalScore !== null ? (
-              <span
-                className={`text-xs font-semibold ${
-                  finalScore >= 70 ? "text-emerald-600" : "text-red-500"
-                }`}
-              >
-                {finalScore}%
-              </span>
-            ) : (
-              <span className="text-xs text-gray-400">Pendiente</span>
-            )}
-          </div>
         </div>
         <div className="px-5 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-4">
           <p className="text-xs text-gray-500">
             {allCompleted
               ? "Todas las evaluaciones completadas. ¡Ya puedes finalizar!"
-              : "Completa todas las evaluaciones de módulos y la Evaluación Final."}
+              : "Completa las evaluaciones de todos los módulos para finalizar."}
           </p>
           <button
             onClick={handleFinalizar}

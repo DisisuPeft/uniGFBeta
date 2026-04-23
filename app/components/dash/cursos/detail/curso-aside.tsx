@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useGetCursoQuery } from "@/redux/features/control-escolar/programasApiSlice";
 import { MODULOS_MOCK } from "./types";
-import { BookOpen, ClipboardList, ChevronDown, ArrowLeft, Medal } from "lucide-react";
+import { BookOpen, ClipboardList, ChevronDown, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 
 export default function CursoAside({ cursoId }: { cursoId: number }) {
@@ -119,20 +119,6 @@ export default function CursoAside({ cursoId }: { cursoId: number }) {
         })}
       </div>
 
-      {/* Evaluación Final */}
-      <div className="px-4 py-3 border-t border-gray-100">
-        <Link
-          href={`${base}/evaluacion-final`}
-          className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${
-            pathname === `${base}/evaluacion-final`
-              ? "bg-sky-50 text-sky-700 font-medium border-l-2 border-sky-500"
-              : "text-gray-600 hover:bg-gray-50"
-          }`}
-        >
-          <Medal className="w-4 h-4 flex-shrink-0" />
-          Evaluación Final
-        </Link>
-      </div>
     </aside>
   );
 }
