@@ -31,7 +31,7 @@
     "**/*.mts",
     ".next\\dev/types/**/*.ts",
     ".next\\dev/types/**/*.ts",
-    "app/ui/landing-cinfa/form/form-ctsx"
+    "app/ui/landing/form/form-ctsx"
   ],
   "exclude": ["node_modules"]
 }

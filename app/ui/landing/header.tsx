@@ -22,17 +22,17 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+            <div className="w-[200px] h-[200px] rounded-lg flex items-center justify-center">
               <Image
-                src="/assets/logos/Logo CINFA-01.webp"
+                src="/assets/logo/f-academy.webp"
                 alt="Logo CINFA"
-                width={40}
-                height={40}
+                width={200}
+                height={200}
               />
             </div>
-            <span className="text-foreground font-semibold text-lg tracking-tight">
+            {/* <span className="text-foreground font-semibold text-lg tracking-tight">
               CINFA
-            </span>
+            </span> */}
           </Link>
 
           {/* Desktop Navigation */}

@@ -59,9 +59,8 @@
   --color-complementary-thales: #4ca495; /* Verde humano (opcional) */
   --color-complementary-thales-foreground: #0b1b23;
 
-  /* colores cinfa */
-  --font-sans: "Geist", "Geist Fallback";
-  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --font-sans: "Google Sans", "Roboto", sans-serif;
+  --font-mono: "Roboto Mono", monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -110,5 +109,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: "Google Sans", "Roboto", sans-serif;
 }
