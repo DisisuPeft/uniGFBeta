@@ -3,20 +3,28 @@ import { useLogin } from "@/hooks";
 
 export default function LoginForm() {
   const { register, errors, isSubmitting, handleSubmit, onSubmit } = useLogin();
+
+  const inputBase =
+    "w-full pl-10 pr-4 py-3 text-sm border rounded-xl focus:outline-none focus:ring-2 transition-all bg-white text-[#1c2634] placeholder:text-[#333333]/30";
+  const inputNormal =
+    "border-gray-200 focus:ring-[#1c2634]/20 focus:border-[#1c2634]";
+  const inputError =
+    "border-red-400 focus:ring-red-400/20 focus:border-red-400";
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
-      {/* Email Field */}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {/* Email */}
       <div>
         <label
           htmlFor="email"
-          className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
+          className="block text-xs font-semibold text-[#1c2634]/70 uppercase tracking-wide mb-2"
         >
           Correo electrónico
         </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg
-              className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400"
+              className="h-4 w-4 text-[#1c2634]/30"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -33,12 +41,8 @@ export default function LoginForm() {
             id="email"
             type="email"
             autoComplete="email"
-            className={`w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 transition-all ${
-              errors.email
-                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
-            }`}
-            placeholder="tu@ejemplo.com"
+            className={`${inputBase} ${errors.email ? inputError : inputNormal}`}
+            placeholder="tu@autocorp.mx"
             {...register("email", {
               required: "El correo es obligatorio",
               pattern: {
@@ -49,9 +53,9 @@ export default function LoginForm() {
           />
         </div>
         {errors.email && (
-          <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1">
+          <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
             <svg
-              className="w-3.5 h-3.5 sm:w-4 sm:h-4"
+              className="w-3.5 h-3.5 flex-shrink-0"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -66,26 +70,18 @@ export default function LoginForm() {
         )}
       </div>
 
-      {/* Password Field */}
+      {/* Password */}
       <div>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-1 sm:gap-0 mb-1.5 sm:mb-2">
-          <label
-            htmlFor="password"
-            className="block text-xs sm:text-sm font-medium text-gray-700"
-          >
-            Contraseña
-          </label>
-          {/* <button
-            type="button"
-            className="text-xs sm:text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors text-left sm:text-right"
-          >
-            ¿Olvidaste tu contraseña?
-          </button> */}
-        </div>
+        <label
+          htmlFor="password"
+          className="block text-xs font-semibold text-[#1c2634]/70 uppercase tracking-wide mb-2"
+        >
+          Contraseña
+        </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg
-              className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400"
+              className="h-4 w-4 text-[#1c2634]/30"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -102,11 +98,7 @@ export default function LoginForm() {
             id="password"
             type="password"
             autoComplete="current-password"
-            className={`w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 transition-all ${
-              errors.password
-                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
-            }`}
+            className={`${inputBase} ${errors.password ? inputError : inputNormal}`}
             placeholder="••••••••"
             {...register("password", {
               required: "La contraseña es obligatoria",
@@ -118,9 +110,9 @@ export default function LoginForm() {
           />
         </div>
         {errors.password && (
-          <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1">
+          <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
             <svg
-              className="w-3.5 h-3.5 sm:w-4 sm:h-4"
+              className="w-3.5 h-3.5 flex-shrink-0"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -136,35 +128,30 @@ export default function LoginForm() {
       </div>
 
       {/* Remember me */}
-      <div className="flex items-center">
+      <div className="flex items-center gap-2">
         <input
           id="remember-me"
           type="checkbox"
-          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
+          className="h-4 w-4 rounded border-gray-300 text-[#1c2634] focus:ring-[#1c2634]/20 cursor-pointer accent-[#1c2634]"
         />
         <label
           htmlFor="remember-me"
-          className="ml-2 block text-xs sm:text-sm text-gray-700 cursor-pointer"
+          className="text-sm text-[#333333]/60 cursor-pointer select-none"
         >
           Recordarme
         </label>
       </div>
 
-      {/* Submit Button */}
+      {/* Submit */}
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full py-2.5 sm:py-3 px-4 rounded-lg font-semibold text-sm sm:text-base text-white transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-        style={{
-          background: isSubmitting
-            ? "#9ca3af"
-            : "linear-gradient(135deg, #0f1f65ff 0%, #699cdbff 100%)",
-        }}
+        className="w-full py-3 px-4 rounded-xl font-semibold text-sm text-white bg-[#1c2634] hover:bg-[#1c2634]/90 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed mt-2"
       >
         {isSubmitting ? (
           <span className="flex items-center justify-center gap-2">
             <svg
-              className="animate-spin h-4 w-4 sm:h-5 sm:w-5 text-white"
+              className="animate-spin h-4 w-4 text-white"
               fill="none"
               viewBox="0 0 24 24"
             >

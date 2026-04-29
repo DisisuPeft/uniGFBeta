@@ -48,9 +48,9 @@ export default function CTA() {
                 <ArrowRight className="w-4 h-4" />
               </Link>
 
-              <p className="mt-5 text-white/30 text-sm">
+              {/* <p className="mt-5 text-white/30 text-sm">
                 Ingresa con tus credenciales de Grupo Farrera
-              </p>
+              </p> */}
             </div>
           </div>
         </motion.div>

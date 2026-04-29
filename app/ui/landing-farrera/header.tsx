@@ -31,12 +31,21 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16 lg:h-20">
         <Link href="/" className="relative h-[200px] w-[200px] flex-shrink-0">
-          <Image
-            src="/assets/logo/f-academy.webp"
-            alt="Farrera Academy"
-            fill
-            className="object-contain object-left"
-          />
+          {scrolled ? (
+            <Image
+              src="/assets/logo/f-academy.webp"
+              alt="Farrera Academy"
+              fill
+              className="object-contain object-left"
+            />
+          ) : (
+            <Image
+              src="/assets/logo/f-academy-white.webp"
+              alt="Farrera Academy"
+              fill
+              className="object-contain object-left"
+            />
+          )}
         </Link>
 
         <nav className="hidden lg:flex items-center gap-8">
