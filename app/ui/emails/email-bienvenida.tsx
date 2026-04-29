@@ -5,7 +5,11 @@ export default function EmailBienvenida() {
     <EmailWrapper preheader="Bienvenido a Farrera Academy, tu espacio de capacitación dentro de Grupo Farrera.">
       {/* Hero image */}
       <div className="-mx-8 -mt-8 mb-8">
-        <EmailPlaceholder width={600} height={220} label="Hero bienvenida (foto o ilustración)" />
+        <EmailPlaceholder
+          width={600}
+          height={220}
+          label="Hero bienvenida (foto o ilustración)"
+        />
       </div>
 
       {/* Greeting */}
@@ -16,10 +20,14 @@ export default function EmailBienvenida() {
         Hola [Nombre], bienvenido a tu espacio.
       </h1>
       <p className="text-[#333333]/65 text-sm leading-relaxed mb-6">
-        Tu cuenta en <strong className="text-[#1c2634]">Farrera Academy</strong> ya está activa. Esta plataforma fue creada para que puedas crecer profesionalmente desde adentro, a tu propio ritmo y desde cualquier lugar.
+        Tu cuenta en <strong className="text-[#1c2634]">Farrera Academy</strong>{" "}
+        ya está activa. Esta plataforma fue creada para que puedas crecer
+        profesionalmente desde adentro, a tu propio ritmo y desde cualquier
+        lugar.
       </p>
       <p className="text-[#333333]/65 text-sm leading-relaxed mb-8">
-        Encuentra los cursos de tu área, retoma donde lo dejaste y certifica lo que ya sabes. Todo en un mismo lugar.
+        Encuentra los cursos de tu área, retoma donde lo dejaste y certifica lo
+        que ya sabes. Todo en un mismo lugar.
       </p>
 
       {/* CTA */}
@@ -31,14 +39,15 @@ export default function EmailBienvenida() {
           Entrar a Farrera Academy →
         </a>
         <p className="text-[#333333]/35 text-xs mt-3">
-          O copia este enlace: <span className="text-[#1c2634]/50 font-mono">[url-plataforma]</span>
+          O copia este enlace:{" "}
+          <span className="text-[#1c2634]/50 font-mono">[url-plataforma]</span>
         </p>
       </div>
 
       <hr className="border-gray-100 mb-6" />
 
       {/* Credentials block */}
-      <div className="bg-[#F4F7FB] rounded-xl p-5 mb-6">
+      {/* <div className="bg-[#F4F7FB] rounded-xl p-5 mb-6">
         <p className="text-xs font-semibold text-[#1c2634]/60 uppercase tracking-wide mb-3">
           Tus credenciales de acceso
         </p>
@@ -55,10 +64,11 @@ export default function EmailBienvenida() {
         <p className="text-[10px] text-[#333333]/35 mt-3">
           Se te pedirá cambiar tu contraseña al primer inicio de sesión.
         </p>
-      </div>
+      </div> */}
 
       <p className="text-[#333333]/45 text-xs leading-relaxed">
-        Si tienes alguna duda, contacta al Área de Desarrollo y Capacitación de Grupo Farrera.
+        Si tienes alguna duda, contacta al Área de Desarrollo y Capacitación de
+        Grupo Farrera.
       </p>
     </EmailWrapper>
   );

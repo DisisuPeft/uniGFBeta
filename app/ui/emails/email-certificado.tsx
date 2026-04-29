@@ -5,9 +5,9 @@ export default function EmailCertificado() {
     <EmailWrapper preheader="Felicidades, [Nombre]. Obtuviste tu certificado en [Nombre del Curso].">
       {/* Celebration header */}
       <div className="text-center mb-6">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#1c2634]/8 mb-4">
+        {/* <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#1c2634]/8 mb-4">
           <span className="text-2xl">🏅</span>
-        </div>
+        </div> */}
         <p className="text-[#1c2634]/50 text-xs font-semibold uppercase tracking-widest mb-2">
           Certificado obtenido
         </p>
@@ -17,12 +17,18 @@ export default function EmailCertificado() {
       </div>
 
       <p className="text-[#333333]/65 text-sm leading-relaxed mb-6 text-center">
-        Completaste satisfactoriamente el curso <strong className="text-[#1c2634]">[Nombre del Curso]</strong> y obtuviste tu certificado oficial de Farrera Academy.
+        Completaste satisfactoriamente el curso{" "}
+        <strong className="text-[#1c2634]">[Nombre del Curso]</strong> y
+        obtuviste tu certificado oficial de Farrera Academy.
       </p>
 
       {/* Certificate mockup */}
       <div className="-mx-8 mb-8">
-        <EmailPlaceholder width={600} height={380} label="Previsualización del certificado (PDF o imagen)" />
+        <EmailPlaceholder
+          width={600}
+          height={380}
+          label="Previsualización del certificado (imagen)"
+        />
       </div>
 
       {/* Score block */}
@@ -61,12 +67,13 @@ export default function EmailCertificado() {
       <hr className="border-gray-100 mb-6" />
 
       {/* Next course nudge */}
-      <div className="bg-[#F4F7FB] rounded-xl p-5">
+      {/* <div className="bg-[#F4F7FB] rounded-xl p-5">
         <p className="text-xs font-semibold text-[#1c2634]/60 uppercase tracking-wide mb-2">
           ¿Qué sigue?
         </p>
         <p className="text-sm text-[#333333]/60 leading-relaxed mb-3">
-          Tienes [N] cursos más disponibles en tu área. Sigue construyendo tu camino dentro de Grupo Farrera.
+          Tienes [N] cursos más disponibles en tu área. Sigue construyendo tu
+          camino dentro de Grupo Farrera.
         </p>
         <a
           href="#"
@@ -74,7 +81,7 @@ export default function EmailCertificado() {
         >
           Ver cursos de mi área →
         </a>
-      </div>
+      </div> */}
     </EmailWrapper>
   );
 }

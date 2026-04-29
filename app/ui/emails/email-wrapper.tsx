@@ -32,7 +32,10 @@ export function EmailPlaceholder({
   );
 }
 
-export default function EmailWrapper({ children, preheader }: EmailWrapperProps) {
+export default function EmailWrapper({
+  children,
+  preheader,
+}: EmailWrapperProps) {
   return (
     <div className="bg-[#F4F7FB] py-8 px-4">
       {preheader && (
@@ -50,37 +53,27 @@ export default function EmailWrapper({ children, preheader }: EmailWrapperProps)
             height={40}
             className="object-contain h-10 w-auto"
           />
-          <span className="text-white/30 text-xs">
-            Grupo Farrera
-          </span>
+          <span className="text-white/30 text-xs">Grupo Farrera</span>
         </div>
 
         {/* Email body */}
-        <div className="bg-white px-8 py-8">
-          {children}
-        </div>
+        <div className="bg-white px-8 py-8">{children}</div>
 
         {/* Email footer */}
-        <div className="bg-[#1c2634]/5 border border-t-0 border-gray-100 px-8 py-6 rounded-b-xl text-center">
+        {/* <div className="bg-[#1c2634]/5 border border-t-0 border-gray-100 px-8 py-6 rounded-b-xl text-center">
           <p className="text-[#333333]/40 text-xs mb-2">
-            Este correo fue enviado a <span className="font-medium text-[#1c2634]/50">[correo@grupofarrera.com]</span>
+            Este correo fue enviado a{" "}
+            <span className="font-medium text-[#1c2634]/50">
+              [correo@grupofarrera.com]
+            </span>
           </p>
           <p className="text-[#333333]/30 text-xs">
-            © {new Date().getFullYear()} Grupo Farrera · Área de Desarrollo y Capacitación
+            © {new Date().getFullYear()} Grupo Farrera · Área de Desarrollo y
+            Capacitación
             <br />
             [Ciudad, Estado, México]
           </p>
-          <div className="mt-3 flex items-center justify-center gap-1">
-            <span className="w-1 h-1 rounded-full bg-[#1c2634]/20 inline-block" />
-            <a href="#" className="text-[#1c2634]/40 text-xs hover:text-[#1c2634] transition-colors">
-              Cancelar suscripción
-            </a>
-            <span className="w-1 h-1 rounded-full bg-[#1c2634]/20 inline-block" />
-            <a href="#" className="text-[#1c2634]/40 text-xs hover:text-[#1c2634] transition-colors">
-              Ver en el navegador
-            </a>
-          </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
