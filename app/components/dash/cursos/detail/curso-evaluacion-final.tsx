@@ -46,21 +46,21 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
       <div>
         <Link
           href={`${base}/bienvenida`}
-          className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-700 transition-colors mb-4"
+          className="flex items-center gap-1.5 text-xs text-[#333333]/40 hover:text-[#1c2634] transition-colors mb-4"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
           Volver al inicio del curso
         </Link>
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-8 h-8 bg-sky-600 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Medal className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 bg-[#1c2634] rounded-xl flex items-center justify-center flex-shrink-0">
+            <Medal className="w-4 h-4 text-white/80" />
           </div>
-          <p className="text-xs font-semibold text-sky-600 uppercase tracking-wide">
+          <p className="text-xs font-semibold text-[#1c2634]/50 uppercase tracking-widest">
             Evaluación Final del Curso
           </p>
         </div>
-        <h1 className="text-xl font-bold text-gray-900">Evaluación de Capacitación BDC</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-xl font-bold text-[#1c2634]">Evaluación de Capacitación BDC</h1>
+        <p className="text-sm text-[#333333]/55 mt-1">
           {preguntas.length} preguntas · 3 secciones · Mínimo aprobatorio: 70%
         </p>
       </div>
@@ -86,9 +86,9 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
             <p className={`text-sm font-semibold ${aprobado ? "text-emerald-700" : "text-red-600"}`}>
               {aprobado ? "¡Capacitación aprobada!" : "No aprobado"}
             </p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[#333333]/50 mt-1">
               {aprobado
-                ? "Completaste el Curso Básico BDC. ¡Bienvenido al equipo!"
+                ? "Completaste el curso exitosamente. ¡Gracias por tu compromiso con Farrera Academy!"
                 : "Revisa los módulos del curso e intenta de nuevo."}
             </p>
           </div>
@@ -101,24 +101,24 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
             return (
               <div key={sec.label} className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                  <p className="text-xs font-bold text-[#333333]/45 uppercase tracking-wide">
                     {sec.label}
                   </p>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-[#333333]/35">
                     {correctasSec}/{grupo.length} correctas
                   </span>
                 </div>
                 {grupo.map((p) => {
                   const esCorrecta = respuestas[p.id] === p.correcta;
                   return (
-                    <div key={p.id} className="border border-gray-200 rounded-xl overflow-hidden">
+                    <div key={p.id} className="border border-gray-100 rounded-xl overflow-hidden">
                       <div className={`flex items-center gap-3 px-4 py-3 ${esCorrecta ? "bg-emerald-50" : "bg-red-50"}`}>
                         {esCorrecta ? (
                           <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                         ) : (
                           <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
                         )}
-                        <p className="text-sm font-medium text-gray-900">{p.id}. {p.texto}</p>
+                        <p className="text-sm font-medium text-[#1c2634]">{p.id}. {p.texto}</p>
                       </div>
                       <div className="px-4 py-3 space-y-1.5">
                         {p.opciones.map((op, oi) => (
@@ -129,7 +129,7 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
                                 ? "bg-emerald-50 text-emerald-700 font-medium"
                                 : oi === respuestas[p.id] && !esCorrecta
                                 ? "bg-red-50 text-red-500 line-through"
-                                : "text-gray-600"
+                                : "text-[#333333]/60"
                             }`}
                           >
                             {oi === p.correcta && (
@@ -150,7 +150,7 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
             {!aprobado && (
               <button
                 onClick={handleReintentar}
-                className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 border border-gray-200 rounded-xl text-sm font-medium text-[#333333]/70 hover:bg-gray-50 transition-colors"
               >
                 Reintentar
               </button>
@@ -158,7 +158,7 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
             {aprobado && (
               <Link
                 href={`${base}/bienvenida`}
-                className="ml-auto px-5 py-2 bg-sky-500 text-white text-sm font-medium rounded-lg hover:bg-sky-500/90 transition-colors"
+                className="ml-auto px-5 py-2.5 bg-[#1c2634] text-white text-sm font-medium rounded-xl hover:bg-[#1c2634]/90 transition-colors"
               >
                 Volver al inicio
               </Link>
@@ -173,13 +173,13 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
             const grupo = preguntasPorSeccion(desde, hasta);
             return (
               <div key={sec.label} className="space-y-4">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wide border-b border-gray-100 pb-2">
+                <p className="text-xs font-bold text-[#333333]/40 uppercase tracking-wide border-b border-gray-100 pb-2">
                   {sec.label}
                 </p>
                 {grupo.map((p) => (
-                  <div key={p.id} className="border border-gray-200 rounded-xl overflow-hidden">
-                    <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
-                      <p className="text-sm font-semibold text-gray-900">
+                  <div key={p.id} className="border border-gray-100 rounded-xl overflow-hidden">
+                    <div className="px-5 py-4 border-b border-gray-100 bg-[#F4F7FB]">
+                      <p className="text-sm font-semibold text-[#1c2634]">
                         {p.id}. {p.texto}
                       </p>
                     </div>
@@ -187,10 +187,10 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
                       {p.opciones.map((op, oi) => (
                         <label
                           key={oi}
-                          className={`flex items-center gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-colors ${
+                          className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-colors ${
                             respuestas[p.id] === oi
-                              ? "border-sky-400 bg-sky-50 text-sky-800"
-                              : "border-gray-100 hover:bg-gray-50 text-gray-700"
+                              ? "border-[#1c2634] bg-[#1c2634]/5 text-[#1c2634]"
+                              : "border-gray-100 hover:bg-[#1c2634]/[0.03] text-[#333333]/70"
                           }`}
                         >
                           <input
@@ -201,7 +201,7 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
                             onChange={() =>
                               setRespuestas((prev) => ({ ...prev, [p.id]: oi }))
                             }
-                            className="accent-sky-500"
+                            className="accent-[#1c2634]"
                           />
                           <span className="text-sm">{op}</span>
                         </label>
@@ -214,13 +214,13 @@ export default function CursoEvaluacionFinal({ cursoId }: { cursoId: number }) {
           })}
 
           <div className="flex items-center justify-between sticky bottom-0 bg-white/90 backdrop-blur-sm py-3 border-t border-gray-100 -mx-6 px-6">
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-[#333333]/35">
               {Object.keys(respuestas).length} de {preguntas.length} respondidas
             </p>
             <button
               onClick={handleSubmit}
               disabled={!todasRespondidas}
-              className="px-5 py-2.5 bg-sky-500 text-white text-sm font-medium rounded-lg hover:bg-sky-500/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-5 py-2.5 bg-[#1c2634] text-white text-sm font-medium rounded-xl hover:bg-[#1c2634]/90 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               Entregar evaluación
             </button>

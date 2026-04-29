@@ -1,81 +1,57 @@
 import Link from "next/link";
 import { Curso } from "@/redux/features/control-escolar/programasApiSlice";
+import { BookOpen, Clock } from "lucide-react";
 
 export type { Curso };
 
-const estadoColor: Record<Curso["status"], string> = {
-  1: "bg-sky-100 text-sky-700",
-  0: "bg-emerald-100 text-emerald-700",
-};
-
 export default function CursoCard({ curso }: { curso: Curso }) {
+  const activo = curso.status === 1;
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
-      <div className="h-32 bg-gradient-to-br from-sky-500 to-sky-700 relative flex flex-col justify-end p-4">
-        {/* {curso.imagenUrl && (
-          <img
-            src={curso.imagenUrl}
-            alt={curso.titulo}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        )} */}
-        <div className="relative">
-          <p className="text-xs font-semibold text-sky-100 uppercase tracking-wide mb-0.5">
-            {/* {curso.empresa} */}
-          </p>
-          {/* <p className="text-sm font-bold text-white">{curso.periodo}</p> */}
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md hover:border-[#1c2634]/15 transition-all flex flex-col group">
+      {/* Card header */}
+      <div className="h-28 bg-[#1c2634] relative flex items-end p-5">
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "24px 24px",
+          }}
+        />
+        <div className="relative flex items-center justify-between w-full">
+          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
+            <BookOpen className="w-4 h-4 text-white/70" />
+          </div>
+          <span
+            className={`text-[10px] font-semibold px-2.5 py-1 rounded-full ${
+              activo
+                ? "bg-white/15 text-white/80"
+                : "bg-white/10 text-white/40"
+            }`}
+          >
+            {activo ? "Activo" : "Inactivo"}
+          </span>
         </div>
-        <span
-          className={`absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full ${estadoColor[curso.status]}`}
-        >
-          {/* {curso.estado} */}
-        </span>
       </div>
 
+      {/* Card body */}
       <div className="p-5 flex flex-col flex-1">
-        <span className="text-xs text-sky-600 font-medium uppercase tracking-wide mb-1">
-          {/* {curso.categoria} */}
-        </span>
-
-        <h3 className="text-base font-bold text-gray-900 mb-1 line-clamp-2 leading-snug">
+        <h3 className="text-sm font-bold text-[#1c2634] mb-1.5 line-clamp-2 leading-snug">
           {curso.nombre}
         </h3>
 
-        <p className="text-sm text-gray-500 mb-4 line-clamp-2 flex-1">
+        <p className="text-xs text-[#333333]/55 mb-4 line-clamp-2 flex-1 leading-relaxed">
           {curso.descripcion}
         </p>
 
-        <div className="grid grid-cols-2 gap-y-2 text-xs text-gray-500 mb-4">
-          <span>
-            <span className="font-medium text-gray-700">Instructor</span>
-            <br />
-            {/* {curso.instructor} */}
-          </span>
-          <span>
-            <span className="font-medium text-gray-700">Duración</span>
-            <br />
-            {curso.duracion_horas}
-          </span>
+        <div className="flex items-center gap-1.5 text-xs text-[#333333]/45 mb-4">
+          <Clock className="w-3.5 h-3.5 flex-shrink-0" />
+          <span>{curso.duracion_horas} horas</span>
         </div>
-
-        {/* {curso.estado === "En progreso" && curso.progreso !== undefined && (
-          <div className="mb-4">
-            <div className="flex justify-between text-xs text-gray-500 mb-1">
-              <span>Progreso</span>
-              <span>{curso.progreso}%</span>
-            </div>
-            <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-sky-500 rounded-full transition-all"
-                style={{ width: `${curso.progreso}%` }}
-              />
-            </div>
-          </div>
-        )} */}
 
         <Link
           href={`/dashboard/cursos/${curso.id}`}
-          className="block w-full text-center px-4 py-2 bg-sky-500 text-white rounded-lg text-sm font-medium hover:bg-sky-500/90 transition-colors mt-auto"
+          className="block w-full text-center px-4 py-2.5 bg-[#1c2634] text-white rounded-xl text-xs font-semibold hover:bg-[#1c2634]/90 transition-colors mt-auto"
         >
           Ver curso
         </Link>

@@ -37,7 +37,7 @@ export default function EmailWrapper({
   preheader,
 }: EmailWrapperProps) {
   return (
-    <div className="bg-[#F4F7FB] py-8 px-4">
+    <div className="bg-[#ffff] py-8 px-4">
       {preheader && (
         <p className="text-[0px] text-transparent leading-none max-h-0 overflow-hidden">
           {preheader}
@@ -45,13 +45,13 @@ export default function EmailWrapper({
       )}
       <div className="max-w-[600px] mx-auto">
         {/* Email header */}
-        <div className="bg-[#1c2634] px-8 py-6 rounded-t-xl flex items-center justify-between">
+        <div className="bg-[#1c2634] px-8 py-4 rounded-t-xl flex items-center justify-between">
           <Image
             src="/assets/logo/f-academy-white.webp"
             alt="Farrera Academy"
-            width={130}
-            height={40}
-            className="object-contain h-10 w-auto"
+            width={220}
+            height={220}
+            className="h-[100px] w-auto object-contain"
           />
           <span className="text-white/30 text-xs">Grupo Farrera</span>
         </div>

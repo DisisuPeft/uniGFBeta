@@ -45,8 +45,8 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
 
   if (!modulo || preguntas.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto px-6 py-10 text-center text-gray-400">
-        <p className="text-4xl mb-3">📋</p>
+      <div className="max-w-2xl mx-auto px-6 py-10 text-center text-[#333333]/40">
+        <p className="text-3xl mb-3">📋</p>
         <p className="text-sm">Evaluación no disponible para este módulo.</p>
       </div>
     );
@@ -58,16 +58,16 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
       <div>
         <Link
           href={`${base}/modulo/${moduloId}`}
-          className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-700 transition-colors mb-3"
+          className="flex items-center gap-1.5 text-xs text-[#333333]/40 hover:text-[#1c2634] transition-colors mb-3"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
           Volver al módulo
         </Link>
-        <p className="text-xs font-semibold text-sky-600 uppercase tracking-wide mb-1">
+        <p className="text-xs font-semibold text-[#1c2634]/50 uppercase tracking-widest mb-1.5">
           Evaluación · {modulo.titulo}
         </p>
-        <h1 className="text-xl font-bold text-gray-900">Evaluación del módulo</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-xl font-bold text-[#1c2634]">Evaluación del módulo</h1>
+        <p className="text-sm text-[#333333]/55 mt-1">
           {preguntas.length} preguntas · Mínimo aprobatorio: 70%
         </p>
       </div>
@@ -78,7 +78,9 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
           {/* Tarjeta de puntaje */}
           <div
             className={`rounded-xl p-6 text-center border ${
-              aprobado ? "bg-emerald-50 border-emerald-100" : "bg-red-50 border-red-100"
+              aprobado
+                ? "bg-emerald-50 border-emerald-100"
+                : "bg-red-50 border-red-100"
             }`}
           >
             <div className="flex justify-center mb-3">
@@ -88,17 +90,13 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
                 <XCircle className="w-10 h-10 text-red-400" />
               )}
             </div>
-            <p
-              className={`text-4xl font-bold mb-1 ${
-                aprobado ? "text-emerald-600" : "text-red-500"
-              }`}
-            >
+            <p className={`text-4xl font-bold mb-1 ${aprobado ? "text-emerald-600" : "text-red-500"}`}>
               {puntaje}%
             </p>
             <p className={`text-sm font-semibold ${aprobado ? "text-emerald-700" : "text-red-600"}`}>
               {aprobado ? "¡Módulo aprobado!" : "No aprobado"}
             </p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[#333333]/50 mt-1">
               {aprobado
                 ? "Excelente trabajo. Puedes continuar con el siguiente módulo."
                 : "Revisa el contenido del módulo e intenta de nuevo."}
@@ -106,13 +104,13 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
           </div>
 
           {/* Revisión de respuestas */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {preguntas.map((p, i) => {
               const esCorrecta = respuestas[p.id] === p.correcta;
               return (
                 <div
                   key={p.id}
-                  className="border border-gray-200 rounded-xl overflow-hidden"
+                  className="border border-gray-100 rounded-xl overflow-hidden"
                 >
                   <div
                     className={`flex items-center gap-3 px-4 py-3 ${
@@ -124,7 +122,7 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
                     ) : (
                       <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
                     )}
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-[#1c2634]">
                       {i + 1}. {p.texto}
                     </p>
                   </div>
@@ -137,7 +135,7 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
                             ? "bg-emerald-50 text-emerald-700 font-medium"
                             : oi === respuestas[p.id] && !esCorrecta
                             ? "bg-red-50 text-red-500 line-through"
-                            : "text-gray-600"
+                            : "text-[#333333]/60"
                         }`}
                       >
                         {oi === p.correcta && (
@@ -157,7 +155,7 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
             {!aprobado && (
               <button
                 onClick={handleReintentar}
-                className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 border border-gray-200 rounded-xl text-sm font-medium text-[#333333]/70 hover:bg-gray-50 transition-colors"
               >
                 Reintentar
               </button>
@@ -165,7 +163,7 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
             {aprobado && nextModulo && (
               <Link
                 href={`${base}/modulo/${nextModulo.id}`}
-                className="ml-auto px-5 py-2 bg-sky-500 text-white text-sm font-medium rounded-lg hover:bg-sky-500/90 transition-colors"
+                className="ml-auto px-5 py-2.5 bg-[#1c2634] text-white text-sm font-medium rounded-xl hover:bg-[#1c2634]/90 transition-colors"
               >
                 Siguiente módulo →
               </Link>
@@ -177,7 +175,7 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
                 </p>
                 <Link
                   href={`${base}/bienvenida`}
-                  className="text-xs text-gray-400 hover:text-gray-700 underline"
+                  className="text-xs text-[#333333]/40 hover:text-[#1c2634] underline"
                 >
                   Volver al inicio del curso
                 </Link>
@@ -187,14 +185,14 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
         </div>
       ) : (
         /* ── QUIZ ── */
-        <div className="space-y-6">
+        <div className="space-y-5">
           {preguntas.map((p, i) => (
             <div
               key={p.id}
-              className="border border-gray-200 rounded-xl overflow-hidden"
+              className="border border-gray-100 rounded-xl overflow-hidden"
             >
-              <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
-                <p className="text-sm font-semibold text-gray-900">
+              <div className="px-5 py-4 border-b border-gray-100 bg-[#F4F7FB]">
+                <p className="text-sm font-semibold text-[#1c2634]">
                   {i + 1}. {p.texto}
                 </p>
               </div>
@@ -202,10 +200,10 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
                 {p.opciones.map((op, oi) => (
                   <label
                     key={oi}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-colors ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-colors ${
                       respuestas[p.id] === oi
-                        ? "border-sky-400 bg-sky-50 text-sky-800"
-                        : "border-gray-100 hover:bg-gray-50 text-gray-700"
+                        ? "border-[#1c2634] bg-[#1c2634]/5 text-[#1c2634]"
+                        : "border-gray-100 hover:bg-[#1c2634]/[0.03] text-[#333333]/70"
                     }`}
                   >
                     <input
@@ -216,7 +214,7 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
                       onChange={() =>
                         setRespuestas((prev) => ({ ...prev, [p.id]: oi }))
                       }
-                      className="accent-sky-500"
+                      className="accent-[#1c2634]"
                     />
                     <span className="text-sm">{op}</span>
                   </label>
@@ -226,13 +224,13 @@ export default function CursoEvaluacion({ cursoId, moduloId }: Props) {
           ))}
 
           <div className="flex items-center justify-between">
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-[#333333]/35">
               {Object.keys(respuestas).length} de {preguntas.length} respondidas
             </p>
             <button
               onClick={handleSubmit}
               disabled={!todasRespondidas}
-              className="px-5 py-2.5 bg-sky-500 text-white text-sm font-medium rounded-lg hover:bg-sky-500/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-5 py-2.5 bg-[#1c2634] text-white text-sm font-medium rounded-xl hover:bg-[#1c2634]/90 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               Entregar evaluación
             </button>

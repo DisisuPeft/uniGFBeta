@@ -20,20 +20,20 @@ function Bloque({ bloque }: { bloque: ContenidoBloque }) {
   switch (bloque.tipo) {
     case "parrafo":
       return (
-        <p className="text-sm text-gray-700 leading-relaxed">{bloque.texto}</p>
+        <p className="text-sm text-[#333333]/75 leading-relaxed">{bloque.texto}</p>
       );
 
     case "subtitulo":
       return (
-        <h3 className="text-sm font-bold text-gray-900 mt-2">{bloque.texto}</h3>
+        <h3 className="text-sm font-bold text-[#1c2634] mt-2">{bloque.texto}</h3>
       );
 
     case "lista":
       return (
         <ul className="space-y-2">
           {bloque.items?.map((item, i) => (
-            <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
-              <span className="w-1.5 h-1.5 rounded-full bg-sky-400 mt-2 flex-shrink-0" />
+            <li key={i} className="flex items-start gap-2.5 text-sm text-[#333333]/75">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1c2634]/40 mt-2 flex-shrink-0" />
               <span>{item}</span>
             </li>
           ))}
@@ -42,10 +42,10 @@ function Bloque({ bloque }: { bloque: ContenidoBloque }) {
 
     case "tabla":
       return (
-        <div className="overflow-hidden rounded-xl border border-gray-200">
+        <div className="overflow-hidden rounded-xl border border-gray-100">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-800 text-white">
+              <tr className="bg-[#1c2634] text-white">
                 <th className="text-left px-4 py-2.5 font-semibold text-xs uppercase tracking-wide w-2/5">
                   Indicador
                 </th>
@@ -54,13 +54,13 @@ function Bloque({ bloque }: { bloque: ContenidoBloque }) {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-50">
               {bloque.filas?.map((fila, i) => (
-                <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                  <td className="px-4 py-3 font-medium text-gray-800 align-top">
+                <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-[#F4F7FB]"}>
+                  <td className="px-4 py-3 font-medium text-[#1c2634] align-top text-sm">
                     {fila.label}
                   </td>
-                  <td className="px-4 py-3 text-gray-600 align-top">
+                  <td className="px-4 py-3 text-[#333333]/65 align-top text-sm">
                     {fila.valor}
                   </td>
                 </tr>
@@ -77,19 +77,19 @@ function Bloque({ bloque }: { bloque: ContenidoBloque }) {
           className={`flex gap-3 rounded-xl p-4 border ${
             esAdvertencia
               ? "bg-amber-50 border-amber-200"
-              : "bg-sky-50 border-sky-100"
+              : "bg-[#1c2634]/5 border-[#1c2634]/10"
           }`}
         >
           <div className="flex-shrink-0 mt-0.5">
             {esAdvertencia ? (
               <AlertCircle className="w-4 h-4 text-amber-500" />
             ) : (
-              <Info className="w-4 h-4 text-sky-500" />
+              <Info className="w-4 h-4 text-[#1c2634]/50" />
             )}
           </div>
           <p
             className={`text-sm leading-relaxed whitespace-pre-line ${
-              esAdvertencia ? "text-amber-800" : "text-sky-800"
+              esAdvertencia ? "text-amber-800" : "text-[#1c2634]/80"
             }`}
           >
             {bloque.texto}
@@ -119,8 +119,8 @@ export default function CursoTema({ cursoId, moduloId, temaId }: Props) {
 
   if (!tema || !modulo) {
     return (
-      <div className="max-w-2xl mx-auto px-6 py-10 text-center text-gray-400">
-        <p className="text-4xl mb-3">📄</p>
+      <div className="max-w-2xl mx-auto px-6 py-10 text-center text-[#333333]/40">
+        <p className="text-3xl mb-3">📄</p>
         <p className="text-sm">Tema no encontrado.</p>
       </div>
     );
@@ -132,16 +132,16 @@ export default function CursoTema({ cursoId, moduloId, temaId }: Props) {
       <div>
         <Link
           href={moduloPath}
-          className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-700 transition-colors mb-4"
+          className="flex items-center gap-1.5 text-xs text-[#333333]/40 hover:text-[#1c2634] transition-colors mb-4"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
           {modulo.titulo}
         </Link>
-        <p className="text-xs font-semibold text-sky-600 uppercase tracking-wide mb-1">
+        <p className="text-xs font-semibold text-[#1c2634]/50 uppercase tracking-widest mb-1.5">
           Módulo {moduloIdx + 1} · Tema {temaIdx + 1} de {temas.length}
         </p>
-        <h1 className="text-xl font-bold text-gray-900">{tema.titulo}</h1>
-        <p className="text-xs text-gray-400 mt-1">{tema.duracion}</p>
+        <h1 className="text-xl font-bold text-[#1c2634]">{tema.titulo}</h1>
+        <p className="text-xs text-[#333333]/35 mt-1">{tema.duracion}</p>
       </div>
 
       {/* Contenido */}
@@ -149,7 +149,7 @@ export default function CursoTema({ cursoId, moduloId, temaId }: Props) {
         {bloques?.length ? (
           bloques.map((bloque, i) => <Bloque key={i} bloque={bloque} />)
         ) : (
-          <p className="text-sm text-gray-400 italic">
+          <p className="text-sm text-[#333333]/35 italic">
             Contenido en preparación.
           </p>
         )}
@@ -157,21 +157,21 @@ export default function CursoTema({ cursoId, moduloId, temaId }: Props) {
 
       {/* CTA evaluación si es el último tema */}
       {!nextTema && modulo.tieneEvaluacion && (
-        <div className="bg-sky-50 border border-sky-100 rounded-xl p-5 flex items-center justify-between gap-4">
+        <div className="bg-[#1c2634]/5 border border-[#1c2634]/10 rounded-xl p-5 flex items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <ClipboardList className="w-4 h-4 text-sky-600" />
-              <p className="font-semibold text-sm text-gray-900">
+              <ClipboardList className="w-4 h-4 text-[#1c2634]/60" />
+              <p className="font-semibold text-sm text-[#1c2634]">
                 ¡Completaste todos los temas!
               </p>
             </div>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-[#333333]/50">
               Ya puedes presentar la evaluación del módulo. Necesitas 70% para aprobar.
             </p>
           </div>
           <Link
             href={`${moduloPath}/evaluacion`}
-            className="flex-shrink-0 px-4 py-2 bg-sky-500 text-white text-sm font-medium rounded-lg hover:bg-sky-500/90 transition-colors"
+            className="flex-shrink-0 px-4 py-2 bg-[#1c2634] text-white text-sm font-medium rounded-xl hover:bg-[#1c2634]/90 transition-colors"
           >
             Ir a evaluación
           </Link>
@@ -182,7 +182,7 @@ export default function CursoTema({ cursoId, moduloId, temaId }: Props) {
       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
         <Link
           href={prevTema ? `${moduloPath}/tema/${prevTema.id}` : moduloPath}
-          className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+          className="flex items-center gap-2 text-sm text-[#333333]/50 hover:text-[#1c2634] transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
           <span className="truncate max-w-[180px]">
@@ -193,7 +193,7 @@ export default function CursoTema({ cursoId, moduloId, temaId }: Props) {
         {nextTema && (
           <Link
             href={`${moduloPath}/tema/${nextTema.id}`}
-            className="flex items-center gap-2 text-sm text-sky-600 hover:text-sky-700 font-medium transition-colors"
+            className="flex items-center gap-2 text-sm text-[#1c2634] font-medium hover:text-[#1c2634]/70 transition-colors"
           >
             <span className="truncate max-w-[180px] text-right">
               {nextTema.titulo}
