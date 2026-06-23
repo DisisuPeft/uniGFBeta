@@ -23,6 +23,13 @@ export function UserMenu() {
     }
   }, [isOpen]);
 
+  const configModule = user?.modulos_accesibles?.find((m) =>
+    m.href === "/dashboard/configuracion"
+  );
+  const configHref = configModule
+    ? `/dashboard/configuracion?ref=${configModule.uuid}`
+    : "/dashboard/configuracion";
+
   const initials = user?.nombre_completo
     ? user.nombre_completo
         .split(" ")
@@ -67,7 +74,7 @@ export function UserMenu() {
             </Link>
 
             <Link
-              href="#"
+              href={configHref}
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-3 px-4 py-2 text-sm text-[#333333]/70 hover:bg-[#1c2634]/5 hover:text-[#1c2634] transition-colors"
             >

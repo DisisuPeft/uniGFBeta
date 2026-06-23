@@ -6,6 +6,7 @@ const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     retrieveUser: builder.query<User, void>({
       query: () => "/user/me/",
+      providesTags: [{ type: "User", id: "ME" }],
     }),
     login: builder.mutation({
       query: ({ email, password }) => ({

@@ -125,7 +125,7 @@ export default function PlanPagoTab({
   const { data: origenes } = useGetOrigenesPagoQuery();
   const { data: estadosPlan } = useGetEstadosPlanQuery();
   const { data: empresas } = useGetEmpresasQuery();
-  const empresaId = empresas?.[0]?.id;
+  const empresaId = empresas?.results?.[0]?.id;
 
   // ─ Plan query
   const {

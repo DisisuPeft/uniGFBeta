@@ -96,7 +96,7 @@ export default function InstitucionesGrid() {
           <div className="mt-2">
             <Select
               label="Empresa"
-              options={empresa ?? []}
+              options={empresa?.results ?? []}
               labelKey="slug"
               valueKey="id"
               {...register("empresa")}

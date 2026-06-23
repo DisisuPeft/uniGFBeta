@@ -1,5 +1,5 @@
-import Dashboard from "../components/plataforma/dash";
+import MisCursosDash from "../components/plataforma/mis-cursos-dash";
 
 export default function Page() {
-  return <Dashboard />;
+  return <MisCursosDash />;
 }
