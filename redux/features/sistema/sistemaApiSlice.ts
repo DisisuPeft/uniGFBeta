@@ -245,11 +245,17 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
     // permission[] → IDs; permission_detail[] → lectura (read-only en respuesta)
     // ==========================================================
 
-    getPestanas: builder.query<PaginatedResponse<Pestana>, number | void>({
-      query: (moduloId) =>
-        moduloId
-          ? `/sistema/pestanias/?modulo=${moduloId}`
-          : `/sistema/pestanias/`,
+    getPestanas: builder.query<
+      PaginatedResponse<Pestana>,
+      { page?: number; moduloId?: number } | void
+    >({
+      query: (args) => {
+        const params = new URLSearchParams();
+        if (args?.moduloId) params.set("modulo", String(args.moduloId));
+        if (args?.page && args.page > 1) params.set("page", String(args.page));
+        const qs = params.toString();
+        return `/sistema/pestanias/${qs ? `?${qs}` : ""}`;
+      },
       providesTags: [{ type: "Pestana", id: "LIST" }],
     }),
     getPestana: builder.query<Pestana, number>({
