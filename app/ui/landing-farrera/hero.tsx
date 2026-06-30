@@ -83,58 +83,41 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* Right: Platform mockup image */}
+          {/* Right: Modern Organic Blob Image */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.25 }}
-            className="hidden lg:block relative"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="hidden lg:flex relative h-[600px] w-full justify-center items-center"
           >
-            {/* Main mockup — 600 × 400 px */}
-            <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl shadow-black/40">
-              <Image
-                src="/assets/placeholder.png"
-                alt="Farrera Academy — vista de plataforma"
-                width={600}
-                height={400}
-                className="w-full object-cover"
-                priority
-              />
-              {/* Dimension label */}
-              <div className="absolute bottom-3 left-3 bg-[#1c2634]/80 backdrop-blur-sm text-white/80 text-[10px] font-mono px-2 py-1 rounded-md border border-white/10">
-                600 × 400 px — Dashboard principal
-              </div>
-            </div>
+            {/* Background glowing orb */}
+            <div className="absolute w-[80%] h-[80%] bg-blue-500/20 rounded-full blur-[100px] -z-10" />
+            <div className="absolute w-[60%] h-[60%] bg-emerald-500/20 rounded-full blur-[80px] -z-10 translate-x-20 translate-y-20" />
 
-            {/* Floating badge — certificado */}
-            {/* <motion.div
-              className="absolute -bottom-5 -left-5 bg-white rounded-xl p-3.5 shadow-xl flex items-center gap-3 max-w-[200px]"
-              animate={{ y: [0, -7, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            > */}
-            {/* <div className="w-8 h-8 rounded-lg bg-[#1c2634]/10 flex items-center justify-center flex-shrink-0">
-                <Award className="w-4 h-4 text-[#1c2634]" />
-              </div> */}
-            {/* <div>
-                <p className="text-xs font-semibold text-[#1c2634]">¡Certificado obtenido!</p>
-                <p className="text-[10px] text-[#333333]/60">Mercadotecnia Digital</p>
-              </div> */}
-            {/* </motion.div> */}
-
-            {/* Floating badge — progreso */}
-            {/* <motion.div
-              className="absolute -top-4 -right-4 bg-[#1c2634] rounded-xl px-4 py-3 shadow-xl text-center"
-              animate={{ y: [0, -6, 0] }}
+            {/* The Image Container with Animated Blob Border Radius */}
+            <motion.div 
+              className="relative w-[90%] h-[90%] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-4 border-white/10"
+              animate={{
+                borderRadius: [
+                  "60% 40% 30% 70% / 60% 30% 70% 40%",
+                  "30% 70% 70% 30% / 30% 30% 70% 70%",
+                  "60% 40% 30% 70% / 60% 30% 70% 40%"
+                ]
+              }}
               transition={{
-                duration: 3.5,
+                duration: 8,
                 repeat: Infinity,
-                ease: "easeInOut",
-                delay: 1,
+                ease: "easeInOut"
               }}
             >
-              <p className="text-2xl font-bold text-white">94%</p>
-              <p className="text-white/50 text-[10px]">Satisfacción</p>
-            </motion.div> */}
+              <Image
+                src="/assets/hero-image.jpg"
+                alt="Formación Farrera"
+                fill
+                className="object-cover scale-110 hover:scale-105 transition-transform duration-700"
+                priority
+              />
+            </motion.div>
           </motion.div>
         </div>
       </div>
