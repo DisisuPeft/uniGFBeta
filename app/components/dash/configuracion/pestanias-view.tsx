@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Layers, Edit2, Trash2, Plus, ShieldCheck } from "lucide-react";
 import Swal from "sweetalert2";
 import { DataTable, StatusBadge } from "@/app/utils/data-table";
@@ -32,8 +33,13 @@ const EMPTY: PestanaForm = {
   permission: [],
 };
 
+const PAGE_SIZE = 10;
+
 export default function PestanasView() {
-  const { data, isLoading } = useGetPestanasQuery();
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page") ?? "1");
+
+  const { data, isLoading } = useGetPestanasQuery({ page });
   const { data: modulos } = useGetModulosNavQuery();
   const { data: permisos } = useGetPermisosQuery();
   const [create, { isLoading: creating }] = useCreatePestanaMutation();
@@ -256,7 +262,7 @@ export default function PestanasView() {
         data={data?.results ?? []}
         isLoading={isLoading}
         count={data?.count ?? 0}
-        pageSize={100}
+        pageSize={PAGE_SIZE}
         emptyIcon={Layers}
         emptyMessage="No hay pestañas registradas"
       />
