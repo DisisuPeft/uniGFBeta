@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { BookOpen, Edit2, Trash2, Plus, Clock, BookMarked } from "lucide-react";
+import { TbPlus, TbBook } from "react-icons/tb";
+import { Clock, BookMarked, Edit2, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
 import { DataTable } from "@/app/utils/data-table";
 import { ColumnDef } from "@tanstack/react-table";
@@ -132,8 +133,8 @@ export default function CursosCapacitacionView() {
       id: "duracion",
       header: "Duración",
       cell: ({ row: { original: c } }) => (
-        <div className="flex items-center gap-1.5 text-sm text-gray-500">
-          <Clock className="w-3.5 h-3.5 flex-shrink-0" />
+        <div className="flex items-center gap-1.5 text-sm text-gray-500 font-medium">
+          <Clock className="w-4 h-4 flex-shrink-0 text-gray-400" />
           {c.duracion_horas} hrs
         </div>
       ),
@@ -147,25 +148,25 @@ export default function CursosCapacitacionView() {
       id: "acciones",
       header: "",
       cell: ({ row: { original: c } }) => (
-        <div className="flex items-center justify-end gap-1">
+        <div className="flex items-center justify-end gap-2">
           <button
             onClick={() => router.push(`/dashboard/capacitacion/cursos/${c.id}`)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#0056D2] bg-[#F0F6FF] rounded-lg hover:bg-[#e0edff] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#0056D2] bg-[#F0F6FF] rounded-lg hover:bg-[#e0edff] hover:shadow-sm transition-all"
           >
             <BookMarked className="w-3.5 h-3.5" />
             Editor
           </button>
           <button
             onClick={() => openEdit(c)}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-2 rounded-lg text-gray-400 hover:text-[#0056D2] hover:bg-blue-50 transition-colors"
           >
-            <Edit2 className="w-4 h-4 text-gray-500" />
+            <Edit2 className="w-4.5 h-4.5" />
           </button>
           <button
             onClick={() => handleDelete(c)}
-            className="p-2 rounded-lg hover:bg-red-50 transition-colors"
+            className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
           >
-            <Trash2 className="w-4 h-4 text-red-400" />
+            <Trash2 className="w-4.5 h-4.5" />
           </button>
         </div>
       ),
@@ -173,30 +174,32 @@ export default function CursosCapacitacionView() {
   ];
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-6">
-      <div className="flex items-start justify-between">
+    <div className="p-6 sm:p-8 max-w-6xl mx-auto space-y-8">
+      {/* Header section with bottom border to anchor it */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Cursos de Capacitación</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Cursos de Capacitación</h1>
+          <p className="text-sm text-gray-500 mt-1">
             Catálogo de cursos disponibles para la organización
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-[#1c2634] text-white text-sm font-medium rounded-lg hover:bg-[#1c2634]/90 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-[#0056D2] text-white text-sm font-semibold rounded-lg shadow-sm hover:bg-[#0047b3] hover:shadow transition-all duration-200"
         >
-          <Plus className="w-4 h-4" />
+          <TbPlus className="w-4 h-4" />
           Nuevo curso
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4 w-fit">
-        <div className="w-10 h-10 bg-[#F0F6FF] rounded-lg flex items-center justify-center">
-          <BookOpen className="w-5 h-5 text-[#0056D2]" />
+      {/* Stat Card with elegant crisp shadow */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex items-center gap-5 w-fit">
+        <div className="w-12 h-12 bg-blue-50/80 rounded-lg flex items-center justify-center border border-blue-100/50">
+          <TbBook className="w-6 h-6 text-[#0056D2]" />
         </div>
         <div>
-          <p className="text-2xl font-bold text-gray-900">{data?.count ?? 0}</p>
-          <p className="text-xs text-gray-500">Total cursos</p>
+          <p className="text-3xl font-bold tracking-tight text-gray-900">{data?.count ?? 0}</p>
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mt-0.5">Total cursos</p>
         </div>
       </div>
 
@@ -207,7 +210,7 @@ export default function CursosCapacitacionView() {
         count={data?.count ?? 0}
         pageSize={100}
         filters={[{ type: "search", key: "search", placeholder: "Buscar curso…" }]}
-        emptyIcon={BookOpen}
+        emptyIcon={TbBook}
         emptyMessage="No hay cursos registrados"
       />
 

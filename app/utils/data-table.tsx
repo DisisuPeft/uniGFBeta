@@ -157,7 +157,7 @@ export function DataTable<T>({
   });
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       {/* Filters */}
       {filters && filters.length > 0 && (
         <div className="px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3">
