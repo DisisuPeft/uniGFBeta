@@ -6,7 +6,17 @@ interface Props {
   bloque: BloqueContenido;
 }
 
-function VideoBloque({ url }: { url: string }) {
+const UPLOAD_HOST = process.env.NEXT_PUBLIC_UPLOAD_HOST ?? "";
+
+function VideoBloque({ url, archivo }: { url: string | null; archivo: string | null }) {
+  if (archivo) {
+    return (
+      <div className="rounded-xl overflow-hidden bg-black">
+        <video src={`${UPLOAD_HOST}${archivo}`} controls className="w-full max-h-[480px]" />
+      </div>
+    );
+  }
+
   if (!url) return null;
 
   if (url.includes("youtube.com") || url.includes("youtu.be")) {
@@ -19,6 +29,20 @@ function VideoBloque({ url }: { url: string }) {
           className="absolute inset-0 w-full h-full"
           src={`https://www.youtube.com/embed/${videoId}`}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    );
+  }
+
+  if (url.includes("vimeo.com")) {
+    const videoId = url.split("/").pop();
+    return (
+      <div className="relative w-full pb-[56.25%] h-0 rounded-xl overflow-hidden bg-black">
+        <iframe
+          className="absolute inset-0 w-full h-full"
+          src={`https://player.vimeo.com/video/${videoId}`}
+          allow="autoplay; fullscreen; picture-in-picture"
           allowFullScreen
         />
       </div>
@@ -39,7 +63,7 @@ export default function BloqueRenderer({ bloque }: Props) {
   if (tipo === "video") {
     return (
       <div className="my-5">
-        <VideoBloque url={bloque.video_url} />
+        <VideoBloque url={bloque.video_url} archivo={bloque.video_archivo} />
       </div>
     );
   }

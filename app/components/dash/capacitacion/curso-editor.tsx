@@ -673,8 +673,10 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
   const [showForm, setShowForm] = useState(false);
   const [selectedTipo, setSelectedTipo] = useState<number>(cats.tiposBloque[0]?.id ?? 1);
   const [bloqueForm, setBloqueForm] = useState<Partial<BloqueForm>>({ texto: "", variante: "", items: [], filas: [], video_url: "" });
+  const [videoFile, setVideoFile] = useState<File | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<Partial<BloqueForm>>({});
+  const [editVideoFile, setEditVideoFile] = useState<File | null>(null);
 
   const bloques = [...(data?.results ?? [])].sort((a, b) => a.orden - b.orden);
 
@@ -682,11 +684,24 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
     return cats.tiposBloque.find((t) => t.id === id)?.codigo ?? "texto";
   }
 
+  function buildPayload(base: Partial<BloqueForm> & { tema: number; tipo: number; orden: number }, file: File | null): BloqueForm | FormData {
+    if (file) {
+      const fd = new FormData();
+      fd.append("tema", String(base.tema));
+      fd.append("tipo", String(base.tipo));
+      fd.append("orden", String(base.orden));
+      fd.append("video_archivo", file);
+      return fd;
+    }
+    return base as BloqueForm;
+  }
+
   async function handleAdd() {
-    const payload: BloqueForm = { tema: temaId, tipo: selectedTipo, orden: bloques.length + 1, ...bloqueForm };
+    const base = { tema: temaId, tipo: selectedTipo, orden: bloques.length + 1, ...bloqueForm };
     try {
-      await createBloque(payload).unwrap();
+      await createBloque(buildPayload(base, videoFile)).unwrap();
       setBloqueForm({ texto: "", variante: "", items: [], filas: [], video_url: "" });
+      setVideoFile(null);
       setShowForm(false);
     } catch {
       Swal.fire({ icon: "error", title: "Error", text: "No se pudo crear el bloque." });
@@ -695,8 +710,15 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
 
   async function handleSaveEdit(id: number) {
     try {
-      await updateBloque({ id, body: editForm }).unwrap();
+      let body: Partial<BloqueForm> | FormData = editForm;
+      if (editVideoFile) {
+        const fd = new FormData();
+        fd.append("video_archivo", editVideoFile);
+        body = fd;
+      }
+      await updateBloque({ id, body }).unwrap();
       setEditingId(null);
+      setEditVideoFile(null);
     } catch {
       Swal.fire({ icon: "error", title: "Error", text: "No se pudo guardar." });
     }
@@ -723,6 +745,7 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
                     tipoCodigo={tipoCodigoPorId(b.tipo)}
                     form={editForm}
                     setForm={setEditForm}
+                    onFileChange={setEditVideoFile}
                   />
                   <div className="flex gap-2">
                     <button onClick={() => handleSaveEdit(b.id)} className="px-3 py-1 text-xs font-medium text-white bg-[#1c2634] rounded-lg">Guardar</button>
@@ -754,7 +777,7 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
               {cats.tiposBloque.map((t) => <option key={t.id} value={t.id}>{t.nombre}</option>)}
             </select>
           </Field>
-          <BloqueFormFields tipoCodigo={tipoCodigoPorId(selectedTipo)} form={bloqueForm} setForm={setBloqueForm} />
+          <BloqueFormFields tipoCodigo={tipoCodigoPorId(selectedTipo)} form={bloqueForm} setForm={setBloqueForm} onFileChange={setVideoFile} />
           <div className="flex gap-2">
             <button onClick={handleAdd} disabled={adding} className="px-3 py-1.5 text-xs font-medium text-white bg-[#1c2634] rounded-lg disabled:opacity-50">
               {adding ? "…" : "Agregar bloque"}
@@ -771,12 +794,14 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
 
 // ── Bloque Form Fields (dinámico por tipo) ────────────────────
 
-function BloqueFormFields({ tipoCodigo, form, setForm }: {
+function BloqueFormFields({ tipoCodigo, form, setForm, onFileChange }: {
   tipoCodigo: string;
   form: Partial<BloqueForm>;
   setForm: React.Dispatch<React.SetStateAction<Partial<BloqueForm>>>;
+  onFileChange?: (f: File | null) => void;
 }) {
   const [newItem, setNewItem] = useState("");
+  const [videoMode, setVideoMode] = useState<"url" | "archivo">("url");
 
   switch (tipoCodigo) {
     case "callout":
@@ -838,7 +863,39 @@ function BloqueFormFields({ tipoCodigo, form, setForm }: {
 
     case "video":
       return (
-        <input value={form.video_url ?? ""} onChange={(e) => setForm((f) => ({ ...f, video_url: e.target.value }))} placeholder="https://www.youtube.com/embed/…" className={inputCls} />
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => { setVideoMode("url"); onFileChange?.(null); }}
+              className={`px-3 py-1 text-xs rounded-lg border transition-colors ${videoMode === "url" ? "bg-[#1c2634] text-white border-[#1c2634]" : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"}`}
+            >
+              URL
+            </button>
+            <button
+              type="button"
+              onClick={() => { setVideoMode("archivo"); setForm((f) => ({ ...f, video_url: "" })); }}
+              className={`px-3 py-1 text-xs rounded-lg border transition-colors ${videoMode === "archivo" ? "bg-[#1c2634] text-white border-[#1c2634]" : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"}`}
+            >
+              Archivo
+            </button>
+          </div>
+          {videoMode === "url" ? (
+            <input
+              value={form.video_url ?? ""}
+              onChange={(e) => setForm((f) => ({ ...f, video_url: e.target.value }))}
+              placeholder="https://www.youtube.com/watch?v=…"
+              className={inputCls}
+            />
+          ) : (
+            <input
+              type="file"
+              accept="video/*"
+              onChange={(e) => onFileChange?.(e.target.files?.[0] ?? null)}
+              className="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-[#F0F6FF] file:text-[#0056D2] hover:file:bg-[#e0edff] file:transition-colors"
+            />
+          )}
+        </div>
       );
 
     default: // texto / párrafo
@@ -865,7 +922,6 @@ function EvaluacionModuloSection({ moduloId, cats }: { moduloId: number; cats: C
         tipo: cats.tiposEvaluacion[0]?.id ?? 1,
         puntaje_minimo: "70.00",
         modulo: moduloId,
-        curso: null,
         activo: true,
       }).unwrap();
     } catch {
@@ -913,7 +969,6 @@ function EvaluacionFinalSection({ cursoId, cats }: { cursoId: number; cats: Cats
         titulo: "Evaluación final",
         tipo: cats.tiposEvaluacion[cats.tiposEvaluacion.length - 1]?.id ?? 1,
         puntaje_minimo: "80.00",
-        modulo: null,
         curso: cursoId,
         activo: true,
       }).unwrap();

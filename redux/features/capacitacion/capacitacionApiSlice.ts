@@ -90,11 +90,11 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
       query: (temaId) => `/capacitacion/bloques/?tema=${temaId}`,
       providesTags: [{ type: "ContenidoBloque", id: "LIST" }],
     }),
-    createBloque: builder.mutation<ContenidoBloque, BloqueForm>({
+    createBloque: builder.mutation<ContenidoBloque, BloqueForm | FormData>({
       query: (body) => ({ url: "/capacitacion/bloques/", method: "POST", body }),
       invalidatesTags: [{ type: "ContenidoBloque", id: "LIST" }],
     }),
-    updateBloque: builder.mutation<ContenidoBloque, { id: number; body: Partial<BloqueForm> }>({
+    updateBloque: builder.mutation<ContenidoBloque, { id: number; body: Partial<BloqueForm> | FormData }>({
       query: ({ id, body }) => ({ url: `/capacitacion/bloques/${id}/`, method: "PATCH", body }),
       invalidatesTags: [{ type: "ContenidoBloque", id: "LIST" }],
     }),

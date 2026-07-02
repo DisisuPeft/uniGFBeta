@@ -89,7 +89,8 @@ export interface BloqueContenido {
   variante: string;
   items: unknown[] | null;
   filas: unknown[] | null;
-  video_url: string;
+  video_url: string | null;
+  video_archivo: string | null;
 }
 
 export interface EvaluacionPlataforma {
