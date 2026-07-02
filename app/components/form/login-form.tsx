@@ -19,7 +19,7 @@ export default function LoginForm() {
           htmlFor="email"
           className="block text-xs font-semibold text-[#1c2634]/70 uppercase tracking-wide mb-2"
         >
-          Correo electrónico
+          Numero de colaborador
         </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -38,21 +38,21 @@ export default function LoginForm() {
             </svg>
           </div>
           <input
-            id="email"
-            type="email"
-            autoComplete="email"
-            className={`${inputBase} ${errors.email ? inputError : inputNormal}`}
-            placeholder="tu@autocorp.mx"
-            {...register("email", {
-              required: "El correo es obligatorio",
+            id="num_colab"
+            type="number"
+            autoComplete="num_colab"
+            className={`${inputBase} ${errors.num_colab ? inputError : inputNormal}`}
+            placeholder="00000"
+            {...register("num_colab", {
+              required: "El número de colaborador es obligatorio",
               pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Correo electrónico inválido",
+                value: /^\d+$/,
+                message: "Solo se permiten números",
               },
             })}
           />
         </div>
-        {errors.email && (
+        {errors.num_colab && (
           <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
             <svg
               className="w-3.5 h-3.5 flex-shrink-0"
@@ -65,7 +65,7 @@ export default function LoginForm() {
                 clipRule="evenodd"
               />
             </svg>
-            {errors.email.message}
+            {errors.num_colab.message}
           </p>
         )}
       </div>

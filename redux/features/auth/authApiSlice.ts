@@ -1,6 +1,6 @@
 import { apiSlice } from "@/redux/services/apiSlice";
 import { Pestanias, User, UserVerifyResponse } from "../types/auth/auth-types";
-import { SuccessMessage } from "../types/reponse";
+// import { SuccessMessage } from "../types/reponse";
 
 const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -9,10 +9,10 @@ const authApiSlice = apiSlice.injectEndpoints({
       providesTags: [{ type: "User", id: "ME" }],
     }),
     login: builder.mutation({
-      query: ({ email, password }) => ({
+      query: ({ num_colab, password }) => ({
         url: "/auth/sign/",
         method: "POST",
-        body: { email, password },
+        body: { num_colab, password },
       }),
     }),
     register: builder.mutation({

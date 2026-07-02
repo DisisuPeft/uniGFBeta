@@ -3,6 +3,7 @@ import { PaginatedResponse } from "../types/paginated";
 import { UserFormData } from "@/hooks/users/user-create-form";
 
 export interface User {
+  id: number;
   uuid: string;
   nombre: string;
   apellido_paterno: string;
@@ -14,6 +15,7 @@ export interface User {
   telefono: string;
   email: string;
   status: number;
+  num_colab: number;
 }
 
 const userApiSlice = apiSlice.injectEndpoints({

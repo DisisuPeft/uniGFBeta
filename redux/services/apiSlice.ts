@@ -90,6 +90,9 @@ export const apiSlice = createApi({
     "MiInscripcion",
     "MiProgreso",
     "MiResultado",
+    "RutaAprendizaje",
+    "CompetenciaColaborador",
+    "MiPerfil",
   ],
   endpoints: () => ({}),
 });

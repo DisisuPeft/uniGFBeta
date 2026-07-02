@@ -8,7 +8,7 @@ export default async function Page({ searchParams }: Props) {
   const { ref } = await searchParams;
   redirect(
     ref
-      ? `/dashboard/capacitacion/competencias?ref=${ref}`
-      : "/dashboard/capacitacion/competencias"
+      ? `/dashboard/capacitacion/cursos?ref=${ref}`
+      : "/dashboard/capacitacion/cursos",
   );
 }

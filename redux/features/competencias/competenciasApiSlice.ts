@@ -6,6 +6,11 @@ import {
   CompetenciaCursoForm,
   CompetenciaPuesto,
   CompetenciaPuestoForm,
+  RutaAprendizaje,
+  RutaAprendizajeForm,
+  MiPerfilCompetencia,
+  CompetenciaColaborador,
+  CompetenciaColaboradorForm,
 } from "../types/competencias/types";
 import { PaginatedResponse } from "../types/paginated";
 
@@ -135,6 +140,89 @@ const competenciasApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [{ type: "CompetenciaPuesto", id: "LIST" }],
     }),
+
+    // ==========================================================
+    // GAP ANALYSIS (colaborador autenticado)  — /competencias/mi-perfil/
+    // ==========================================================
+
+    getMiPerfil: builder.query<MiPerfilCompetencia[], void>({
+      query: () => `/competencias/mi-perfil/`,
+      providesTags: [{ type: "MiPerfil", id: "GAP" }],
+    }),
+
+    // ==========================================================
+    // RUTAS DE APRENDIZAJE  — /competencias/rutas-aprendizaje/
+    // ==========================================================
+
+    getRutasAprendizaje: builder.query<
+      PaginatedResponse<RutaAprendizaje>,
+      { competencia?: number } | void
+    >({
+      query: (args) => {
+        const qs = args?.competencia ? `?competencia=${args.competencia}` : "";
+        return `/competencias/rutas-aprendizaje/${qs}`;
+      },
+      providesTags: [{ type: "RutaAprendizaje", id: "LIST" }],
+    }),
+    getRutaAprendizaje: builder.query<RutaAprendizaje, number>({
+      query: (id) => `/competencias/rutas-aprendizaje/${id}/`,
+      providesTags: (_, __, id) => [{ type: "RutaAprendizaje", id }],
+    }),
+    createRutaAprendizaje: builder.mutation<RutaAprendizaje, RutaAprendizajeForm>({
+      query: (body) => ({
+        url: `/competencias/rutas-aprendizaje/`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [{ type: "RutaAprendizaje", id: "LIST" }],
+    }),
+    updateRutaAprendizaje: builder.mutation<
+      RutaAprendizaje,
+      { id: number; body: Partial<RutaAprendizajeForm> }
+    >({
+      query: ({ id, body }) => ({
+        url: `/competencias/rutas-aprendizaje/${id}/`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: (_, __, { id }) => [
+        { type: "RutaAprendizaje", id },
+        { type: "RutaAprendizaje", id: "LIST" },
+      ],
+    }),
+    deleteRutaAprendizaje: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/competencias/rutas-aprendizaje/${id}/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "RutaAprendizaje", id: "LIST" }],
+    }),
+
+    // ==========================================================
+    // NIVEL DE COLABORADOR (admin)  — /competencias/competencias-colaborador/
+    // ==========================================================
+
+    getCompetenciasColaborador: builder.query<
+      PaginatedResponse<CompetenciaColaborador>,
+      number
+    >({
+      query: (colaboradorId) =>
+        `/competencias/competencias-colaborador/?colaborador=${colaboradorId}`,
+      providesTags: (_, __, id) => [{ type: "CompetenciaColaborador", id }],
+    }),
+    updateCompetenciaColaborador: builder.mutation<
+      CompetenciaColaborador,
+      { id: number; body: CompetenciaColaboradorForm }
+    >({
+      query: ({ id, body }) => ({
+        url: `/competencias/competencias-colaborador/${id}/`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: (_, __, { id }) => [
+        { type: "CompetenciaColaborador", id },
+      ],
+    }),
   }),
 });
 
@@ -157,4 +245,18 @@ export const {
   useCreateCompetenciaPuestoMutation,
   useUpdateCompetenciaPuestoMutation,
   useDeleteCompetenciaPuestoMutation,
+
+  // — gap analysis (colaborador) —
+  useGetMiPerfilQuery,
+
+  // — rutas de aprendizaje —
+  useGetRutasAprendizajeQuery,
+  useGetRutaAprendizajeQuery,
+  useCreateRutaAprendizajeMutation,
+  useUpdateRutaAprendizajeMutation,
+  useDeleteRutaAprendizajeMutation,
+
+  // — nivel colaborador (admin) —
+  useGetCompetenciasColaboradorQuery,
+  useUpdateCompetenciaColaboradorMutation,
 } = competenciasApiSlice;
