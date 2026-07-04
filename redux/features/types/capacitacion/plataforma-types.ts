@@ -90,7 +90,7 @@ export interface BloqueContenido {
   items: unknown[] | null;
   filas: unknown[] | null;
   video_url: string | null;
-  video_archivo: string | null;
+  video_stream_url: string | null;
 }
 
 export interface EvaluacionPlataforma {

@@ -4,15 +4,14 @@ import { BloqueContenido } from "@/redux/features/types/capacitacion/plataforma-
 
 interface Props {
   bloque: BloqueContenido;
+  onVideoEnd?: () => void;
 }
 
-const UPLOAD_HOST = process.env.NEXT_PUBLIC_UPLOAD_HOST ?? "";
-
-function VideoBloque({ url, archivo }: { url: string | null; archivo: string | null }) {
-  if (archivo) {
+function VideoBloque({ url, streamUrl, onEnded }: { url: string | null; streamUrl: string | null; onEnded?: () => void }) {
+  if (streamUrl) {
     return (
       <div className="rounded-xl overflow-hidden bg-black">
-        <video src={`${UPLOAD_HOST}${archivo}`} controls className="w-full max-h-[480px]" />
+        <video src={streamUrl} controls className="w-full max-h-[480px]" onEnded={onEnded} />
       </div>
     );
   }
@@ -51,19 +50,19 @@ function VideoBloque({ url, archivo }: { url: string | null; archivo: string | n
 
   return (
     <div className="rounded-xl overflow-hidden bg-black">
-      <video src={url} controls className="w-full max-h-[480px]" />
+      <video src={url} controls className="w-full max-h-[480px]" onEnded={onEnded} />
     </div>
   );
 }
 
-export default function BloqueRenderer({ bloque }: Props) {
+export default function BloqueRenderer({ bloque, onVideoEnd }: Props) {
   const tipo = bloque.tipo_nombre?.toLowerCase();
   const variante = bloque.variante?.toLowerCase();
 
   if (tipo === "video") {
     return (
       <div className="my-5">
-        <VideoBloque url={bloque.video_url} archivo={bloque.video_archivo} />
+        <VideoBloque url={bloque.video_url} streamUrl={bloque.video_stream_url} onEnded={onVideoEnd} />
       </div>
     );
   }

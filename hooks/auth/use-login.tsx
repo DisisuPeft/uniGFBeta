@@ -30,7 +30,7 @@ export default function useLogin() {
   });
 
   const onSubmit = async (data: LoginForm) => {
-    console.log(data);
+    // console.log(data);
     try {
       await login(data).unwrap();
       dispatch(setAuth());

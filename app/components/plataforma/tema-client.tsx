@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   useGetTemaQuery,
@@ -29,6 +30,10 @@ export default function TemaClient({
   const bloques = bloquesData?.results ?? [];
   const progresos = progresosData?.results ?? [];
   const completado = progresos.some((p) => p.tema === temaId);
+
+  const hasVideo = bloques.some((b) => b.tipo_nombre?.toLowerCase() === "video");
+  const [videoEnded, setVideoEnded] = useState(false);
+  const canComplete = completado || !hasVideo || videoEnded;
 
   const temasModulo = temasModuloData?.results ?? [];
   const currentIndex = temasModulo.findIndex((t) => t.id === temaId);
@@ -67,7 +72,13 @@ export default function TemaClient({
             Este tema no tiene contenido aún.
           </p>
         ) : (
-          bloques.map((bloque) => <BloqueRenderer key={bloque.id} bloque={bloque} />)
+          bloques.map((bloque) => (
+            <BloqueRenderer
+              key={bloque.id}
+              bloque={bloque}
+              onVideoEnd={() => setVideoEnded(true)}
+            />
+          ))
         )}
       </div>
 
@@ -96,13 +107,18 @@ export default function TemaClient({
             </Link>
           )
         ) : (
-          <button
-            onClick={handleCompletar}
-            disabled={marcando}
-            className="px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-60 transition-colors"
-          >
-            {marcando ? "Guardando..." : "Marcar como completado"}
-          </button>
+          <div className="flex flex-col items-end gap-1">
+            <button
+              onClick={handleCompletar}
+              disabled={marcando || !canComplete}
+              className="px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {marcando ? "Guardando..." : "Marcar como completado"}
+            </button>
+            {hasVideo && !videoEnded && (
+              <p className="text-xs text-gray-400">Termina el video para continuar</p>
+            )}
+          </div>
         )}
       </div>
     </div>
