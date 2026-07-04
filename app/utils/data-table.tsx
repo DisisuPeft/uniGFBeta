@@ -117,7 +117,7 @@ export interface DataTableProps<T> {
   count?: number;
   pageSize?: number;
   filters?: FilterConfig[];
-  emptyIcon?: React.ComponentType<{ className?: string }>;
+  emptyIcon?: React.ComponentType<{ className?: string; strokeWidth?: number | string; fill?: string }>;
   emptyMessage?: string;
 }
 

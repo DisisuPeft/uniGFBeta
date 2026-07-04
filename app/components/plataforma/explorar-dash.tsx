@@ -19,7 +19,7 @@ export default function ExplorarDash() {
 
   const handleInscribirse = async (cursoId: string | number) => {
     try {
-      await inscribirse({ curso_id: cursoId }).unwrap();
+      await inscribirse({ curso: Number(cursoId) }).unwrap();
       refetchCatalog();
       refetchMisCursos();
     } catch (error) {
@@ -163,7 +163,7 @@ export default function ExplorarDash() {
                   <div className="mt-5 pt-4 border-t border-slate-50 flex items-center justify-between">
                     <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1.5">
                       <Clock className="w-4 h-4 text-slate-350" />
-                      {curso.duracion || 10} horas
+                      {(curso as any).duracion || 10} horas
                     </span>
                     
                     <button
