@@ -5,7 +5,6 @@ import { useInscriptionAlumnoDetailQuery } from "@/redux/features/control-escola
 import { IconStarOutline, IconDots } from "./iconst";
 import Link from "next/link";
 import { useRetrieveUserQuery } from "@/redux/features/auth/authApiSlice";
-import { useMyCalender } from "@/hooks";
 import CalenderStudent from "./calender";
 
 export default function MainEducationDash() {
@@ -18,14 +17,6 @@ export default function MainEducationDash() {
   const [filtro, setFiltro] = useState<"todos" | "progreso" | "completados">(
     "todos",
   );
-
-  //   const cursosFiltrados = cursosData.filter((curso) => {
-  //     if (filtro === "progreso") return curso.progreso < 100;
-  //     if (filtro === "completados") return curso.progreso === 100;
-  //     return true;
-  //   });
-
-  // useEffect(() => {});
 
   return (
     <div className="mx-auto px-12 py-8">
@@ -143,14 +134,6 @@ export default function MainEducationDash() {
                       <p className="text-sm font-medium text-gray-900 truncate max-w-[180px]">
                         {/* {curso.proximaActividad} */}
                       </p>
-                      {/* <p className="text-xs text-gray-500 flex items-center justify-end gap-1">
-                        {curso.proximaTipo.includes("Video") ? (
-                          <IconPlay className="w-3 h-3" />
-                        ) : (
-                          <IconDocument className="w-3 h-3" />
-                        )}
-                        {curso.proximaTipo}
-                      </p> */}
                     </div>
                     <Link
                       href={`/plataforma/${curso.tipo}/${curso.ref}`}

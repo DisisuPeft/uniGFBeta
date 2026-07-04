@@ -198,48 +198,53 @@ export default function CompetenciasView() {
   ];
 
   return (
-    <div className="p-6 sm:p-8 max-w-6xl mx-auto space-y-8">
-      {/* Header section with bottom border to anchor it */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Competencias</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Catálogo de competencias disponibles en el sistema
-          </p>
+    <div className="w-full relative min-h-[calc(100vh-100px)] overflow-hidden">
+      {/* Contenedor centrado para el contenido de la página */}
+      <div className="p-6 sm:p-8 max-w-6xl mx-auto space-y-8 relative z-10">
+        {/* Header section with bottom border to anchor it */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200 relative z-10">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Competencias</h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Catálogo de competencias disponibles en el sistema
+            </p>
+          </div>
+          <button
+            onClick={openCreate}
+            className="flex items-center gap-2 px-4 py-2 bg-[#0056D2] text-white text-sm font-semibold rounded-lg shadow-sm hover:bg-[#0047b3] hover:shadow transition-all duration-200"
+          >
+            <Plus className="w-4 h-4" />
+            Nueva competencia
+          </button>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-[#0056D2] text-white text-sm font-semibold rounded-lg shadow-sm hover:bg-[#0047b3] hover:shadow transition-all duration-200"
-        >
-          <Plus className="w-4 h-4" />
-          Nueva competencia
-        </button>
-      </div>
 
-      {/* Stat Card with elegant crisp shadow */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex items-center gap-5 w-fit">
-        <div className="w-12 h-12 bg-blue-50/80 rounded-lg flex items-center justify-center border border-blue-100/50">
-          <Zap className="w-6 h-6 text-[#0056D2]" />
+        {/* Stat Card with elegant crisp shadow */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex items-center gap-5 w-fit relative z-10">
+          <div className="w-12 h-12 bg-blue-50/80 rounded-lg flex items-center justify-center border border-blue-100/50">
+            <Zap className="w-6 h-6 text-[#0056D2]" />
+          </div>
+          <div>
+            <p className="text-3xl font-bold tracking-tight text-gray-900">{data?.count ?? 0}</p>
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mt-0.5">Total competencias</p>
+          </div>
         </div>
-        <div>
-          <p className="text-3xl font-bold tracking-tight text-gray-900">{data?.count ?? 0}</p>
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mt-0.5">Total competencias</p>
+
+        {/* Table */}
+        <div className="relative z-10">
+          <DataTable
+            columns={columns}
+            data={data?.results ?? []}
+            isLoading={isLoading}
+            count={data?.count ?? 0}
+            pageSize={100}
+            filters={[
+              { type: "search", key: "search", placeholder: "Buscar competencia…" },
+            ]}
+            emptyIcon={Zap}
+            emptyMessage="No hay competencias registradas"
+          />
         </div>
       </div>
-
-      {/* Table */}
-      <DataTable
-        columns={columns}
-        data={data?.results ?? []}
-        isLoading={isLoading}
-        count={data?.count ?? 0}
-        pageSize={100}
-        filters={[
-          { type: "search", key: "search", placeholder: "Buscar competencia…" },
-        ]}
-        emptyIcon={Zap}
-        emptyMessage="No hay competencias registradas"
-      />
 
       {/* Drawer con tabs */}
       <CompetenciaDrawer

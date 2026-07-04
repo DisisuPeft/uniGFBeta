@@ -111,10 +111,10 @@ export default function Hero() {
               }}
             >
               <Image
-                src="/assets/hero-image.jpg"
+                src="/assets/hero-image.png"
                 alt="Formación Farrera"
                 fill
-                className="object-cover scale-110 hover:scale-105 transition-transform duration-700"
+                className="object-cover object-[35%_95%] scale-100 hover:scale-[1.03] transition-transform duration-700"
                 priority
               />
             </motion.div>

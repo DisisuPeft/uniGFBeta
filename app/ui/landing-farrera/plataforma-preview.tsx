@@ -141,7 +141,7 @@ export default function PlataformaPreview() {
             className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-100"
           >
             <Image 
-              src="/assets/plataforma-img.jpg" 
+              src="/assets/plataforma-img.png" 
               alt="Todo lo que necesitas en un solo lugar" 
               width={800} 
               height={600} 
