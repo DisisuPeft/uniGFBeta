@@ -48,21 +48,21 @@ const featureCards = [
     desc: "Catálogo de capacitaciones por área con progreso integrado.",
     w: 380,
     h: 240,
-    src: "/assets/vista-cursos.jpg",
+    src: "/assets/vista-cursos.png",
   },
   {
     label: "Evaluaciones",
     desc: "Módulo de evaluación con resultados en tiempo real.",
     w: 380,
     h: 240,
-    src: "/assets/vista-evaluaciones.jpg",
+    src: "/assets/vista-evaluaciones.png",
   },
   {
     label: "Certificados",
     desc: "Generación automática de certificados al completar el curso.",
     w: 380,
     h: 240,
-    src: "/assets/vista-certificados.jpg",
+    src: "/assets/vista-certificados.png",
   },
 ];
 
