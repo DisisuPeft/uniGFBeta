@@ -55,7 +55,7 @@ export default function TemaClient({
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
       <div className="mb-6">
         {tema?.tipo_nombre && (
           <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
@@ -66,7 +66,7 @@ export default function TemaClient({
         <h1 className="text-xl font-semibold text-gray-900 mt-1">{tema?.titulo}</h1>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-xl p-6">
+      <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6">
         {bloques.length === 0 ? (
           <p className="text-gray-400 text-sm text-center py-8">
             Este tema no tiene contenido aún.
@@ -82,7 +82,7 @@ export default function TemaClient({
         )}
       </div>
 
-      <div className="mt-6 flex items-center justify-between pt-4 border-t border-gray-200">
+      <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-200">
         <Link
           href={`/plataforma/curso/${cursoId}`}
           className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
@@ -94,20 +94,20 @@ export default function TemaClient({
           siguienteTema ? (
             <Link
               href={`/plataforma/curso/${cursoId}/tema/${siguienteTema.id}`}
-              className="px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors self-start sm:self-auto"
             >
               Siguiente tema →
             </Link>
           ) : (
             <Link
               href={`/plataforma/curso/${cursoId}`}
-              className="px-5 py-2.5 bg-green-100 text-green-700 text-sm font-medium rounded-lg hover:bg-green-200 transition-colors"
+              className="px-5 py-2.5 bg-green-100 text-green-700 text-sm font-medium rounded-lg hover:bg-green-200 transition-colors self-start sm:self-auto"
             >
               Ver resumen del curso
             </Link>
           )
         ) : (
-          <div className="flex flex-col items-end gap-1">
+          <div className="flex flex-col items-start sm:items-end gap-1">
             <button
               onClick={handleCompletar}
               disabled={marcando || !canComplete}

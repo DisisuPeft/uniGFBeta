@@ -70,12 +70,15 @@ export interface CompetenciaPuestoForm {
 
 // ── RUTAS DE APRENDIZAJE ──────────────────────────────────────
 
+export type CursoEstado = "completado" | "en_curso" | "pendiente";
+
 export interface CursoEnRuta {
   id: number;
   orden: number;
   curso_id: number;
   curso_titulo: string;
   completado: boolean;
+  estado: CursoEstado;
 }
 
 export interface RutaAprendizaje {
@@ -87,6 +90,39 @@ export interface RutaAprendizaje {
   nivel_objetivo_nombre: string;
   nivel_objetivo_orden: number;
   cursos: CursoEnRuta[];
+}
+
+// Variante enriquecida que devuelve GET /competencias/mi-perfil/
+export interface RutaProgreso {
+  total: number;
+  completados: number;
+  porcentaje: number;
+}
+
+export interface RutaRecomendada {
+  id: number;
+  nombre: string;
+  nivel_objetivo_id: number;
+  nivel_objetivo_nombre: string;
+  nivel_objetivo_orden: number;
+  iniciada: boolean;
+  terminada: boolean;
+  curso_actual_id: number | null;
+  progreso: RutaProgreso;
+  cursos: CursoEnRuta[];
+}
+
+// Respuesta de POST /competencias/iniciar-ruta/
+export interface IniciarRutaOk {
+  creada: boolean;
+  inscripcion_id: number;
+  curso_id: number;
+  curso_titulo: string;
+  orden: number;
+}
+
+export interface IniciarRutaCompleta {
+  detail: string;
 }
 
 export interface RutaAprendizajeForm {
@@ -115,7 +151,15 @@ export interface MiPerfilCompetencia {
   brecha: number;
   completada: boolean;
 
-  rutas_recomendadas: RutaAprendizaje[];
+  rutas_recomendadas: RutaRecomendada[];
+}
+
+// ── RUTA APRENDIZAJE CURSO ────────────────────────────────────
+
+export interface RutaAprendizajeCursoForm {
+  ruta: number;
+  curso: number;
+  orden: number;
 }
 
 // ── COMPETENCIA COLABORADOR (edición manual por admin) ────────

@@ -40,6 +40,8 @@ export interface Modulos {
   href: string;
   icon: string;
   nombre: string;
+  slug: string;
+  desc: string;
   uuid: string;
 }
 

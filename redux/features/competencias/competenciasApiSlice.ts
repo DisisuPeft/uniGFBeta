@@ -8,9 +8,13 @@ import {
   CompetenciaPuestoForm,
   RutaAprendizaje,
   RutaAprendizajeForm,
+  RutaAprendizajeCursoForm,
+  CursoEnRuta,
   MiPerfilCompetencia,
   CompetenciaColaborador,
   CompetenciaColaboradorForm,
+  IniciarRutaOk,
+  IniciarRutaCompleta,
 } from "../types/competencias/types";
 import { PaginatedResponse } from "../types/paginated";
 
@@ -199,6 +203,45 @@ const competenciasApiSlice = apiSlice.injectEndpoints({
     }),
 
     // ==========================================================
+    // RUTAS DE APRENDIZAJE — CURSOS  — /competencias/rutas-aprendizaje-cursos/
+    // ==========================================================
+
+    addCursoToRuta: builder.mutation<CursoEnRuta, RutaAprendizajeCursoForm>({
+      query: (body) => ({
+        url: `/competencias/rutas-aprendizaje-cursos/`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (_, __, { ruta }) => [
+        { type: "RutaAprendizaje", id: "LIST" },
+        { type: "RutaAprendizaje", id: ruta },
+      ],
+    }),
+    removeCursoFromRuta: builder.mutation<void, { id: number; rutaId: number }>({
+      query: ({ id }) => ({
+        url: `/competencias/rutas-aprendizaje-cursos/${id}/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_, __, { rutaId }) => [
+        { type: "RutaAprendizaje", id: "LIST" },
+        { type: "RutaAprendizaje", id: rutaId },
+      ],
+    }),
+
+    // ==========================================================
+    // INICIAR / CONTINUAR RUTA  — /competencias/iniciar-ruta/
+    // ==========================================================
+
+    iniciarRuta: builder.mutation<IniciarRutaOk | IniciarRutaCompleta, { ruta_id: number }>({
+      query: (body) => ({
+        url: `/competencias/iniciar-ruta/`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [{ type: "MiPerfil", id: "GAP" }],
+    }),
+
+    // ==========================================================
     // NIVEL DE COLABORADOR (admin)  — /competencias/competencias-colaborador/
     // ==========================================================
 
@@ -255,6 +298,13 @@ export const {
   useCreateRutaAprendizajeMutation,
   useUpdateRutaAprendizajeMutation,
   useDeleteRutaAprendizajeMutation,
+
+  // — rutas: cursos —
+  useAddCursoToRutaMutation,
+  useRemoveCursoFromRutaMutation,
+
+  // — iniciar ruta —
+  useIniciarRutaMutation,
 
   // — nivel colaborador (admin) —
   useGetCompetenciasColaboradorQuery,

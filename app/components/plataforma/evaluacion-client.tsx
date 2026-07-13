@@ -23,7 +23,7 @@ export default function EvaluacionClient({
   if (!evaluacion) return null;
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
       <EvaluacionViewer cursoId={cursoId} evaluacion={evaluacion} />
     </div>
   );

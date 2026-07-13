@@ -17,6 +17,8 @@ import { ModuloNav, ModuloNavForm } from "@/redux/features/types/sistema/types";
 const FORM_ID = "modulo-form";
 const EMPTY: ModuloNavForm = {
   nombre: "",
+  slug: "",
+  desc: "",
   href: "",
   icon: "",
   icon_path: "",
@@ -48,6 +50,8 @@ export default function ModulosNavView() {
     setSelected(m);
     setForm({
       nombre: m.nombre,
+      slug: m.slug,
+      desc: m.desc,
       href: m.href,
       icon: m.icon,
       icon_path: m.icon_path,
@@ -248,8 +252,31 @@ export default function ModulosNavView() {
               onChange={(e) =>
                 setForm((f) => ({ ...f, nombre: e.target.value }))
               }
-              placeholder="Configuración"
+              placeholder="Capacitación"
               className={inputCls}
+            />
+          </Field>
+          <Field label="Slug" required>
+            <input
+              required
+              value={form.slug}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, slug: e.target.value.toLowerCase().replace(/\s+/g, "-") }))
+              }
+              placeholder="capacitacion"
+              className={inputCls + " font-mono"}
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              Identificador único, solo minúsculas y guiones (ej. capacitacion)
+            </p>
+          </Field>
+          <Field label="Descripción">
+            <textarea
+              value={form.desc}
+              onChange={(e) => setForm((f) => ({ ...f, desc: e.target.value }))}
+              placeholder="Gestiona cursos, contenidos y rutas de aprendizaje."
+              rows={2}
+              className={inputCls + " resize-none"}
             />
           </Field>
           <Field label="URL (href)" required>

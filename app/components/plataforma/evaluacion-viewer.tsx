@@ -160,7 +160,7 @@ export default function EvaluacionViewer({ cursoId, evaluacion }: Props) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto w-full">
       <div className="mb-6 pb-4 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-gray-900">{evaluacion.titulo}</h2>
         <p className="text-sm text-gray-400 mt-1">
@@ -219,14 +219,14 @@ export default function EvaluacionViewer({ cursoId, evaluacion }: Props) {
             ))}
           </div>
 
-          <div className="mt-6 flex items-center justify-between pt-4 border-t border-gray-200">
+          <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-200">
             <Link
               href={`/plataforma/curso/${cursoId}`}
               className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
             >
               ← Volver al curso
             </Link>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               <span className="text-xs text-gray-400">
                 {Object.keys(respuestas).length} / {preguntas.length} respondidas
               </span>

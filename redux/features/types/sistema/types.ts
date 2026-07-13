@@ -89,6 +89,8 @@ export interface ModuloNav {
   id: number;
   uuid: string;
   nombre: string;
+  slug: string;
+  desc: string;
   href: string;
   icon: string;
   icon_path: string;
@@ -101,6 +103,8 @@ export interface ModuloNav {
 
 export interface ModuloNavForm {
   nombre: string;
+  slug: string;
+  desc: string;
   href: string;
   icon: string;
   icon_path?: string;

@@ -111,6 +111,7 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
         { type: "MiInscripcion", id: "LIST" },
         { type: "Curso", id: "PLATAFORMA-LIST" },
         { type: "Curso", id: "MIS-CURSOS" },
+        { type: "MiPerfil", id: "GAP" },
       ],
     }),
 

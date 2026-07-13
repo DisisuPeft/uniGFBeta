@@ -12,11 +12,20 @@ import {
   useUpdateNivelCompetenciaMutation,
   useDeleteNivelCompetenciaMutation,
 } from "@/redux/features/catalogos/genericosApiSlice";
-import { NivelCompetencia, NivelCompetenciaForm } from "@/redux/features/types/catalagos/cat";
+import {
+  NivelCompetencia,
+  NivelCompetenciaForm,
+} from "@/redux/features/types/catalagos/cat";
 import { ActiveBadge } from "./departamentos-view";
 
 const FORM_ID = "nivel-competencia-form";
-const EMPTY: NivelCompetenciaForm = { nombre: "", codigo: "", descripcion: "", activo: true };
+const EMPTY: NivelCompetenciaForm = {
+  nombre: "",
+  codigo: "",
+  descripcion: "",
+  activo: true,
+  orden: 1,
+};
 
 export default function NivelesCompetenciaView() {
   const { data, isLoading } = useGetNivelesCompetenciaQuery();
@@ -38,7 +47,13 @@ export default function NivelesCompetenciaView() {
   }
   function openEdit(n: NivelCompetencia) {
     setSelected(n);
-    setForm({ nombre: n.nombre, codigo: n.codigo, descripcion: n.descripcion ?? "", activo: n.activo });
+    setForm({
+      nombre: n.nombre,
+      codigo: n.codigo,
+      descripcion: n.descripcion ?? "",
+      activo: n.activo,
+      orden: n.orden,
+    });
     setDrawerOpen(true);
   }
   function closeDrawer() {
@@ -52,10 +67,20 @@ export default function NivelesCompetenciaView() {
     try {
       if (isEditing) {
         await update({ id: selected!.id, body: form }).unwrap();
-        Swal.fire({ icon: "success", title: "Nivel actualizado", timer: 1500, showConfirmButton: false });
+        Swal.fire({
+          icon: "success",
+          title: "Nivel actualizado",
+          timer: 1500,
+          showConfirmButton: false,
+        });
       } else {
         await create(form).unwrap();
-        Swal.fire({ icon: "success", title: "Nivel creado", timer: 1500, showConfirmButton: false });
+        Swal.fire({
+          icon: "success",
+          title: "Nivel creado",
+          timer: 1500,
+          showConfirmButton: false,
+        });
       }
       closeDrawer();
     } catch {
@@ -76,9 +101,18 @@ export default function NivelesCompetenciaView() {
     if (!result.isConfirmed) return;
     try {
       await remove(n.id).unwrap();
-      Swal.fire({ icon: "success", title: "Eliminado", timer: 1500, showConfirmButton: false });
+      Swal.fire({
+        icon: "success",
+        title: "Eliminado",
+        timer: 1500,
+        showConfirmButton: false,
+      });
     } catch {
-      Swal.fire({ icon: "error", title: "Error", text: "No se pudo eliminar." });
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo eliminar.",
+      });
     }
   }
 
@@ -97,7 +131,9 @@ export default function NivelesCompetenciaView() {
       id: "descripcion",
       header: "Descripción",
       cell: ({ row: { original: n } }) => (
-        <span className="text-sm text-gray-500 line-clamp-1">{n.descripcion ?? "—"}</span>
+        <span className="text-sm text-gray-500 line-clamp-1">
+          {n.descripcion ?? "—"}
+        </span>
       ),
     },
     {
@@ -140,7 +176,9 @@ export default function NivelesCompetenciaView() {
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Niveles de Competencia</h1>
+          <h1 className="text-xl font-bold text-gray-900">
+            Niveles de Competencia
+          </h1>
           <p className="text-sm text-gray-500 mt-0.5">
             Define los niveles de dominio para la asignación de competencias
           </p>
@@ -170,7 +208,9 @@ export default function NivelesCompetenciaView() {
         isLoading={isLoading}
         count={data?.count ?? 0}
         pageSize={100}
-        filters={[{ type: "search", key: "search", placeholder: "Buscar nivel…" }]}
+        filters={[
+          { type: "search", key: "search", placeholder: "Buscar nivel…" },
+        ]}
         emptyIcon={BarChart2}
         emptyMessage="No hay niveles registrados"
       />
@@ -187,7 +227,9 @@ export default function NivelesCompetenciaView() {
             <input
               required
               value={form.nombre}
-              onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, nombre: e.target.value }))
+              }
               placeholder="Básico, Intermedio, Avanzado…"
               className={inputCls}
             />
@@ -196,15 +238,32 @@ export default function NivelesCompetenciaView() {
             <input
               required
               value={form.codigo}
-              onChange={(e) => setForm((f) => ({ ...f, codigo: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, codigo: e.target.value }))
+              }
               placeholder="basico, intermedio, avanzado…"
+              className={inputCls}
+            />
+          </Field>
+          <Field label="Rating" required>
+            <input
+              required
+              type="number"
+              min={0}
+              value={form.orden}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, orden: e.target.valueAsNumber || 0 }))
+              }
+              placeholder="0 a 10"
               className={inputCls}
             />
           </Field>
           <Field label="Descripción">
             <textarea
               value={form.descripcion ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, descripcion: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, descripcion: e.target.value }))
+              }
               placeholder="Breve descripción del nivel…"
               rows={3}
               className={inputCls + " resize-none"}
@@ -244,7 +303,13 @@ function Field({
   );
 }
 
-function ActiveToggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
+function ActiveToggle({
+  value,
+  onChange,
+}: {
+  value: boolean;
+  onChange: (v: boolean) => void;
+}) {
   return (
     <div className="flex items-center gap-3">
       <button
@@ -256,7 +321,9 @@ function ActiveToggle({ value, onChange }: { value: boolean; onChange: (v: boole
           className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${value ? "translate-x-6" : "translate-x-1"}`}
         />
       </button>
-      <span className="text-sm text-gray-600">{value ? "Activo" : "Inactivo"}</span>
+      <span className="text-sm text-gray-600">
+        {value ? "Activo" : "Inactivo"}
+      </span>
     </div>
   );
 }

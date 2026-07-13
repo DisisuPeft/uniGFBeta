@@ -216,17 +216,15 @@ export default function DependenciasView() {
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Dependencias</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Sucursales y unidades de negocio
-          </p>
+          <h1 className="text-xl font-bold text-gray-900">Agencias</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Unidades de negocio</p>
         </div>
         <button
           onClick={openCreate}
           className="flex items-center gap-2 px-4 py-2 bg-[#1c2634] text-white text-sm font-medium rounded-lg hover:bg-[#1c2634]/90 transition-colors"
         >
           <Plus className="w-4 h-4" />
-          Nueva dependencia
+          Nueva agencia
         </button>
       </div>
 
@@ -236,7 +234,7 @@ export default function DependenciasView() {
         </div>
         <div>
           <p className="text-2xl font-bold text-gray-900">{data?.count}</p>
-          <p className="text-xs text-gray-500">Total dependencias</p>
+          <p className="text-xs text-gray-500">Total agencias</p>
         </div>
       </div>
 
@@ -253,7 +251,7 @@ export default function DependenciasView() {
       <ConfigDrawer
         open={drawerOpen}
         onClose={closeDrawer}
-        title={isEditing ? "Editar dependencia" : "Nueva dependencia"}
+        title={isEditing ? "Editar agencia" : "Nueva agencia"}
         formId={FORM_ID}
         isLoading={isSaving}
       >
@@ -301,7 +299,7 @@ export default function DependenciasView() {
               onChange={(e) =>
                 setForm((f) => ({ ...f, nombre: e.target.value }))
               }
-              placeholder="Sucursal Norte"
+              placeholder="Agencia Norte"
               className={inputCls}
             />
           </Field>
