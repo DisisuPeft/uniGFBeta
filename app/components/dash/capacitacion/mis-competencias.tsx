@@ -3,7 +3,7 @@
 import { Loader2, CheckCircle2, BookOpen, ChevronRight, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { useGetMiPerfilQuery } from "@/redux/features/competencias/competenciasApiSlice";
-import { MiPerfilCompetencia, RutaAprendizaje, CursoEnRuta } from "@/redux/features/types/competencias/types";
+import { MiPerfilCompetencia, RutaRecomendada, CursoEnRuta } from "@/redux/features/types/competencias/types";
 import { DynamicIcon } from "@/app/ui/icon/dynamic-icon";
 
 // ── Barra de progreso por niveles ─────────────────────────────
@@ -38,7 +38,7 @@ function NivelBar({
 
 // ── Ruta recomendada ──────────────────────────────────────────
 
-function RutaCard({ ruta }: { ruta: RutaAprendizaje }) {
+function RutaCard({ ruta }: { ruta: RutaRecomendada }) {
   const total = ruta.cursos.length;
   const completados = ruta.cursos.filter((c) => c.completado).length;
 
