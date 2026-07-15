@@ -143,7 +143,7 @@ export default function ModulosGrid() {
         {/* Saludo de Bienvenida */}
         <div className="text-center mb-12 relative z-10">
           <h1 className="text-4xl lg:text-[44px] font-bold text-[#1c2634] tracking-tight mb-3">
-            ¡Bienvenida, {nombre}!
+            ¡Hola, {nombre}!
           </h1>
           <p className="text-slate-500 text-base lg:text-lg max-w-md mx-auto leading-relaxed">
             Selecciona una opción para administrar la plataforma.
@@ -186,7 +186,7 @@ export default function ModulosGrid() {
 
                   {/* Título del módulo */}
                   <h2 className="text-[#1c2634] text-[24px] font-bold tracking-tight mb-3 text-center">
-                    {m.nombre}
+                    {m.nombre === "Capactiación" ? "Capacitación" : m.nombre}
                   </h2>
 
                   {/* Descripción del módulo */}

@@ -463,7 +463,7 @@ export default function MisCursosDash() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
             <h1 className="text-4xl lg:text-[40px] font-bold text-gray-900 tracking-tight leading-tight">
-              ¡Bienvenida(o), {nombre}!
+              ¡Hola, {nombre}!
             </h1>
             <p className="text-slate-500 mt-2 text-base">
               Continúa con tu plan de capacitación
