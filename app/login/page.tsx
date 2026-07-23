@@ -82,7 +82,7 @@ export default function Page() {
                 Bienvenido de vuelta
               </h2>
               <p className="text-[#333333]/55 text-sm">
-                Ingresa con tu correo corporativo
+                {/* Ingresa con tu correo corporativo */}
               </p>
             </div>
 
@@ -90,8 +90,8 @@ export default function Page() {
           </div>
 
           <p className="text-center text-[#333333]/35 text-xs mt-6">
-            © {new Date().getFullYear()} Grupo Farrera · Área de Desarrollo y
-            Capacitación
+            © {new Date().getFullYear()} Corporativo Farrera · Mercadotecnia y
+            Gestión de Talento
           </p>
         </div>
       </div>
