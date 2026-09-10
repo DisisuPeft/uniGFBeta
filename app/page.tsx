@@ -9,18 +9,22 @@ import ComoFunciona from "./ui/landing-farrera/como-funciona";
 import CTA from "./ui/landing-farrera/cta";
 import Footer from "./ui/landing-farrera/footer";
 
+import IntroWrapper from "./components/intro-wrapper";
+
 export default function Page() {
   return (
-    <main className="min-h-screen font-sans">
-      <Header />
-      <Hero />
-      <Stats />
-      <Areas />
-      <PlataformaPreview />
-      <ComoFunciona />
-      {/* <Comunidad /> */}
-      <CTA />
-      <Footer />
-    </main>
+    <IntroWrapper>
+      <main className="min-h-screen font-sans">
+        <Header />
+        <Hero />
+        <Stats />
+        <Areas />
+        <PlataformaPreview />
+        <ComoFunciona />
+        {/* <Comunidad /> */}
+        <CTA />
+        <Footer />
+      </main>
+    </IntroWrapper>
   );
 }
