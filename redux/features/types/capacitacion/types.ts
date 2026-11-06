@@ -64,6 +64,19 @@ export interface TemaForm {
 }
 
 // ── ContenidoBloque ───────────────────────────────────────────
+export interface BloquePanel {
+  titulo?: string;
+  texto?: string;
+  imagen_url?: string;
+  items?: string[];
+}
+
+export interface BloqueTarjeta {
+  titulo: string;
+  texto?: string;
+  imagen_url?: string;
+}
+
 export interface ContenidoBloque {
   id: number;
   tema: number;
@@ -75,6 +88,9 @@ export interface ContenidoBloque {
   items: string[] | null;
   filas: Record<string, string>[] | null;
   video_url: string | null;
+  imagen_url: string | null;
+  paneles: BloquePanel[] | null;
+  tarjetas: BloqueTarjeta[] | null;
 }
 export interface BloqueForm {
   tema: number;
@@ -85,6 +101,9 @@ export interface BloqueForm {
   items?: string[] | null;
   filas?: Record<string, string>[] | null;
   video_url?: string | null;
+  imagen_url?: string | null;
+  paneles?: BloquePanel[] | null;
+  tarjetas?: BloqueTarjeta[] | null;
 }
 
 // ── Evaluación ────────────────────────────────────────────────

@@ -80,6 +80,19 @@ export interface TemaPlataforma {
   orden: number;
 }
 
+export interface BloquePanelPlataforma {
+  titulo?: string;
+  texto?: string;
+  imagen_url?: string;
+  items?: string[];
+}
+
+export interface BloqueTarjetaPlataforma {
+  titulo: string;
+  texto?: string;
+  imagen_url?: string;
+}
+
 export interface BloqueContenido {
   id: number;
   tema: number;
@@ -91,6 +104,9 @@ export interface BloqueContenido {
   filas: unknown[] | null;
   video_url: string | null;
   video_stream_url: string | null;
+  imagen_url: string | null;
+  paneles: BloquePanelPlataforma[] | null;
+  tarjetas: BloqueTarjetaPlataforma[] | null;
 }
 
 export interface EvaluacionPlataforma {

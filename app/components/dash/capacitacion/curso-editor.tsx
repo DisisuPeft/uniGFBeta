@@ -23,6 +23,10 @@ import {
   X,
   ClipboardList,
   Zap,
+  Image as ImageIcon,
+  GalleryHorizontal,
+  LayoutPanelTop,
+  LayoutGrid,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import {
@@ -170,8 +174,18 @@ function AddBtn({ onClick, label }: { onClick: () => void; label: string }) {
   );
 }
 
+// Normaliza nombre/código de tipo de bloque (minúsculas, sin acentos) para
+// que el dispatch sea robusto sin importar si viene "Presentación" o "presentacion".
+function normalizeTipo(s: string | null | undefined): string {
+  return (s ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .trim();
+}
+
 function bloqueIcon(codigo: string) {
-  switch (codigo) {
+  switch (normalizeTipo(codigo)) {
     case "callout":
     case "alerta":
       return Info;
@@ -182,6 +196,19 @@ function bloqueIcon(codigo: string) {
       return Table2;
     case "video":
       return PlayCircle;
+    case "imagenes":
+    case "imagen":
+    case "img":
+      return ImageIcon;
+    case "paneles":
+    case "panel":
+      return LayoutPanelTop;
+    case "presentacion":
+      return GalleryHorizontal;
+    case "tarjetas":
+    case "tarjeta":
+    case "cards":
+      return LayoutGrid;
     default:
       return AlignLeft;
   }
@@ -190,6 +217,11 @@ function bloqueIcon(codigo: string) {
 function bloquePreview(b: ContenidoBloque): string {
   if (b.texto) return b.texto.slice(0, 70) + (b.texto.length > 70 ? "…" : "");
   if (b.video_url) return b.video_url.slice(0, 60) + "…";
+  if (b.imagen_url) return b.imagen_url.slice(0, 60) + "…";
+  if (b.paneles)
+    return `${b.paneles.length} panel${b.paneles.length !== 1 ? "es" : ""}`;
+  if (b.tarjetas)
+    return `${b.tarjetas.length} tarjeta${b.tarjetas.length !== 1 ? "s" : ""}`;
   if (b.items)
     return `${b.items.length} ítem${b.items.length !== 1 ? "s" : ""}`;
   if (b.filas)
@@ -1065,34 +1097,49 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
   const [selectedTipo, setSelectedTipo] = useState<number>(
     cats.tiposBloque[0]?.id ?? 1,
   );
-  const [bloqueForm, setBloqueForm] = useState<Partial<BloqueForm>>({
+  const blankBloqueForm: Partial<BloqueForm> = {
     texto: "",
     variante: "",
     items: [],
     filas: [],
     video_url: "",
-  });
+    imagen_url: "",
+    paneles: [],
+    tarjetas: [],
+  };
+
+  const [bloqueForm, setBloqueForm] = useState<Partial<BloqueForm>>(blankBloqueForm);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<Partial<BloqueForm>>({});
   const [editVideoFile, setEditVideoFile] = useState<File | null>(null);
+  const [editTipoCodigo, setEditTipoCodigo] = useState("texto");
 
   const bloques = [...(data?.results ?? [])].sort((a, b) => a.orden - b.orden);
 
   function tipoCodigoPorId(id: number) {
-    return cats.tiposBloque.find((t) => t.id === id)?.nombre.toLowerCase() ?? "texto";
+    return normalizeTipo(cats.tiposBloque.find((t) => t.id === id)?.nombre) || "texto";
+  }
+
+  function fileFieldFor(tipoCodigo: string) {
+    return ["imagenes", "imagen", "img"].includes(normalizeTipo(tipoCodigo))
+      ? "imagen_archivo"
+      : "video_archivo";
   }
 
   function buildPayload(
     base: Partial<BloqueForm> & { tema: number; tipo: number; orden: number },
     file: File | null,
+    fileField: "video_archivo" | "imagen_archivo" = "video_archivo",
   ): BloqueForm | FormData {
     if (file) {
       const fd = new FormData();
       fd.append("tema", String(base.tema));
       fd.append("tipo", String(base.tipo));
       fd.append("orden", String(base.orden));
-      fd.append("video_archivo", file);
+      if (base.texto) fd.append("texto", base.texto);
+      if (base.variante) fd.append("variante", base.variante);
+      fd.append(fileField, file);
       return fd;
     }
     return base as BloqueForm;
@@ -1106,14 +1153,10 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
       ...bloqueForm,
     };
     try {
-      await createBloque(buildPayload(base, videoFile)).unwrap();
-      setBloqueForm({
-        texto: "",
-        variante: "",
-        items: [],
-        filas: [],
-        video_url: "",
-      });
+      await createBloque(
+        buildPayload(base, videoFile, fileFieldFor(tipoCodigoPorId(selectedTipo))),
+      ).unwrap();
+      setBloqueForm(blankBloqueForm);
       setVideoFile(null);
       setShowForm(false);
     } catch {
@@ -1130,7 +1173,9 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
       let body: Partial<BloqueForm> | FormData = editForm;
       if (editVideoFile) {
         const fd = new FormData();
-        fd.append("video_archivo", editVideoFile);
+        if (editForm.texto) fd.append("texto", editForm.texto);
+        if (editForm.variante) fd.append("variante", editForm.variante);
+        fd.append(fileFieldFor(editTipoCodigo), editVideoFile);
         body = fd;
       }
       await updateBloque({ id, body }).unwrap();
@@ -1162,7 +1207,7 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
       </p>
 
       {bloques.map((b, idx) => {
-        const BIcon = bloqueIcon(b.tipo_nombre?.toLowerCase() ?? "texto");
+        const BIcon = bloqueIcon(b.tipo_nombre ?? "texto");
         return (
           <div
             key={b.id}
@@ -1173,7 +1218,7 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
               {editingId === b.id ? (
                 <div className="flex-1 space-y-2">
                   <BloqueFormFields
-                    tipoCodigo={b.tipo_nombre?.toLowerCase() ?? "texto"}
+                    tipoCodigo={normalizeTipo(b.tipo_nombre) || "texto"}
                     form={editForm}
                     setForm={setEditForm}
                     onFileChange={setEditVideoFile}
@@ -1213,12 +1258,16 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
                   <IconBtn
                     onClick={() => {
                       setEditingId(b.id);
+                      setEditTipoCodigo(normalizeTipo(b.tipo_nombre) || "texto");
                       setEditForm({
                         texto: b.texto ?? "",
                         variante: b.variante ?? "",
                         items: b.items ?? [],
                         filas: b.filas ?? [],
                         video_url: b.video_url ?? "",
+                        imagen_url: b.imagen_url ?? "",
+                        paneles: b.paneles ?? [],
+                        tarjetas: b.tarjetas ?? [],
                       });
                     }}
                   >
@@ -1240,14 +1289,14 @@ function BloquesSection({ temaId, cats }: { temaId: number; cats: Cats }) {
             <p className="text-xs font-medium text-gray-600 mb-1.5">Tipo de bloque</p>
             <div className="flex flex-wrap gap-1.5">
               {cats.tiposBloque.map((t) => {
-                const BIcon = bloqueIcon(t.nombre.toLowerCase());
+                const BIcon = bloqueIcon(t.nombre);
                 return (
                   <button
                     key={t.id}
                     type="button"
                     onClick={() => {
                       setSelectedTipo(t.id);
-                      setBloqueForm({ texto: "", variante: "", items: [], filas: [], video_url: "" });
+                      setBloqueForm(blankBloqueForm);
                       setVideoFile(null);
                     }}
                     className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg border transition-colors ${selectedTipo === t.id ? "bg-[#1c2634] text-white border-[#1c2634]" : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"}`}
@@ -1303,8 +1352,9 @@ function BloqueFormFields({
   onFileChange?: (f: File | null) => void;
 }) {
   const [newItem, setNewItem] = useState("");
+  const [newPanelItem, setNewPanelItem] = useState<Record<number, string>>({});
 
-  switch (tipoCodigo) {
+  switch (normalizeTipo(tipoCodigo)) {
     case "callout":
     case "alerta":
       return (
@@ -1484,6 +1534,282 @@ function BloqueFormFields({
               if (file) setForm((f) => ({ ...f, video_url: "" }));
             }}
             className="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-[#F0F6FF] file:text-[#0056D2] hover:file:bg-[#e0edff] file:transition-colors"
+          />
+        </div>
+      );
+
+    case "imagenes":
+    case "imagen":
+    case "img":
+      return (
+        <div className="space-y-3">
+          <Field label="Texto (opcional)">
+            <textarea
+              autoFocus
+              value={form.texto ?? ""}
+              onChange={(e) => setForm((f) => ({ ...f, texto: e.target.value }))}
+              placeholder="Texto que acompaña la imagen…"
+              rows={2}
+              className={inputCls + " resize-none"}
+            />
+          </Field>
+          <div>
+            <p className="text-xs font-medium text-gray-600 mb-1">URL de la imagen</p>
+            <input
+              value={form.imagen_url ?? ""}
+              onChange={(e) => {
+                setForm((f) => ({ ...f, imagen_url: e.target.value }));
+                if (e.target.value) onFileChange?.(null);
+              }}
+              placeholder="https://…"
+              className={inputCls}
+            />
+          </div>
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            <div className="flex-1 h-px bg-gray-200" />
+            o sube un archivo
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0] ?? null;
+              onFileChange?.(file);
+              if (file) setForm((f) => ({ ...f, imagen_url: "" }));
+            }}
+            className="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-[#F0F6FF] file:text-[#0056D2] hover:file:bg-[#e0edff] file:transition-colors"
+          />
+          <Field label="Modo de visualización">
+            <select
+              value={form.variante ?? ""}
+              onChange={(e) => setForm((f) => ({ ...f, variante: e.target.value }))}
+              className={selectCls}
+            >
+              <option value="">Simple</option>
+              <option value="dinamico">Interactivo (clic para ampliar)</option>
+            </select>
+          </Field>
+        </div>
+      );
+
+    case "paneles":
+    case "panel":
+    case "presentacion": {
+      const isPresentacion = normalizeTipo(tipoCodigo) === "presentacion";
+      return (
+        <div className="space-y-3">
+          {(form.paneles ?? []).map((panel, i) => (
+            <div key={i} className="border border-gray-200 rounded-lg p-2.5 space-y-2 bg-gray-50/60">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold text-gray-500">
+                  {isPresentacion ? "Diapositiva" : "Panel"} {i + 1}
+                </p>
+                <IconBtn
+                  onClick={() =>
+                    setForm((f) => ({
+                      ...f,
+                      paneles: (f.paneles ?? []).filter((_, j) => j !== i),
+                    }))
+                  }
+                  danger
+                >
+                  <X className="w-3 h-3" />
+                </IconBtn>
+              </div>
+              <input
+                value={panel.titulo ?? ""}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    paneles: (f.paneles ?? []).map((p, j) =>
+                      j === i ? { ...p, titulo: e.target.value } : p,
+                    ),
+                  }))
+                }
+                placeholder="Título"
+                className={inputCls}
+              />
+              <input
+                value={panel.imagen_url ?? ""}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    paneles: (f.paneles ?? []).map((p, j) =>
+                      j === i ? { ...p, imagen_url: e.target.value } : p,
+                    ),
+                  }))
+                }
+                placeholder="URL de imagen"
+                className={inputCls}
+              />
+              <textarea
+                value={panel.texto ?? ""}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    paneles: (f.paneles ?? []).map((p, j) =>
+                      j === i ? { ...p, texto: e.target.value } : p,
+                    ),
+                  }))
+                }
+                placeholder="Texto / descripción (opcional)"
+                rows={2}
+                className={inputCls + " resize-none"}
+              />
+              <div className="space-y-1">
+                {(panel.items ?? []).map((item, k) => (
+                  <div key={k} className="flex items-center gap-2">
+                    <span className="flex-1 text-xs text-gray-700 bg-white border border-gray-200 rounded px-2 py-1">
+                      {item}
+                    </span>
+                    <IconBtn
+                      onClick={() =>
+                        setForm((f) => ({
+                          ...f,
+                          paneles: (f.paneles ?? []).map((p, j) =>
+                            j === i
+                              ? { ...p, items: (p.items ?? []).filter((_, l) => l !== k) }
+                              : p,
+                          ),
+                        }))
+                      }
+                      danger
+                    >
+                      <X className="w-3 h-3" />
+                    </IconBtn>
+                  </div>
+                ))}
+                <div className="flex gap-2">
+                  <input
+                    value={newPanelItem[i] ?? ""}
+                    onChange={(e) =>
+                      setNewPanelItem((s) => ({ ...s, [i]: e.target.value }))
+                    }
+                    placeholder="Nuevo ítem de la lista…"
+                    className={inputCls}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const val = (newPanelItem[i] ?? "").trim();
+                        if (val) {
+                          setForm((f) => ({
+                            ...f,
+                            paneles: (f.paneles ?? []).map((p, j) =>
+                              j === i ? { ...p, items: [...(p.items ?? []), val] } : p,
+                            ),
+                          }));
+                          setNewPanelItem((s) => ({ ...s, [i]: "" }));
+                        }
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const val = (newPanelItem[i] ?? "").trim();
+                      if (val) {
+                        setForm((f) => ({
+                          ...f,
+                          paneles: (f.paneles ?? []).map((p, j) =>
+                            j === i ? { ...p, items: [...(p.items ?? []), val] } : p,
+                          ),
+                        }));
+                        setNewPanelItem((s) => ({ ...s, [i]: "" }));
+                      }
+                    }}
+                    className="px-3 py-2 text-xs font-medium text-white bg-[#1c2634] rounded-lg flex-shrink-0"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+          <AddBtn
+            label={isPresentacion ? "Agregar diapositiva" : "Agregar panel"}
+            onClick={() =>
+              setForm((f) => ({
+                ...f,
+                paneles: [...(f.paneles ?? []), { titulo: "", texto: "", imagen_url: "", items: [] }],
+              }))
+            }
+          />
+        </div>
+      );
+    }
+
+    case "tarjetas":
+    case "tarjeta":
+    case "cards":
+      return (
+        <div className="space-y-3">
+          {(form.tarjetas ?? []).map((card, i) => (
+            <div key={i} className="border border-gray-200 rounded-lg p-2.5 space-y-2 bg-gray-50/60">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold text-gray-500">Tarjeta {i + 1}</p>
+                <IconBtn
+                  onClick={() =>
+                    setForm((f) => ({
+                      ...f,
+                      tarjetas: (f.tarjetas ?? []).filter((_, j) => j !== i),
+                    }))
+                  }
+                  danger
+                >
+                  <X className="w-3 h-3" />
+                </IconBtn>
+              </div>
+              <input
+                value={card.titulo ?? ""}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    tarjetas: (f.tarjetas ?? []).map((c, j) =>
+                      j === i ? { ...c, titulo: e.target.value } : c,
+                    ),
+                  }))
+                }
+                placeholder="Título"
+                className={inputCls}
+              />
+              <input
+                value={card.imagen_url ?? ""}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    tarjetas: (f.tarjetas ?? []).map((c, j) =>
+                      j === i ? { ...c, imagen_url: e.target.value } : c,
+                    ),
+                  }))
+                }
+                placeholder="URL de imagen de fondo (opcional)"
+                className={inputCls}
+              />
+              <textarea
+                value={card.texto ?? ""}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    tarjetas: (f.tarjetas ?? []).map((c, j) =>
+                      j === i ? { ...c, texto: e.target.value } : c,
+                    ),
+                  }))
+                }
+                placeholder="Texto (opcional)"
+                rows={2}
+                className={inputCls + " resize-none"}
+              />
+            </div>
+          ))}
+          <AddBtn
+            label="Agregar tarjeta"
+            onClick={() =>
+              setForm((f) => ({
+                ...f,
+                tarjetas: [...(f.tarjetas ?? []), { titulo: "", texto: "", imagen_url: "" }],
+              }))
+            }
           />
         </div>
       );

@@ -1,10 +1,25 @@
 "use client";
 
-import { BloqueContenido } from "@/redux/features/types/capacitacion/plataforma-types";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import {
+  BloqueContenido,
+  BloquePanelPlataforma,
+  BloqueTarjetaPlataforma,
+} from "@/redux/features/types/capacitacion/plataforma-types";
 
 interface Props {
   bloque: BloqueContenido;
   onVideoEnd?: () => void;
+}
+
+// Normaliza nombre/código de tipo de bloque (minúsculas, sin acentos).
+function normalizeTipo(s: string | null | undefined): string {
+  return (s ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .trim();
 }
 
 function VideoBloque({ url, streamUrl, onEnded }: { url: string | null; streamUrl: string | null; onEnded?: () => void }) {
@@ -55,8 +70,166 @@ function VideoBloque({ url, streamUrl, onEnded }: { url: string | null; streamUr
   );
 }
 
+function ImagenBloque({
+  url,
+  texto,
+  dinamico,
+}: {
+  url: string | null;
+  texto: string | null;
+  dinamico: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  if (!url) return null;
+
+  return (
+    <div className="my-5 not-prose">
+      <button
+        type="button"
+        onClick={() => dinamico && setOpen(true)}
+        className={`block w-full rounded-xl overflow-hidden ${dinamico ? "cursor-zoom-in" : "cursor-default"}`}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={url} alt={texto ?? ""} className="w-full object-cover" />
+      </button>
+      {texto && <p className="mt-2 text-sm text-gray-600 leading-relaxed">{texto}</p>}
+
+      {dinamico && open && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setOpen(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="absolute top-4 right-4 text-white/80 hover:text-white"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={url}
+            alt={texto ?? ""}
+            className="max-w-full max-h-full rounded-lg object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SlideCarousel({
+  slides,
+  variant,
+}: {
+  slides: BloquePanelPlataforma[];
+  variant: "presentacion" | "panel";
+}) {
+  const [index, setIndex] = useState(0);
+  if (!slides.length) return null;
+
+  const slide = slides[index];
+  const go = (dir: -1 | 1) =>
+    setIndex((i) => (i + dir + slides.length) % slides.length);
+
+  return (
+    <div className="my-5 not-prose">
+      <div className="relative rounded-xl overflow-hidden bg-gray-900 min-h-[220px]">
+        {slide.imagen_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={slide.imagen_url}
+            alt={slide.titulo ?? ""}
+            className="absolute inset-0 w-full h-full object-cover opacity-70"
+          />
+        )}
+        <div className="relative z-10 p-5 flex flex-col justify-end min-h-[220px] text-white">
+          {slide.titulo && <h4 className="text-lg font-bold mb-1">{slide.titulo}</h4>}
+          {slide.texto && <p className="text-sm text-white/90 mb-2">{slide.texto}</p>}
+          {!!slide.items?.length && (
+            <ol className="text-sm space-y-0.5 list-decimal list-inside text-white/90">
+              {slide.items.map((it, i) => (
+                <li key={i}>{it}</li>
+              ))}
+            </ol>
+          )}
+        </div>
+
+        {slides.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={() => go(-1)}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-1.5 rounded-full bg-black/40 text-white hover:bg-black/60"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => go(1)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-1.5 rounded-full bg-black/40 text-white hover:bg-black/60"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </>
+        )}
+      </div>
+
+      {variant === "panel" ? (
+        <div className="mt-2 h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-green-500 transition-all"
+            style={{ width: `${((index + 1) / slides.length) * 100}%` }}
+          />
+        </div>
+      ) : (
+        slides.length > 1 && (
+          <div className="mt-2 flex justify-center gap-1.5">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setIndex(i)}
+                className={`w-1.5 h-1.5 rounded-full transition-colors ${i === index ? "bg-gray-800" : "bg-gray-300"}`}
+              />
+            ))}
+          </div>
+        )
+      )}
+    </div>
+  );
+}
+
+function TarjetasBloque({ tarjetas }: { tarjetas: BloqueTarjetaPlataforma[] }) {
+  if (!tarjetas.length) return null;
+  return (
+    <div className="my-5 not-prose grid grid-cols-2 sm:grid-cols-3 gap-3">
+      {tarjetas.map((card, i) => (
+        <div
+          key={i}
+          className="relative rounded-xl overflow-hidden bg-gray-900 min-h-[120px] flex items-center justify-center text-center p-3"
+        >
+          {card.imagen_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={card.imagen_url}
+              alt={card.titulo}
+              className="absolute inset-0 w-full h-full object-cover opacity-50"
+            />
+          )}
+          <div className="relative z-10">
+            <p className="text-white font-bold text-sm">{card.titulo}</p>
+            {card.texto && <p className="text-white/90 text-xs mt-1">{card.texto}</p>}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function BloqueRenderer({ bloque, onVideoEnd }: Props) {
-  const tipo = bloque.tipo_nombre?.toLowerCase();
+  const tipo = normalizeTipo(bloque.tipo_nombre);
   const variante = bloque.variante?.toLowerCase();
 
   if (tipo === "video") {
@@ -79,6 +252,29 @@ export default function BloqueRenderer({ bloque, onVideoEnd }: Props) {
         ))}
       </ul>
     );
+  }
+
+  if (tipo === "imagenes" || tipo === "imagen" || tipo === "img") {
+    return (
+      <ImagenBloque
+        url={bloque.imagen_url}
+        texto={bloque.texto}
+        dinamico={variante === "dinamico"}
+      />
+    );
+  }
+
+  if (tipo === "paneles" || tipo === "panel" || tipo === "presentacion") {
+    return (
+      <SlideCarousel
+        slides={bloque.paneles ?? []}
+        variant={tipo === "presentacion" ? "presentacion" : "panel"}
+      />
+    );
+  }
+
+  if (tipo === "tarjetas" || tipo === "tarjeta" || tipo === "cards") {
+    return <TarjetasBloque tarjetas={bloque.tarjetas ?? []} />;
   }
 
   if (tipo === "tabla") {
