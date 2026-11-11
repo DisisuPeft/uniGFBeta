@@ -1,0 +1,65 @@
+version: 1
+project:
+  root: .
+  stacks: [nextjs, react, typescript]
+  package_managers: [pnpm]
+  monorepo: false
+  signals:
+    - "Next.js 16 App Router (next.config.ts, app/ directory)"
+    - "React 19, TypeScript strict (tsconfig.json: strict: true)"
+    - "Frontend-only: all persistence via external Django REST backend (redux/services/apiSlice.ts, fetchBaseQuery) — no local API routes, no local DB"
+    - "Redux Toolkit Query for all data fetching"
+    - "Tailwind v4 (@tailwindcss/postcss) + shadcn/ui (Base UI primitives, Nova preset) for new UI"
+    - "No CI configured in this repo; no Dockerfile"
+    - "Legacy package-lock.json present but unused — pnpm-lock.yaml is the lockfile of record"
+sdd:
+  artifact_store: 02-DOCS/wiki/sdd
+  execution_mode: interactive
+  registry_path: .rsc/skill-registry.json
+  review_budget:
+    line_budget: 400
+    file_budget: 12
+  delivery_strategy:
+    default: ask-on-risk
+testing:
+  strict_tdd: false
+  runners: []
+  commands:
+    apply:
+      - "pnpm run build"
+    verify:
+      - "npx tsc --noEmit -p ."
+      - "pnpm run lint"
+      - "pnpm run build"
+  gap: "No automated test runner installed (ratified in constitution.md principle 7, 2026-11-11). Verification is tsc + eslint + build + manual browser check for UI-visible changes. strict_tdd stays false until a runner (likely Vitest) is adopted."
+phase_rules:
+  proposal: optional-on-ambiguity
+  specify: requires intent or proposal
+  plan: requires spec
+  tasks: requires plan and spec
+  analyze: requires spec plan tasks
+  implement: requires analyze pass, strict_tdd when testing.strict_tdd is true
+  verify: requires spec tasks evidence
+  archive: requires verify record and review/ship outcome
+models:
+  enabled: false
+  provider: anthropic
+  tiers:
+    heavy: claude-opus-4-8
+    balanced: claude-sonnet-4-6
+    light: claude-haiku-4-5-20251001
+  phases:
+    constitution: heavy
+    specify: balanced
+    clarify: balanced
+    plan: heavy
+    tasks: balanced
+    analyze: heavy
+    implement: balanced
+    verify: balanced
+    review: heavy
+    ship: light
+    debug: heavy
+    worktrees: light
+    sdd-init: light
+  overrides: {}

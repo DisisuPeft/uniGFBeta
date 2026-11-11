@@ -21,3 +21,4 @@ tags: [index]
 |---|---|
 | Project constitution (SDD non-negotiables) | `02-DOCS/wiki/sdd/constitution.md` |
 | Decisions log | `02-DOCS/wiki/sdd/decisions.md` |
+| SDD runtime config (apply/verify commands, stack signals) | `02-DOCS/wiki/sdd/config.yaml` |
