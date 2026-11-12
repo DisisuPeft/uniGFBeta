@@ -13,7 +13,7 @@ topic: sdd
 
 ## GATE: PASS
 
-0 CRITICAL, 0 HIGH, 1 MEDIUM, 0 LOW.
+0 CRITICAL, 0 HIGH, 1 MEDIUM (corregido en `tasks` el 2026-11-12 — ver abajo), 0 LOW.
 
 ## Coverage map
 
@@ -59,8 +59,15 @@ tarea.
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | MEDIUM | Ambigüedad | plan §6 paso 4 ("necesita buildPreviewBloque y la prop nueva para montar la columna de preview") | tasks T004/T005 (Interfaces) | T004 lista "Consumes: buildPreviewBloque (T003)" pero quien efectivamente lo invoca y lo conecta al estado (`liveItems`) es T005, cuyo "Produces" dice exactamente eso. No queda escrito qué debe mostrar la columna de preview que T004 construye ANTES de que T005 la conecte en vivo (¿un `BloqueRenderer` ya alimentado con los datos guardados del bloque, como adelanto estático? ¿un placeholder vacío?) — un implementador aislado que solo vea T004 no tiene esa respuesta. | `tasks` |
 
-**Por qué importa (único MEDIUM):** no bloquea construir — un implementador con buen juicio puede
-resolverlo razonablemente (ej. T004 monta `BloqueRenderer` ya alimentado con `buildPreviewBloque(bloque, form, null)` usando el `form` inicial, y T005 simplemente lo mantiene actualizado en cada cambio). Pero como T004 y T005 pueden terminar en manos de implementadores distintos (o de la misma persona en dos pasadas separadas), dejar ese límite sin una frase explícita es el tipo de ambigüedad que `analyze` existe para atrapar antes de que alguien lo adivine distinto de como el plan lo pensó.
+**Por qué importaba:** no bloqueaba construir, pero T004 y T005 pueden terminar en manos de
+implementadores distintos, y dejar ese límite sin una frase explícita es el tipo de ambigüedad que
+`analyze` existe para atrapar antes de que alguien lo adivine distinto de como el plan lo pensó.
+
+**Corregido (2026-11-12):** el plan y la tarea T004 ahora dicen explícitamente que T004 monta la
+columna de preview con un snapshot estático (`buildPreviewBloque(bloque, {}, null)`, sin leer
+`form`/`liveItems`), y T005 reemplaza esa llamada por la versión reactiva
+(`buildPreviewBloque(bloque, form, liveItems)`) sin cambiar la estructura que T004 construyó. Ver
+`02-DOCS/wiki/sdd/plans/editor-bloques-vivo.md`, T004/T005.
 
 ### Verificaciones puntuales pedidas
 
