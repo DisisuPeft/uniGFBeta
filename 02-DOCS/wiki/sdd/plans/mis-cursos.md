@@ -217,7 +217,7 @@ los 5 archivos tocados — ninguno requiere panel de 3 refutadores ni aprobació
 | ID | [P] | Task | Done-check | Depends-on | Trace | Risk |
 | --- | --- | --- | --- | --- | --- | --- |
 | T001 | [P] | Crear `app/components/plataforma/curso-helpers.ts` con `resolveCursoImagen` y `resolveInscripcionActual` | `npx tsc --noEmit -p .` compila el nuevo archivo sin error; `grep -c "\.titulo" curso-helpers.ts` = 0 (sin heurística por título); `grep -n "inscrito_at" curso-helpers.ts` encuentra el criterio de orden | — | AC3, AC5 | 1 |
-| T002 | [P] | Migrar `getCursosPlataforma` a `?pagination=false` + `CursoPlataforma[]` en `plataformaApiSlice.ts` | el endpoint tipa `CursoPlataforma[]` (no `PaginatedResponse<...>`) y su URL incluye `pagination=false` | — | AC2, AC4 | 1 |
+| T002 | [P] | Migrar `getCursosPlataforma` a `?pagination=false` + `CursoPlataforma[]` en `plataformaApiSlice.ts` | el endpoint tipa `CursoPlataforma[]` (no `PaginatedResponse<...>`) y su URL incluye `pagination=false` | — | AC2 | 1 |
 | T003 | [P] | Migrar `getMisCursos` a `?pagination=false` + `CursoPlataforma[]` en `plataformaApiSlice.ts` | mismo patrón que T002, para `getMisCursos` | — | AC1 | 1 |
 | T004 | [P] | Migrar `getMisInscripciones` a `?pagination=false` + `MiInscripcion[]` en `plataformaApiSlice.ts` | mismo patrón que T002, para `getMisInscripciones` | — | AC3 | 1 |
 | T005 |  | Actualizar `explorar-dash.tsx`: leer el array directo de `getCursosPlataforma`, usar `resolveCursoImagen` compartido en vez de su `getPlaceholderImage` privado | `grep -c "getPlaceholderImage" explorar-dash.tsx` = 0; `grep -c "\.results" explorar-dash.tsx` = 0; importa `resolveCursoImagen` | T001, T002 | AC2, AC5 | 1 |

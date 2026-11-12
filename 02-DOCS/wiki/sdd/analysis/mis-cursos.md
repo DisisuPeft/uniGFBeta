@@ -11,10 +11,12 @@ topic: sdd
 > Slug: `mis-cursos` · Reads: `constitution.md` (v1.1.0), `specs/mis-cursos.md` (clarified),
 > `plans/mis-cursos.md` (approved, incl. Tasks + Review Workload Forecast)
 
-## GATE: PASS (0 CRITICAL, 0 HIGH, 2 MEDIUM, 1 LOW)
+## GATE: PASS (0 CRITICAL, 0 HIGH, 2 MEDIUM, 1 LOW — los 3 ya corregidos, 2026-11-11)
 
-Nada bloquea `implement`. Los 3 hallazgos son correcciones baratas de los propios artefactos
-(no del código), puedes aceptarlos conscientemente y avanzar, o pedir que se corrijan primero.
+Nada bloqueaba `implement`. Los 3 hallazgos eran correcciones de los propios artefactos (no del
+código) y ya se aplicaron: AC1-AC5 numeradas explícitamente en la spec, cita de constitución
+actualizada a v1.1.0, trace de T002 corregido a solo AC2. `rsc spec gate` vuelve a dar PASS tras
+los cambios.
 
 ## Coverage map
 

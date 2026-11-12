@@ -102,12 +102,12 @@ visualmente en navegador después de implementar, registrado en la cola de decis
 
 ## What it must respect
 
-- Constitución v1.0.0, principio 16: el backend es la única fuente de verdad de
+- Constitución v1.1.0, principio 16: el backend es la única fuente de verdad de
   progreso/acreditación — `curso.inscrito`/`curso.progreso` de `/capacitacion/ver/cursos/` ya
   vienen resueltos por el backend sobre la inscripción más reciente; no se re-derivan en cliente.
-- Constitución v1.0.0, principio 10: una lista de contenido completo sin paginación real en UI
+- Constitución v1.1.0, principio 10: una lista de contenido completo sin paginación real en UI
   usa `?pagination=false` y tipo de respuesta array.
-- Constitución v1.0.0, principio 20: no se inventan datos — la portada de curso solo usa
+- Constitución v1.1.0, principio 20: no se inventan datos — la portada de curso solo usa
   `curso.imagen` si el backend la entrega.
 - El contrato ya confirmado en `02-DOCS/wiki/backend-contracts.md` (sección "Inscripción
   recency"): `inscrito_at` descendente con `id` como desempate, al derivar "la" inscripción desde
@@ -138,18 +138,18 @@ la inscripción activa, no de una anterior.
 
 ## Acceptance criteria
 
-- Given un colaborador con 1 inscripción activa y 2 completadas a cursos distintos, When abre
-  "Mis cursos", Then ve exactamente esas 3 tarjetas con estado/progreso correcto y ningún curso
-  sin inscripción.
-- Given el mismo colaborador, When abre "Explorar", Then ve el catálogo completo (incluidos los
-  3 ya inscritos) y puede inscribirse a cualquier curso sin inscripción activa.
-- Given un colaborador con 2 inscripciones históricas al mismo curso (una completada, una activa
-  más reciente), When abre "Mis cursos", "Explorar" o el resumen de ese curso individual, Then
-  el estado/fecha mostrado corresponde siempre a la inscripción activa más reciente.
-- Given cualquiera de las dos vistas, When se renderiza, Then no aparece ningún control de
-  paginación que no pagine datos reales.
-- Given un curso sin `imagen` asignada por el backend, When se muestra su tarjeta, Then la
-  portada es un marcador gráfico genérico y consistente, nunca una imagen de otro curso elegida
+- **AC1.** Given un colaborador con 1 inscripción activa y 2 completadas a cursos distintos, When
+  abre "Mis cursos", Then ve exactamente esas 3 tarjetas con estado/progreso correcto y ningún
+  curso sin inscripción.
+- **AC2.** Given el mismo colaborador, When abre "Explorar", Then ve el catálogo completo
+  (incluidos los 3 ya inscritos) y puede inscribirse a cualquier curso sin inscripción activa.
+- **AC3.** Given un colaborador con 2 inscripciones históricas al mismo curso (una completada, una
+  activa más reciente), When abre "Mis cursos", "Explorar" o el resumen de ese curso individual,
+  Then el estado/fecha mostrado corresponde siempre a la inscripción activa más reciente.
+- **AC4.** Given cualquiera de las dos vistas, When se renderiza, Then no aparece ningún control
+  de paginación que no pagine datos reales.
+- **AC5.** Given un curso sin `imagen` asignada por el backend, When se muestra su tarjeta, Then
+  la portada es un marcador gráfico genérico y consistente, nunca una imagen de otro curso elegida
   por coincidencia de texto en el título.
 
 ## Points to clarify
