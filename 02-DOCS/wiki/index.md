@@ -37,3 +37,4 @@ tags: [index]
 | Analyze — Vista previa en vivo del editor de bloques | `02-DOCS/wiki/sdd/analysis/editor-bloques-vivo.md` |
 | Progress — Vista previa en vivo del editor de bloques | `02-DOCS/wiki/sdd/progress/editor-bloques-vivo.md` |
 | Spec — Lienzo WYSIWYG del constructor de bloques (primer incremento) | `02-DOCS/wiki/sdd/specs/lienzo-wysiwyg.md` |
+| Plan — Lienzo WYSIWYG del constructor de bloques (primer incremento) | `02-DOCS/wiki/sdd/plans/lienzo-wysiwyg.md` |
