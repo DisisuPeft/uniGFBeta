@@ -146,6 +146,14 @@ BloqueRenderer({
     exactamente como `form`/`liveItems` hoy, estado local hasta que el instructor guarda
 
 LienzoBloqueCard({ bloque: ContenidoBloque, selected: boolean, onSelect: () => void, onSaved: () => void, onDeleted: () => void, onDuplicate: () => void })
+  - precondition: SIGUE usando useSortable({ id: bloque.id }) de @dnd-kit/sortable internamente,
+    igual que SortableBloqueCard hoy — este componente es el reemplazo DIRECTO de
+    SortableBloqueCard dentro de <SortableContext>, no un componente nuevo fuera de ese árbol.
+    Conserva el drag handle (attributes/listeners/setNodeRef sobre el botón de arrastre) y aplica
+    style={{ transform: CSS.Transform.toString(transform), transition }} + la clase de isDragging
+    al contenedor raíz, exactamente como SortableBloqueCard lo hace hoy (bloques-section.tsx,
+    líneas ~120-135) — esta spec no toca el reordenamiento, solo lo que se renderiza DENTRO de la
+    tarjeta.
   - postcondition (NUEVO): si !selected, renderiza BloqueRenderer(toBloqueContenido(bloque)) de
     solo lectura dentro de la tarjeta del canvas (con el ícono de arrastre y los botones de
     duplicar/eliminar que ya existían en SortableBloqueCard)
@@ -154,6 +162,9 @@ LienzoBloqueCard({ bloque: ContenidoBloque, selected: boolean, onSelect: () => v
     vacioPlaceholder, modoEdicion) más una barra de acciones (Guardar/Cancelar/Duplicar/Eliminar)
   - invariant: nunca hay más de una instancia con form/liveItems montado al mismo tiempo (se
     garantiza por selected derivado de un único selectedId en BloquesSection, igual que hoy)
+  - invariant: reordenar bloques arrastrando sigue funcionando exactamente igual que hoy — ningún
+    criterio de aceptación de esta spec lo cambia (está en sus Non-goals), así que el mecanismo de
+    dnd-kit no se toca, solo se traslada al nuevo componente
 ```
 
 ## 4. Data model & flow
@@ -280,8 +291,8 @@ LienzoBloqueCard({ bloque: ContenidoBloque, selected: boolean, onSelect: () => v
 | T003 | | Extender `BloqueRenderer`: `modoEdicion` para la rama `video`/`texto-video` (`VideoBloque`) | `tsc --noEmit` limpio; comportamiento por defecto intacto; con `modoEdicion`, hay un punto de acción sobre el video (o su espacio vacío) que invoca `onVideoChange` — esta rama NO gana edición de texto (el render actual no muestra `bloque.texto` para este tipo, confirmado en `clarify`) | T001 | AC3 | 1 |
 | T004 | | Extender `BloqueRenderer`: `modoEdicion` para la rama `lista`/`pasos` | `tsc --noEmit` limpio; comportamiento por defecto intacto; con `modoEdicion`, cada ítem es editable directamente, hay un punto de acción para agregar un ítem nuevo (vacío, listo para escribir) y uno por ítem para quitarlo, ambos invocando `onItemsChange` con el array completo | T001 | AC4 | 1 |
 | T005 | | Extender `BloqueRenderer`: `modoEdicion` para la rama `tabla` | `tsc --noEmit` limpio; comportamiento por defecto intacto; con `modoEdicion`, cada celda es editable directamente, hay un punto de acción para agregar una fila (sembrada con `{ columna1: "", columna2: "" }`) y uno por fila para quitarla, invocando `onFilasChange` con el array completo; manual: agregar la primera fila de una tabla vacía no falla (confirma el riesgo del plan §7) | T001 | AC5 | 1 |
-| T006 | | Construir `LienzoBloqueCard` | `tsc --noEmit` limpio; archivo nuevo `app/components/dash/capacitacion/bloques/lienzo-bloque-card.tsx`; si `!selected`, renderiza `BloqueRenderer(toBloqueContenido(bloque))` de solo lectura; si `selected`, monta `form`/`liveItems` (mismo patrón que `PropertiesPanel` tenía antes de esta spec) y renderiza `BloqueRenderer(buildPreviewBloque(bloque, form, liveItems), vacioPlaceholder, modoEdicion)` + barra de acciones (Guardar/Cancelar/Duplicar/Eliminar) | T001, T002, T003, T004, T005 | AC1 | 1 |
-| T007 | | Conectar `BloquesSection` para usar `LienzoBloqueCard` en el canvas | `tsc --noEmit` limpio; `grep -c "SortableBloqueCard"` baja a 0 ocurrencias de uso en el canvas (el componente puede quedar retirado o reemplazado); manual: el lienzo muestra el render real de cada bloque, no `bloquePreview()` | T006 | AC1 | 1 |
+| T006 | | Construir `LienzoBloqueCard` (reemplazo directo de `SortableBloqueCard` dentro de `<SortableContext>`) | `tsc --noEmit` limpio; archivo nuevo `app/components/dash/capacitacion/bloques/lienzo-bloque-card.tsx`; usa `useSortable({ id: bloque.id })` y aplica `attributes`/`listeners`/`setNodeRef`/`style` (`transform`/`transition`) igual que `SortableBloqueCard` hoy — confirmado por lectura del diff, no solo por `tsc`; si `!selected`, renderiza `BloqueRenderer(toBloqueContenido(bloque))` de solo lectura; si `selected`, monta `form`/`liveItems` (mismo patrón que `PropertiesPanel` tenía antes de esta spec) y renderiza `BloqueRenderer(buildPreviewBloque(bloque, form, liveItems), vacioPlaceholder, modoEdicion)` + barra de acciones (Guardar/Cancelar/Duplicar/Eliminar) | T001, T002, T003, T004, T005 | AC1 | 1 |
+| T007 | | Conectar `BloquesSection` para usar `LienzoBloqueCard` en el canvas | `tsc --noEmit` limpio; `grep -c "SortableBloqueCard"` baja a 0 ocurrencias de uso en el canvas (el componente puede quedar retirado o reemplazado); `<SortableContext items={bloques.map(b => b.id)}>` sigue envolviendo `LienzoBloqueCard` exactamente como envolvía a `SortableBloqueCard`; manual: el lienzo muestra el render real de cada bloque (no `bloquePreview()`) **y** arrastrar un bloque para reordenarlo sigue funcionando (confirma que el Non-goal "reordenar sigue funcionando" de la spec no se perdió) | T006 | AC1 | 1 |
 | T008 | | Reducir `PropertiesPanel`: retirar `BloqueFormFields`/`LiveItemsEditor` para los 7 tipos cubiertos | `tsc --noEmit` limpio; manual: al seleccionar un bloque de cualquiera de los 7 tipos cubiertos, el panel no muestra ningún campo de contenido — solo, para `texto-elemento-dinamico`, el toggle "Modo de visualización"; los tipos fuera de alcance (tarjetas/paneles/presentaciones) siguen mostrando el panel completo sin cambios | T007 | AC7 | 1 |
 | T009 | | Verificación manual de cierre | `npx tsc --noEmit -p .`, `npx eslint` sobre los archivos tocados y `pnpm run build` sin errores; pase manual en navegador por los 7 tipos cubiertos ejerciendo su verbo de edición propio (ver plan §5); confirma AC8 (guardado sigue siendo el botón existente, sin llamadas de red antes de pulsarlo) y AC9 (tarjetas/paneles/presentaciones/evaluativos intactos); confirma que la plataforma del alumno y `PreviewPane` no cambiaron (sin `modoEdicion`, idénticos a antes de esta spec) | T001, T002, T003, T004, T005, T006, T007, T008 | AC1, AC2, AC3, AC4, AC5, AC6, AC7, AC8, AC9 | 0 |
 
@@ -306,7 +317,7 @@ LienzoBloqueCard({ bloque: ContenidoBloque, selected: boolean, onSelect: () => v
 
 **T006 — Interfaces**
 - Consumes: `BloqueRenderer` con `modoEdicion` completo (T001-T005); `buildPreviewBloque`/`toBloqueContenido` (de `editor-bloques-vivo`, sin cambios); el patrón de estado `form`/`liveItems` que `PropertiesPanel` ya tenía (`useState<Partial<BloqueForm>>`, `useState<ContenidoBloqueItem[] | null>`).
-- Produces: `LienzoBloqueCard({ bloque: ContenidoBloque, selected: boolean, onSelect: () => void, onSaved: () => void, onDeleted: () => void, onDuplicate: () => void })` (forma completa en plan §3).
+- Produces: `LienzoBloqueCard({ bloque: ContenidoBloque, selected: boolean, onSelect: () => void, onSaved: () => void, onDeleted: () => void, onDuplicate: () => void })` (forma completa en plan §3). **Incluye, como parte del contrato (no opcional):** `useSortable({ id: bloque.id })` de `@dnd-kit/sortable`, con `attributes`/`listeners` sobre el drag handle y `setNodeRef`/`style` (`transform`/`transition`) sobre el contenedor raíz — exactamente el mismo mecanismo que `SortableBloqueCard` usa hoy (`bloques-section.tsx` líneas ~120-135). Esta spec no cambia el reordenamiento; `LienzoBloqueCard` es su reemplazo directo dentro del mismo `<SortableContext>`, no un componente aparte.
 
 ## Review Workload Forecast
 

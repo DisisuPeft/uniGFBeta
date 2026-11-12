@@ -13,7 +13,7 @@ topic: sdd
 
 ## GATE: BLOCKED
 
-0 CRITICAL, 1 HIGH, 1 MEDIUM, 0 LOW.
+0 CRITICAL, 1 HIGH, 1 MEDIUM, 0 LOW. **Corregido en `plan` el 2026-11-12 — ver abajo.**
 
 ## Coverage map
 
@@ -28,7 +28,7 @@ topic: sdd
 | AC7 | Panel sin campos de contenido ya editables | §2, §6 paso 8 | T008, T009 | covered |
 | AC8 | Guardado explícito sin cambios | §0, §4 | T009 | covered (solo verificación — ninguna tarea *cambia* el guardado, correcto: no debía) |
 | AC9 | Tipos fuera de alcance intactos | §0, Non-goals de la spec | T009 | covered (solo verificación) |
-| *(implícito)* Reordenar/duplicar/eliminar bloques sigue funcionando (spec, Non-goals: "ya existen... y no cambian") | — | **ninguna** | **GAP** (ver Finding #1) |
+| *(implícito)* Reordenar/duplicar/eliminar bloques sigue funcionando (spec, Non-goals: "ya existen... y no cambian") | §3 (contrato de `LienzoBloqueCard`, corregido) | T006, T007 | covered (corregido — ver Finding #1) |
 
 ## Las seis verificaciones
 
@@ -66,6 +66,15 @@ topic: sdd
 de que se construya es exactamente como si no existiera este Non-goal — el instructor pierde la
 capacidad de reordenar bloques arrastrándolos, una regresión real de una función que ya existe y
 funciona hoy, descubierta tarde (en T009, si acaso) en vez de diseñada desde T006.
+
+## Corrección (2026-11-12)
+
+Ambos hallazgos comparten causa raíz y se corrigieron juntos en `plan`:
+`LienzoBloqueCard`'s contrato (§3) ahora exige explícitamente `useSortable({ id: bloque.id })` +
+`attributes`/`listeners`/`setNodeRef`/`style` como parte de su `Produces`, no solo en la prosa de
+§2. T006/T007 (en `## Tasks`) llevan ahora esa misma exigencia en su done-check, incluyendo
+verificación manual de que arrastrar para reordenar sigue funcionando. Ver
+`02-DOCS/wiki/sdd/plans/lienzo-wysiwyg.md`.
 
 ## Recommended routing
 
