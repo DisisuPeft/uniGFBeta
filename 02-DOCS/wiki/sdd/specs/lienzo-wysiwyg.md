@@ -6,12 +6,12 @@ tags: [sdd, spec]
 timestamp: 2026-11-12T00:00:00Z
 topic: sdd
 slug: lienzo-wysiwyg
-status: draft
+status: clarified
 ---
 
 # Spec — Lienzo WYSIWYG del constructor de bloques (primer incremento)
 
-> Slug: `lienzo-wysiwyg` · Status: draft · Created: 2026-11-12
+> Slug: `lienzo-wysiwyg` · Status: clarified · Created: 2026-11-12 · Approved: 2026-11-12 ("apruebo")
 > Inherits: [constitution](../constitution.md)
 > Precede a esta spec: [editor-bloques-vivo](./editor-bloques-vivo.md) (implementada y confirmada
 > el mismo día) — esta spec la reemplaza en los tipos que cubre, no la extiende.
@@ -101,9 +101,14 @@ Cualquier usuario con acceso al editor de un tema (mismo nivel de acceso que hoy
 tipos de bloque cubiertos por esta spec:
 - Insertar un bloque desde la biblioteca y verlo aparecer en el lienzo ya con su render real
   (vacío, con el estado vacío que ya existe desde `editor-bloques-vivo`).
-- Hacer clic sobre el texto de un bloque en el lienzo y escribir directamente ahí.
-- Hacer clic sobre la imagen (o su espacio vacío) de un bloque en el lienzo para agregarla,
-  reemplazarla o quitarla.
+- Hacer clic sobre el texto de un bloque (texto-imagen, texto-elemento-dinamico o callout/alerta)
+  en el lienzo y escribir directamente ahí.
+- Hacer clic sobre la imagen o el video (o su espacio vacío) de un bloque en el lienzo para
+  agregarlo, reemplazarlo o quitarlo.
+- Agregar o quitar un ítem de un bloque de lista/pasos, o una fila de un bloque de tabla, con un
+  punto de acción visible sobre el propio bloque en el lienzo.
+- Elegir la variante (info/warning/success/danger) de un bloque de callout/alerta con un control
+  visible sobre el propio bloque en el lienzo.
 - Guardar los cambios explícitamente (el botón de guardar sigue existiendo; "en vivo" significa que
   el lienzo refleja el cambio antes de guardar, no que cada tecla se persista sola — igual que
   `editor-bloques-vivo` ya estableció para el panel).
@@ -162,10 +167,11 @@ pulsa guardar, y el alumno ve exactamente ese contenido al visitar el tema.
 
 Para cada tipo cubierto, un instructor inserta un bloque nuevo desde la biblioteca, confirma que
 aparece en el lienzo con su render real (no un resumen de texto), y ejerce el verbo de edición
-propio de ese tipo directamente sobre el lienzo: texto-imagen/texto-elemento-dinamico/video —
-escribir texto y reemplazar imagen/video; lista/pasos — agregar y quitar un ítem; tabla — agregar,
-editar y quitar una fila; callout/alerta — cambiar la variante. En cada caso confirma que el panel
-de propiedades no le pide repetir esa edición en un formulario aparte, guarda, y confirma que la
+propio de ese tipo directamente sobre el lienzo: texto-imagen/texto-elemento-dinamico — escribir
+texto y reemplazar imagen; video/texto-video — reemplazar el video (no tiene texto en el render
+actual); lista/pasos — agregar y quitar un ítem; tabla — agregar, editar y quitar una fila;
+callout/alerta — escribir su texto y cambiar la variante. En cada caso confirma que el panel de
+propiedades no le pide repetir esa edición en un formulario aparte, guarda, y confirma que la
 plataforma del alumno muestra exactamente ese contenido. La evidencia que queda es la lista de
 tipos probados y el resultado observado por tipo, ya que no hay suite automatizada que lo capture.
 
@@ -175,10 +181,12 @@ tipos probados y el resultado observado por tipo, ya que no hay suite automatiza
   lienzo muestra su render real (vacío) → clic sobre el área de texto → escribe → clic sobre el
   área de imagen → la agrega/reemplaza → pulsa guardar → el bloque queda persistido con esos
   valores.
-- **Borde — bloque recién insertado (todos los campos vacíos)**: el lienzo muestra el estado vacío
-  ya existente (`vacioPlaceholder`), y ese estado vacío es también el punto donde se puede hacer
-  clic para empezar a escribir/agregar imagen — no hace falta un paso intermedio para "activar" la
-  edición antes de que aparezca algo que editar.
+- **Borde — bloque recién insertado o vaciado (todos los campos/ítems/filas vacíos)**: el lienzo
+  muestra el estado vacío ya existente (`vacioPlaceholder`), y ese estado vacío es también el punto
+  de acción para empezar a escribir, agregar una imagen, agregar el primer ítem de una lista,
+  agregar la primera fila de una tabla, o elegir una variante — no hace falta un paso intermedio
+  para "activar" la edición antes de que aparezca algo que editar. Esto aplica igual cuando el
+  bloque nace vacío que cuando queda vacío por haberse quitado su último ítem/fila.
 - **Borde — varios bloques en el lienzo a la vez**: editar uno no afecta el estado en edición de
   los demás; cada bloque mantiene su propio contenido en vivo independientemente.
 - **Borde — cambiar de bloque sin guardar**: si el instructor edita un bloque y selecciona otro
@@ -205,9 +213,11 @@ tipos probados y el resultado observado por tipo, ya que no hay suite automatiza
 - Given el lienzo de un tema con bloques existentes, When el instructor lo abre, Then cada bloque
   cubierto por esta spec se muestra con su render real (`BloqueRenderer`), no con un resumen de
   texto genérico.
-- Given un bloque de tipo texto-imagen (o texto-elemento-dinamico/lista/pasos/callout/tabla/video)
-  en el lienzo, When el instructor hace clic sobre su texto y escribe, Then el texto cambia
-  directamente en el lienzo, sin abrir ningún formulario o panel aparte para ese campo.
+- Given un bloque de tipo texto-imagen, texto-elemento-dinamico o callout/alerta en el lienzo (los
+  tipos con un campo de texto único visible en el render — lista/pasos/tabla tienen su propio
+  criterio abajo, y video no muestra texto en el render actual), When el instructor hace clic sobre
+  su texto y escribe, Then el texto cambia directamente en el lienzo, sin abrir ningún formulario o
+  panel aparte para ese campo.
 - Given un bloque de tipo texto-imagen, texto-elemento-dinamico o video/texto-video en el lienzo,
   When el instructor hace clic sobre su imagen/video (o su espacio vacío) y lo agrega/reemplaza,
   Then el elemento cambia directamente en el lienzo, sin un input de URL/archivo en un panel
@@ -259,3 +269,26 @@ tipos probados y el resultado observado por tipo, ya que no hay suite automatiza
   no editando" y "editando directamente" (¿aparece algún borde, ícono, cursor?) no está
   resuelta ni es formulable sin una referencia visual — se deja para que `plan` proponga algo
   concreto, igual que se hizo con el layout de `editor-bloques-vivo`.
+
+## Clarifications
+
+- 2026-11-12 — Q: ¿las correcciones de la revisión de ojos frescos (verbos de lista/tabla/callout)
+  dejaron una ambigüedad nueva? → Encontradas 2, corregidas sin necesidad de preguntar (cita contra
+  el resto de la propia spec, no una decisión nueva): (1) "Qué podrá hacer el usuario" y "Cómo lo
+  demuestra" no se habían actualizado con los verbos nuevos de lista/tabla/callout que sí ya estaban
+  en Behaviour/Acceptance criteria — ahora los dos los listan igual que el resto de la spec. (2) el
+  criterio de aceptación genérico de "clic en texto y escribe" incluía por error a
+  lista/pasos/tabla/video — ninguno de esos tiene un campo de texto único editable así (lista/tabla
+  tienen su propio criterio; video no muestra texto en el render actual) — corregido a
+  texto-imagen/texto-elemento-dinamico/callout únicamente.
+- 2026-11-12 — Puntos tipados: **2 decisiones diferidas** (tarjetas/paneles/presentaciones;
+  evaluativos) se dejan intactas, sin reabrir alcance — ambas confirmadas explícitamente por el
+  usuario al preguntársele directamente. **2 supuestos tomados** (edición tipo contenteditable, no
+  input flotante; guardado explícito por botón, no autoguardado) validados — siguen sosteniéndose,
+  nada en esta pasada los contradice. **1 área no formulable** (transición visual
+  seleccionado/editando) se deja abierta a propósito, pasa a `plan`.
+- 2026-11-12 — Extensión por consistencia (no una pregunta nueva): el borde de "bloque recién
+  insertado, estado vacío" solo mencionaba escribir texto/agregar imagen como puntos de acción
+  disponibles en el estado vacío; se amplió para cubrir agregar el primer ítem de lista, la primera
+  fila de tabla, y elegir variante de callout — mismo principio ya aprobado, aplicado a los verbos
+  que esta misma pasada de revisión añadió.
