@@ -29,3 +29,4 @@ tags: [index]
 | Decisions log | `02-DOCS/wiki/sdd/decisions.md` |
 | SDD runtime config (apply/verify commands, stack signals) | `02-DOCS/wiki/sdd/config.yaml` |
 | Spec — Mis cursos (endurecimiento) | `02-DOCS/wiki/sdd/specs/mis-cursos.md` |
+| Plan — Mis cursos (endurecimiento) | `02-DOCS/wiki/sdd/plans/mis-cursos.md` |

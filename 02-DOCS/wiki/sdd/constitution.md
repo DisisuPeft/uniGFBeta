@@ -5,12 +5,12 @@ description: The non-negotiable principles every rsc-sdd phase obeys.
 tags: [sdd, constitution]
 timestamp: 2026-11-11T00:00:00Z
 topic: sdd
-version: v1.0.0
+version: v1.1.0
 ---
 
 # uniGFBeta (Farrera Academy) — Constitution
 
-> Version: v1.0.0 · Ratified: 2026-11-11 · Last amended: 2026-11-11
+> Version: v1.1.0 · Ratified: 2026-11-11 · Last amended: 2026-11-11
 > The non-negotiable principles every rsc-sdd phase obeys.
 
 ## 1. Stack canon
@@ -58,6 +58,9 @@ version: v1.0.0
     no PR is required for this repo — direct commits are the normal path.
 13. **Git authorship is the human's.** No `Co-Authored-By` an AI, no "generated with" footer,
     in any commit or PR, ever — reaffirmed explicitly and repeatedly by the user this session.
+13a. **The agent never runs `git commit` (or `git add`/`git push` as part of committing).**
+    Implementation leaves the working tree edited and uncommitted; staging, committing, and
+    pushing are always done by the human. (Amendment, 2026-11-11 — see amendment log.)
 
 ## 5. Security & privacy floor
 
@@ -104,7 +107,7 @@ A change ships only when ALL hold:
       compiled (principle 7).
 - [ ] Conventions followed: Spanish domain naming, `tipo_codigo` dispatch, correct
       pagination shape (principles 8-11).
-- [ ] Committed straight to `main`, authored by the human, no AI trailer (principles 12-13).
+- [ ] Left ready on `main` for the human to commit — no AI trailer, no agent-run commit (principles 12-13a).
 - [ ] No secret committed; single auth mechanism preserved (principles 14-15).
 - [ ] Backend remains sole source of truth for progression/accreditation (principle 16).
 - [ ] Keyboard/focus accessible; loading/empty/error states present (principles 17-18).
@@ -117,3 +120,4 @@ A change ships only when ALL hold:
 | Date | Version | Change | Why |
 |------|---------|--------|-----|
 | 2026-11-11 | v1.0.0 | Ratified initial constitution. | Kickoff of the Farrera Academy LMS frontend feature (ASDD entry point); formalizes rules already established in practice this session (block dispatch by `tipo_codigo`, pagination split, no AI commit attribution, backend as progression source of truth). |
+| 2026-11-11 | v1.1.0 | Added principle 13a: the agent never runs `git commit`/`add`/`push` — the human always does. | Surfaced while resolving a conflict between this constitution's "direct to main" workflow and the `plan` skill's isolation rule; the user resolved it by removing agent commits entirely rather than choosing a branching strategy. |
