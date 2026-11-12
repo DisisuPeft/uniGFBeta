@@ -56,11 +56,14 @@ no cumple su criterio de aceptación, dicho en sus propias palabras.
   texto genérico.
 - El instructor edita el texto de un bloque haciendo clic directamente sobre el texto renderizado y
   escribiendo ahí — sin abrir un formulario aparte para ese campo.
-- El instructor reemplaza la imagen de un bloque haciendo clic sobre la imagen renderizada (o su
-  espacio vacío) — sin un input de URL/archivo en un panel aparte para ese campo.
-- El panel de propiedades deja de ser el lugar donde se escribe el contenido de estos tipos; solo
-  queda para configuración que no tiene una representación visual directa en el lienzo (ver
-  Non-goals de `editor-bloques-vivo` §"Qué debe respetar" — aquí se precisa cuáles).
+- El instructor reemplaza la imagen o el video de un bloque haciendo clic sobre el elemento
+  renderizado (o su espacio vacío) — sin un input de URL/archivo en un panel aparte para ese campo.
+- El instructor agrega o quita un ítem de una lista/pasos, o una fila de una tabla, directamente
+  sobre el bloque renderizado en el lienzo — sin abrir el panel para esa operación.
+- El panel de propiedades pierde **todo** campo cuya edición tenga una representación visual directa
+  en el bloque renderizado — eso incluye la variante de un callout (su color/estilo es visible), no
+  solo texto e imagen. Le queda únicamente lo que de verdad no se puede representar visualmente de
+  forma directa (ver "Qué debe respetar" para el inventario exacto, tipo por tipo).
 - El contenido guardado sigue siendo exactamente el mismo que usan la plataforma del alumno y la
   pestaña "Vista previa" — ningún dato nuevo, ninguna estructura paralela.
 
@@ -134,18 +137,37 @@ pulsa guardar, y el alumno ve exactamente ese contenido al visitar el tema.
   vivo, el flag `vacioPlaceholder` de `BloqueRenderer`) es la base técnica a reusar, no a descartar
   — esta spec cambia la superficie de entrada (de inputs de formulario a edición directa sobre el
   render), no el modelo de estado que ya prueba funcionar.
+- **Inventario exacto de qué le queda al panel de propiedades para los tipos cubiertos** (resuelve
+  la ambigüedad que la revisión de esta spec encontró): tras mover al lienzo todo lo que tiene
+  representación visual directa, al panel le queda —
+  - `texto-imagen` / `texto-elemento-dinamico`: nada de contenido; solo, para
+    `texto-elemento-dinamico`, el campo "Modo de visualización" (simple vs. interactivo/lightbox) —
+    es un comportamiento de interacción, no algo visible en el lienzo hasta que el alumno hace clic
+    para ampliar.
+  - `lista` / `pasos`: nada — agregar, editar y quitar ítems se hace en el lienzo.
+  - `tabla`: nada — agregar, editar y quitar filas se hace en el lienzo (las columnas siguen fijas,
+    `columna1`/`columna2`, tal como ya están en el modelo hoy; esta spec no agrega columnas
+    dinámicas).
+  - `callout` / `alerta`: nada — la variante (info/warning/success/danger) se elige en el lienzo,
+    sobre el bloque mismo, porque su color/ícono es la representación visual directa que Goals
+    exige mover ahí.
+  - `video` / `texto-video`: nada — reemplazar el video se hace haciendo clic sobre él en el
+    lienzo, igual que una imagen.
+  - Si un tipo cubierto termina sin ningún campo en el panel, el panel puede quedar vacío o
+    cerrado para ese bloque — no es un defecto, es el resultado esperado de este diseño.
 - No debe cambiar el contenido ni el render que ve la plataforma del alumno ni la pestaña "Vista
   previa" — ambas siguen usando `BloqueRenderer` sin ningún modo de edición.
 
 ## How it proves it
 
-Para cada tipo cubierto (texto-imagen, texto-elemento-dinamico, lista, pasos, callout/alerta en sus
-4 variantes, tabla, video/texto-video), un instructor: inserta un bloque nuevo desde la biblioteca,
-confirma que aparece en el lienzo con su render real (no un resumen de texto), edita su texto
-haciendo clic directamente sobre él, reemplaza o agrega una imagen/video haciendo clic sobre el
-elemento correspondiente, guarda, y confirma que la plataforma del alumno muestra exactamente ese
-contenido. La evidencia que queda es la lista de tipos probados y el resultado observado por tipo,
-ya que no hay suite automatizada que lo capture.
+Para cada tipo cubierto, un instructor inserta un bloque nuevo desde la biblioteca, confirma que
+aparece en el lienzo con su render real (no un resumen de texto), y ejerce el verbo de edición
+propio de ese tipo directamente sobre el lienzo: texto-imagen/texto-elemento-dinamico/video —
+escribir texto y reemplazar imagen/video; lista/pasos — agregar y quitar un ítem; tabla — agregar,
+editar y quitar una fila; callout/alerta — cambiar la variante. En cada caso confirma que el panel
+de propiedades no le pide repetir esa edición en un formulario aparte, guarda, y confirma que la
+plataforma del alumno muestra exactamente ese contenido. La evidencia que queda es la lista de
+tipos probados y el resultado observado por tipo, ya que no hay suite automatizada que lo capture.
 
 ## Behaviour
 
@@ -166,6 +188,17 @@ ya que no hay suite automatizada que lo capture.
 - **Error — tipo de bloque sin contenido editable inline definido** (fuera del alcance de esta
   spec, ej. tarjetas): sigue usando el patrón de `editor-bloques-vivo` (formulario + preview) hasta
   que una spec futura lo extienda.
+- **Lista/pasos — agregar y quitar ítems en el lienzo**: el bloque renderizado en el lienzo tiene un
+  punto de acción visible para agregar un ítem nuevo (que aparece listo para escribirse
+  directamente) y, por cada ítem existente, un punto de acción visible para quitarlo — ambos sobre
+  el render real, no en un panel aparte.
+- **Tabla — agregar, editar y quitar filas en el lienzo**: cada celda de una fila existente se edita
+  haciendo clic directamente sobre ella; hay un punto de acción visible para agregar una fila nueva
+  (con sus celdas vacías listas para escribir) y, por cada fila, uno para quitarla. Las columnas
+  siguen fijas (`columna1`/`columna2`), no se agregan ni quitan columnas en esta spec.
+- **Callout/alerta — cambiar la variante en el lienzo**: el bloque tiene, sobre su propio render, un
+  control visible para elegir entre sus 4 variantes (info/warning/success/danger); elegir una
+  cambia el color/ícono del bloque de inmediato en el lienzo, sin abrir el panel.
 
 ## Acceptance criteria
 
@@ -175,9 +208,24 @@ ya que no hay suite automatizada que lo capture.
 - Given un bloque de tipo texto-imagen (o texto-elemento-dinamico/lista/pasos/callout/tabla/video)
   en el lienzo, When el instructor hace clic sobre su texto y escribe, Then el texto cambia
   directamente en el lienzo, sin abrir ningún formulario o panel aparte para ese campo.
-- Given un bloque de tipo texto-imagen (o texto-elemento-dinamico) en el lienzo, When el instructor
-  hace clic sobre su imagen (o su espacio vacío) y la agrega/reemplaza, Then la imagen cambia
-  directamente en el lienzo, sin un input de URL/archivo en un panel aparte.
+- Given un bloque de tipo texto-imagen, texto-elemento-dinamico o video/texto-video en el lienzo,
+  When el instructor hace clic sobre su imagen/video (o su espacio vacío) y lo agrega/reemplaza,
+  Then el elemento cambia directamente en el lienzo, sin un input de URL/archivo en un panel
+  aparte.
+- Given un bloque de tipo lista o pasos en el lienzo, When el instructor usa el punto de acción
+  visible para agregar un ítem, Then aparece un ítem nuevo editable directamente en el lienzo; When
+  usa el punto de acción de un ítem existente para quitarlo, Then el ítem desaparece — ambos sin
+  abrir el panel.
+- Given un bloque de tipo tabla en el lienzo, When el instructor agrega una fila con el punto de
+  acción visible, edita una celda haciendo clic sobre ella, o quita una fila con su propio punto de
+  acción, Then el cambio se refleja directamente en el lienzo, sin abrir el panel.
+- Given un bloque de tipo callout o alerta en el lienzo, When el instructor elige una variante
+  distinta con el control visible sobre el propio bloque, Then el color/ícono del bloque cambia de
+  inmediato en el lienzo, sin abrir el panel.
+- Given cualquier bloque de los tipos cubiertos por esta spec seleccionado, When el instructor abre
+  su panel de propiedades, Then el panel no contiene ningún campo de contenido ya editable en el
+  lienzo (solo, cuando aplique, el campo "Modo de visualización" de `texto-elemento-dinamico`) —
+  puede aparecer vacío o cerrarse si no queda nada que configurar.
 - Given cambios hechos directamente en el lienzo sin guardar, When el instructor pulsa guardar,
   Then esos cambios se persisten con el mismo mecanismo de guardado que ya existe
   (`updateBloque`), y la plataforma del alumno muestra ese mismo contenido al visitarlo.
