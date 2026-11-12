@@ -100,6 +100,9 @@ en commit (principio 13a) — todo queda en el working tree, sin commitear.
   en navegador los 6 criterios de aceptación — en particular el layout en escritorio (¿se ve bien la
   proporción 320px/resto que propuso el plan?) y el apilado en móvil, que es exactamente la parte que
   esta sesión no pudo ver renderizada.
+- **Confirmado por el usuario (2026-11-12):** "confirmo" — AC1-AC6 verificados en navegador contra
+  el layout real. El sustituto de mockup del plan §0/§7 queda aprobado por este uso real, sin ajustes
+  pedidos.
 
 ## Decision queue
 
