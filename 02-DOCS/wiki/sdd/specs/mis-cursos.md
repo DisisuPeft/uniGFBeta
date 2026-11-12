@@ -6,12 +6,12 @@ tags: [sdd, spec]
 timestamp: 2026-11-11T00:00:00Z
 topic: sdd
 slug: mis-cursos
-status: draft
+status: clarified
 ---
 
 # Spec — Mis cursos (endurecimiento)
 
-> Slug: `mis-cursos` · Status: draft · Created: 2026-11-11
+> Slug: `mis-cursos` · Status: clarified · Created: 2026-11-11 · Approved: 2026-11-11 ("apruebo")
 > Inherits: [constitution](../constitution.md)
 
 ## Problem & why
@@ -68,6 +68,8 @@ caro a un momento en que ya habrá colaboradores reinscritos viendo el dato equi
   competencias y textos existentes se conservan tal cual.
 - No se introduce un sistema de assets/CDN nuevo — solo se usa `curso.imagen` si el backend la
   entrega.
+- No se agrega ninguna señal visual nueva de "recursamiento" (badge, aviso, historial) en la
+  tarjeta de curso — resuelto en `## Clarifications`.
 
 ## Users & context
 
@@ -154,23 +156,43 @@ la inscripción activa, no de una anterior.
 
 - **pregunta abierta** — ¿cuál es la URL real del endpoint de perfil de competencias:
   `/competencias/mi-perfil/` (lo que usa el código hoy) o `/competencias/mi-perfil-competencias/`
-  (lo que nombró backend)? No se toca en esta spec, pero debe confirmarse antes de cualquier spec
-  futura que dependa de él; si hoy está mal apuntado, es un bug preexistente fuera de este
-  alcance.
-- **suposición tomada** — "Mis cursos" pasa a listar únicamente inscritos+completados (usando el
-  endpoint ya existente y hoy sin usar), y "Explorar" conserva el catálogo completo. *Base:* el
-  nombre de cada vista y el endpoint ya existente lo sugieren con fuerza, y el usuario confirmó
-  explícitamente esta separación. *Riesgo:* si "Mis cursos" hoy también sirve como la forma
-  principal de descubrir cursos nuevos (no solo Explorar), separar tajantemente podría esconder
-  una ruta de descubrimiento que los colaboradores ya usan; se mitiga porque Explorar ya existe y
-  ya tiene el flujo de inscripción funcionando.
-- **suposición tomada** — el desempate para "más reciente" al ordenar la lista cruda de
-  inscripciones en cliente es `inscrito_at` descendente con `id` como desempate en timestamps
-  idénticos. *Base:* confirmado textualmente por backend. *Riesgo:* ninguno, es contrato cerrado.
+  (lo que nombró backend)? Sigue sin resolverse — el backend no estaba disponible para verificar
+  en vivo durante `clarify` (confirmado: `curl` a ambas rutas no conectó). No cambia lo que esta
+  spec construye (ninguna de sus 5 criterios de aceptación toca ese endpoint), así que se deja
+  tal cual: deferida explícitamente a la próxima spec que dependa de rutas recomendadas.
+- **suposición tomada** — "Mis cursos" lista únicamente inscritos+completados (vía
+  `getMisCursos`), "Explorar" conserva el catálogo completo. *Base:* validado en `clarify` contra
+  `02-DOCS/wiki/sdd/decisions.md` (entrada 2026-11-11, misma decisión ya registrada) y sin
+  contradicción con la constitución — **se sostiene**. *Riesgo:* podría esconder una ruta de
+  descubrimiento si "Mis cursos" se usaba también para eso; mitigado porque "Explorar" ya cubre
+  ese flujo.
+- **suposición tomada** — desempate "más reciente" = `inscrito_at` descendente, `id` como
+  desempate. *Base:* validado en `clarify` contra `02-DOCS/wiki/backend-contracts.md` (sección
+  "Inscripción recency"), que cita la fuente exacta del backend (`_inscripcion_reciente`,
+  `recorrido-formativo-periodos-acreditacion.md` Clarification #5-7) — **se sostiene, contrato
+  cerrado, no provisional**. *Riesgo:* ninguno.
 - **decisión diferida** — agregar paginación real (server-side o infinite scroll) a "Explorar" si
-  el catálogo de cursos crece mucho. Fuera de este ciclo; hoy no hay evidencia de que el catálogo
-  sea grande.
-- **área no formulable** — qué debe comunicar visualmente "Mis cursos" cuando un colaborador
-  completa un curso y luego se reinscribe (¿la misma tarjeta "se reactiva", o hay alguna señal de
-  que es un recursamiento?). El backend ya resuelve cuál inscripción mostrar; no está claro aún
-  si el diseño actual comunica bien ese caso al colaborador — anotado, no bloqueante.
+  el catálogo de cursos crece mucho. Se deja sin tocar, como estaba.
+- **área no formulable** — qué debe comunicar visualmente "Mis cursos" ante un recursamiento.
+  **Graduada en `clarify`** a una pregunta formulable (¿se agrega una señal nueva de
+  "recursamiento", o la tarjeta solo refleja el estado de la inscripción activa sin indicarlo?) y
+  resuelta sin necesidad de preguntar: la spec ya cerraba esto en *Non-goals* ("no se rediseña
+  visualmente la tarjeta más allá de la portada") — agregar una señal nueva lo contradiría.
+  Resuelto: no se agrega ninguna señal nueva; movido a *Non-goals* arriba.
+
+## Clarifications
+
+- 2026-11-11 — **Q:** ¿la URL de perfil de competencias cambia algo de esta spec? **Decisión:**
+  no; se deja como pregunta abierta para la próxima spec, no bloquea `mis-cursos`. **Por qué:**
+  ninguno de los 5 criterios de aceptación de esta spec depende de ese endpoint; el backend no
+  estaba disponible para verificar en vivo.
+- 2026-11-11 — **Q:** ¿sigue sosteniéndose separar Mis cursos/Explorar por endpoint? **Decisión:**
+  sí, sin cambios. **Por qué:** coincide con la decisión ya registrada en `decisions.md` el mismo
+  día; no hay evidencia nueva que la contradiga.
+- 2026-11-11 — **Q:** ¿sigue sosteniéndose el criterio `inscrito_at` desc + `id` como desempate?
+  **Decisión:** sí, confirmado como contrato cerrado (no provisional). **Por qué:**
+  `02-DOCS/wiki/backend-contracts.md` cita la fuente backend exacta y una spec de su lado con
+  tests propios.
+- 2026-11-11 — **Q:** ¿la tarjeta de curso necesita una señal visual de recursamiento? **Decisión:**
+  no — se agrega a *Non-goals*. **Por qué:** la spec ya excluía el rediseño visual de la tarjeta
+  más allá de la portada; una señal nueva lo contradiría.
