@@ -33,3 +33,4 @@ tags: [index]
 | Analyze — Mis cursos (endurecimiento) | `02-DOCS/wiki/sdd/analysis/mis-cursos.md` |
 | Progress — Mis cursos (endurecimiento) | `02-DOCS/wiki/sdd/progress/mis-cursos.md` |
 | Spec — Vista previa en vivo del editor de bloques | `02-DOCS/wiki/sdd/specs/editor-bloques-vivo.md` |
+| Plan — Vista previa en vivo del editor de bloques | `02-DOCS/wiki/sdd/plans/editor-bloques-vivo.md` |
