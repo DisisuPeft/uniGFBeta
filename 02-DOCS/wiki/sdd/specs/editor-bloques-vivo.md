@@ -6,12 +6,12 @@ tags: [sdd, spec]
 timestamp: 2026-11-12T00:00:00Z
 topic: sdd
 slug: editor-bloques-vivo
-status: draft
+status: clarified
 ---
 
 # Spec — Vista previa en vivo del editor de bloques
 
-> Slug: `editor-bloques-vivo` · Status: draft · Created: 2026-11-12
+> Slug: `editor-bloques-vivo` · Status: clarified · Created: 2026-11-12 · Approved: 2026-11-12 ("apruebo")
 > Inherits: [constitution](../constitution.md)
 
 ## Problem & why
@@ -91,7 +91,9 @@ estado vacío reconocible (no un error, no un hueco en blanco sin explicación).
 
 - Principio 19 de la constitución: `BloqueRenderer` (`app/components/plataforma/bloque-renderer.tsx`)
   es la única implementación de render reutilizable del proyecto. La vista previa en vivo debe
-  reusarlo tal cual — nunca duplicar su lógica de dispatch por `tipo_codigo`.
+  usar esa misma implementación — puede extenderse (p. ej. para el estado vacío del criterio de
+  aceptación correspondiente) pero nunca duplicarse en un renderer paralelo ni reimplementar su
+  lógica de dispatch por `tipo_codigo` en otro archivo.
 - Principio 13a: el agente nunca ejecuta `git commit`/`add`/`push`; el humano comitea cuando
   decida.
 - Principio 7: no hay suite de tests. La verificación se apoya en `tsc`/`eslint`/`build` + revisión
@@ -142,8 +144,9 @@ tipo, ya que no hay suite automatizada que lo capture.
   `texto-presentacion`/`texto-presentacion-paneles`/`texto-tarjetas`), When el instructor agrega o
   edita un ítem mediante `LiveItemsEditor`, Then la vista previa refleja ese ítem sin guardar.
 - Given un bloque recién creado desde la biblioteca (todos los campos vacíos), When el instructor
-  abre su panel de propiedades antes de escribir nada, Then la vista previa muestra un estado vacío
-  reconocible, no un error ni un espacio en blanco sin explicación.
+  abre su panel de propiedades antes de escribir nada, Then el área de vista previa muestra un
+  mensaje de estado vacío visible (texto explicativo), nunca el área completamente en blanco sin
+  ningún elemento visible.
 - Given la pantalla en un viewport móvil, When el instructor abre el panel de propiedades de un
   bloque, Then formulario y vista previa aparecen apilados dentro del mismo panel, ambos
   utilizables con scroll.
@@ -175,7 +178,26 @@ tipo, ya que no hay suite automatizada que lo capture.
   debajo, ancho exacto). Queda explícitamente señalado en "What result they get": `plan` propone una
   disposición concreta y se aprueba antes de construirla, en vez de que el agente la invente sin
   referencia.
+- **suposición tomada** — `BloqueRenderer` puede extenderse (no solo "usarse tal cual") para cumplir
+  el estado vacío del criterio de aceptación correspondiente; lo que el principio 19 prohíbe es una
+  implementación paralela, no una extensión de la única implementación existente. *Base:* sin esta
+  aclaración, el criterio de aceptación del estado vacío es incumplible sin violar el principio 19
+  (hoy `BloqueRenderer` devuelve `null` — nada visible — cuando un bloque no tiene contenido).
+  *Riesgo:* si `plan` interpreta "extender" de forma demasiado amplia, podría tocar el comportamiento
+  del renderer para la plataforma del alumno; el criterio de aceptación de "Vista previa existente
+  sigue igual" ya acota eso.
 
 ## Clarifications
 
-_(se completa en la fase `clarify`)_
+- 2026-11-12 — Q: ¿"reusar `BloqueRenderer` tal cual" impide tocar el archivo, incluso para que el
+  estado vacío sea visible como pide el criterio de aceptación? → Decisión: no — puede extenderse
+  (p. ej. un estado vacío por tipo), solo no puede duplicarse en un renderer paralelo. → Por qué: sin
+  esto, el criterio de aceptación del estado vacío era incumplible sin romper el principio 19; la
+  lectura correcta de "una sola implementación" es justamente evitar duplicar, no congelar el
+  archivo.
+- 2026-11-12 — Puntos tipados previos: **decisión diferida** (tablero único) se deja intacta, sin
+  reabrir alcance. **Supuesto tomado** (sin debounce) validado — sigue sosteniéndose, sin
+  contradicción con la constitución ni con decisiones registradas. **Supuesto tomado** (archivos sin
+  previsualizar) validado — sigue sosteniéndose. **Pregunta abierta** (mockup de layout) se deja
+  abierta a propósito: no es resolvible con una respuesta de texto del usuario, requiere que `plan`
+  proponga una disposición concreta primero.
