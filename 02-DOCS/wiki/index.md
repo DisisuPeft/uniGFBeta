@@ -39,3 +39,4 @@ tags: [index]
 | Spec — Lienzo WYSIWYG del constructor de bloques (primer incremento) | `02-DOCS/wiki/sdd/specs/lienzo-wysiwyg.md` |
 | Plan — Lienzo WYSIWYG del constructor de bloques (primer incremento) | `02-DOCS/wiki/sdd/plans/lienzo-wysiwyg.md` |
 | Analyze — Lienzo WYSIWYG del constructor de bloques | `02-DOCS/wiki/sdd/analysis/lienzo-wysiwyg.md` |
+| Progress — Lienzo WYSIWYG del constructor de bloques | `02-DOCS/wiki/sdd/progress/lienzo-wysiwyg.md` |
