@@ -7,17 +7,7 @@ import {
   useInscribirseACursoMutation,
 } from "@/redux/features/capacitacion/plataformaApiSlice";
 import { Clock, Search, Play, CheckCircle } from "lucide-react";
-
-const getPlaceholderImage = (id: number) => {
-  const images = [
-    "/assets/hero-image.jpg",
-    "/assets/place2.jpg",
-    "/assets/plataforma-img.png",
-    "/assets/vista-cursos.jpg",
-    "/assets/hero/thales-hero.webp",
-  ];
-  return images[id % images.length];
-};
+import { resolveCursoImagen } from "./curso-helpers";
 
 export default function ExplorarDash() {
   const router = useRouter();
@@ -26,7 +16,7 @@ export default function ExplorarDash() {
   const [inscribirse, { isLoading: inscribiendo, originalArgs: inscribiendoId }] =
     useInscribirseACursoMutation();
 
-  const cursos = todosData?.results ?? [];
+  const cursos = todosData ?? [];
 
   const filtrados = cursos.filter((c) =>
     c.titulo.toLowerCase().includes(search.toLowerCase()),
@@ -124,12 +114,12 @@ export default function ExplorarDash() {
                   {/* Imagen */}
                   <div className="relative h-44 flex-shrink-0 overflow-hidden bg-slate-50">
                     <img
-                      src={curso.imagen ?? getPlaceholderImage(curso.id)}
+                      src={resolveCursoImagen(curso)}
                       alt={curso.titulo}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       onError={(e) => {
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = getPlaceholderImage(curso.id);
+                        e.currentTarget.src = resolveCursoImagen({ imagen: null, id: curso.id });
                       }}
                     />
                     <span

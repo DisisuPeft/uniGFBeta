@@ -64,17 +64,25 @@ export interface TemaForm {
 }
 
 // ── ContenidoBloque ───────────────────────────────────────────
-export interface BloquePanel {
-  titulo?: string;
-  texto?: string;
-  imagen_url?: string;
-  items?: string[];
+export interface ContenidoBloqueItem {
+  id: number;
+  bloque: number;
+  orden: number;
+  titulo: string | null;
+  texto: string | null;
+  imagen_url: string | null;
+  // Cuando la imagen del ítem se sube como archivo (en vez de URL externa),
+  // el backend la devuelve aquí en lugar de en imagen_url.
+  imagen_archivo: string | null;
+  items: string[] | null;
 }
-
-export interface BloqueTarjeta {
-  titulo: string;
-  texto?: string;
-  imagen_url?: string;
+export interface ContenidoBloqueItemForm {
+  bloque: number;
+  orden: number;
+  titulo?: string | null;
+  texto?: string | null;
+  imagen_url?: string | null;
+  items?: string[] | null;
 }
 
 export interface ContenidoBloque {
@@ -82,6 +90,7 @@ export interface ContenidoBloque {
   tema: number;
   tipo: number;
   tipo_nombre: string;
+  tipo_codigo: string;
   orden: number;
   texto: string | null;
   variante: string | null;
@@ -89,8 +98,14 @@ export interface ContenidoBloque {
   filas: Record<string, string>[] | null;
   video_url: string | null;
   imagen_url: string | null;
-  paneles: BloquePanel[] | null;
-  tarjetas: BloqueTarjeta[] | null;
+  // Cuando la imagen del bloque se sube como archivo (en vez de URL externa),
+  // el backend la devuelve aquí en lugar de en imagen_url — mismo patrón que
+  // ContenidoBloqueItem.imagen_archivo arriba.
+  imagen_archivo: string | null;
+  // Bloque tipo "embed" (Canva u otro iframe-embed) — texto libre, "" cuando
+  // no hay embed (nunca null), igual que video_url/imagen_url.
+  embed_url: string;
+  bloque_items: ContenidoBloqueItem[] | null;
 }
 export interface BloqueForm {
   tema: number;
@@ -102,8 +117,7 @@ export interface BloqueForm {
   filas?: Record<string, string>[] | null;
   video_url?: string | null;
   imagen_url?: string | null;
-  paneles?: BloquePanel[] | null;
-  tarjetas?: BloqueTarjeta[] | null;
+  embed_url?: string | null;
 }
 
 // ── Evaluación ────────────────────────────────────────────────

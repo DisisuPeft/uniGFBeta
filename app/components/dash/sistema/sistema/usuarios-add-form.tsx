@@ -79,7 +79,7 @@ export default function UserForm() {
                     className="px-3 py-2 border border-1 rounded-lg bg-white text-gray-800 focus:outline focus:ring-2 focus:ring focus:border-transparent transition-all"
                   >
                     <option value={0}>Seleccionar...</option>
-                    {generos?.results.map((option) => (
+                    {generos?.map((option) => (
                       <option key={option.id} value={option.id}>
                         {option.nombre}
                       </option>

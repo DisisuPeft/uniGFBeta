@@ -27,6 +27,7 @@ import {
   useMarcarCursoCompletadoMutation,
   useGetMisProgresosQuery,
 } from "@/redux/features/capacitacion/plataformaApiSlice";
+import { resolveInscripcionActual } from "./curso-helpers";
 
 // ── Sub-components ────────────────────────────────────────────────
 
@@ -66,8 +67,8 @@ function ModuloContent({
 }) {
   const { data: temasData } = useGetTemasQuery({ modulo: moduloId });
   const { data: evalsData } = useGetEvaluacionesQuery({ modulo: moduloId });
-  const temas = temasData?.results ?? [];
-  const evals = evalsData?.results ?? [];
+  const temas = temasData ?? [];
+  const evals = evalsData ?? [];
 
   if (!temas.length && !evals.length) return null;
 
@@ -266,18 +267,18 @@ export default function CursoOverviewClient({ cursoId }: { cursoId: number }) {
   const [inscribirse, { isLoading: inscribiendo }] = useInscribirseACursoMutation();
   const [marcarCompletado] = useMarcarCursoCompletadoMutation();
 
-  const modulos = modulosData?.results ?? [];
-  const evalsFinales = evalsData?.results ?? [];
-  const inscripciones = inscripcionesData?.results ?? [];
+  const modulos = modulosData ?? [];
+  const evalsFinales = evalsData ?? [];
+  const inscripciones = inscripcionesData ?? [];
   const progresos = progresosData?.results ?? [];
   const temasCompletados = new Set(progresos.map((p) => p.tema));
-  const inscripcion = inscripciones.find((i) => i.curso === cursoId);
+  const inscripcion = resolveInscripcionActual(inscripciones, cursoId);
   const primerModuloId = modulos[0]?.id;
   const { data: primerosTemasData } = useGetTemasQuery(
     { modulo: primerModuloId! },
     { skip: !primerModuloId },
   );
-  const primerTemaId = primerosTemasData?.results?.[0]?.id;
+  const primerTemaId = primerosTemasData?.[0]?.id;
 
   useEffect(() => {
     if (

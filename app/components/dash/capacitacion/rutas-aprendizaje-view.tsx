@@ -24,9 +24,9 @@ import {
   useAddCursoToRutaMutation,
   useRemoveCursoFromRutaMutation,
 } from "@/redux/features/competencias/competenciasApiSlice";
-import { useGetCompetenciasQuery } from "@/redux/features/competencias/competenciasApiSlice";
-import { useGetNivelesCompetenciaQuery } from "@/redux/features/catalogos/genericosApiSlice";
-import { useGetCursosQuery } from "@/redux/features/capacitacion/capacitacionApiSlice";
+import { useGetCompetenciasCatalogoQuery } from "@/redux/features/competencias/competenciasApiSlice";
+import { useGetNivelesCompetenciaCatalogoQuery } from "@/redux/features/catalogos/genericosApiSlice";
+import { useGetCursosCatalogoQuery } from "@/redux/features/capacitacion/capacitacionApiSlice";
 import { RutaAprendizaje, RutaAprendizajeForm, CursoEnRuta } from "@/redux/features/types/competencias/types";
 import { DynamicIcon } from "@/app/ui/icon/dynamic-icon";
 
@@ -42,8 +42,8 @@ type Tab = "info" | "cursos";
 
 export default function RutasAprendizajeView() {
   const { data, isLoading } = useGetRutasAprendizajeQuery();
-  const { data: competencias } = useGetCompetenciasQuery();
-  const { data: niveles } = useGetNivelesCompetenciaQuery();
+  const { data: competencias } = useGetCompetenciasCatalogoQuery();
+  const { data: niveles } = useGetNivelesCompetenciaCatalogoQuery();
   const [create, { isLoading: creating }] = useCreateRutaAprendizajeMutation();
   const [update, { isLoading: updating }] = useUpdateRutaAprendizajeMutation();
   const [remove] = useDeleteRutaAprendizajeMutation();
@@ -57,8 +57,8 @@ export default function RutasAprendizajeView() {
   const isEditing = !!selected;
   const isSaving = creating || updating;
 
-  const listaCompetencias = competencias?.results ?? [];
-  const listaNiveles = niveles?.results ?? [];
+  const listaCompetencias = competencias ?? [];
+  const listaNiveles = niveles ?? [];
 
   function openCreate() {
     setSelected(null);
@@ -367,7 +367,7 @@ export default function RutasAprendizajeView() {
 
 function CursosTab({ rutaId }: { rutaId: number }) {
   const { data: ruta, isLoading } = useGetRutaAprendizajeQuery(rutaId);
-  const { data: todosLosCursos } = useGetCursosQuery();
+  const { data: todosLosCursos } = useGetCursosCatalogoQuery();
   const [addCurso, { isLoading: adding }] = useAddCursoToRutaMutation();
   const [removeCurso] = useRemoveCursoFromRutaMutation();
 
@@ -380,7 +380,7 @@ function CursosTab({ rutaId }: { rutaId: number }) {
     : [];
 
   const linkedIds = lista.map((c) => c.curso_id);
-  const disponibles = (todosLosCursos?.results ?? []).filter(
+  const disponibles = (todosLosCursos ?? []).filter(
     (c) => !linkedIds.includes(c.id),
   );
 

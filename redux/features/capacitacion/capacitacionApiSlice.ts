@@ -5,6 +5,7 @@ import {
   Modulo, ModuloForm,
   Tema, TemaForm,
   ContenidoBloque, BloqueForm,
+  ContenidoBloqueItem, ContenidoBloqueItemForm,
   Evaluacion, EvaluacionForm,
   Pregunta, PreguntaForm,
   OpcionPregunta, OpcionPreguntaForm,
@@ -18,6 +19,11 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
 
     getCursos: builder.query<PaginatedResponse<Curso>, void>({
       query: () => "/capacitacion/cursos/",
+      providesTags: [{ type: "Curso", id: "LIST" }],
+    }),
+    // Variante catálogo (sin paginar) — para selects
+    getCursosCatalogo: builder.query<Curso[], void>({
+      query: () => "/capacitacion/cursos/?pagination=false",
       providesTags: [{ type: "Curso", id: "LIST" }],
     }),
     getCurso: builder.query<Curso, number>({
@@ -44,8 +50,8 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
     // MÓDULOS  — /capacitacion/modulos/
     // ==========================================================
 
-    getModulosByCurso: builder.query<PaginatedResponse<Modulo>, number>({
-      query: (cursoId) => `/capacitacion/modulos/?curso=${cursoId}`,
+    getModulosByCurso: builder.query<Modulo[], number>({
+      query: (cursoId) => `/capacitacion/modulos/?curso=${cursoId}&pagination=false`,
       providesTags: [{ type: "Modulo", id: "LIST" }],
     }),
     createModulo: builder.mutation<Modulo, ModuloForm>({
@@ -65,8 +71,8 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
     // TEMAS  — /capacitacion/temas/
     // ==========================================================
 
-    getTemasByModulo: builder.query<PaginatedResponse<Tema>, number>({
-      query: (moduloId) => `/capacitacion/temas/?modulo=${moduloId}`,
+    getTemasByModulo: builder.query<Tema[], number>({
+      query: (moduloId) => `/capacitacion/temas/?modulo=${moduloId}&pagination=false`,
       providesTags: [{ type: "Tema", id: "LIST" }],
     }),
     createTema: builder.mutation<Tema, TemaForm>({
@@ -86,8 +92,8 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
     // BLOQUES DE CONTENIDO  — /capacitacion/bloques/
     // ==========================================================
 
-    getBloquesByTema: builder.query<PaginatedResponse<ContenidoBloque>, number>({
-      query: (temaId) => `/capacitacion/bloques/?tema=${temaId}`,
+    getBloquesByTema: builder.query<ContenidoBloque[], number>({
+      query: (temaId) => `/capacitacion/bloques/?tema=${temaId}&pagination=false`,
       providesTags: [{ type: "ContenidoBloque", id: "LIST" }],
     }),
     createBloque: builder.mutation<ContenidoBloque, BloqueForm | FormData>({
@@ -102,17 +108,55 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
       query: (id) => ({ url: `/capacitacion/bloques/${id}/`, method: "DELETE" }),
       invalidatesTags: [{ type: "ContenidoBloque", id: "LIST" }],
     }),
+    reordenarBloques: builder.mutation<
+      ContenidoBloque[],
+      { tema: number; orden: { id: number; orden: number }[] }
+    >({
+      query: (body) => ({ url: "/capacitacion/bloques/reordenar/", method: "PATCH", body }),
+      invalidatesTags: [{ type: "ContenidoBloque", id: "LIST" }],
+    }),
+
+    // ==========================================================
+    // ÍTEMS DE BLOQUE (paneles/diapositivas/tarjetas)  — /capacitacion/bloque-items/
+    // ==========================================================
+
+    getBloqueItemsByBloque: builder.query<ContenidoBloqueItem[], number>({
+      query: (bloqueId) => `/capacitacion/bloque-items/?bloque=${bloqueId}&pagination=false`,
+      providesTags: [{ type: "ContenidoBloque", id: "LIST" }],
+    }),
+    createBloqueItem: builder.mutation<ContenidoBloqueItem, ContenidoBloqueItemForm | FormData>({
+      query: (body) => ({ url: "/capacitacion/bloque-items/", method: "POST", body }),
+      invalidatesTags: [{ type: "ContenidoBloque", id: "LIST" }],
+    }),
+    updateBloqueItem: builder.mutation<
+      ContenidoBloqueItem,
+      { id: number; body: Partial<ContenidoBloqueItemForm> | FormData }
+    >({
+      query: ({ id, body }) => ({ url: `/capacitacion/bloque-items/${id}/`, method: "PATCH", body }),
+      invalidatesTags: [{ type: "ContenidoBloque", id: "LIST" }],
+    }),
+    deleteBloqueItem: builder.mutation<void, number>({
+      query: (id) => ({ url: `/capacitacion/bloque-items/${id}/`, method: "DELETE" }),
+      invalidatesTags: [{ type: "ContenidoBloque", id: "LIST" }],
+    }),
+    reordenarBloqueItems: builder.mutation<
+      ContenidoBloqueItem[],
+      { bloque: number; orden: { id: number; orden: number }[] }
+    >({
+      query: (body) => ({ url: "/capacitacion/bloque-items/reordenar/", method: "PATCH", body }),
+      invalidatesTags: [{ type: "ContenidoBloque", id: "LIST" }],
+    }),
 
     // ==========================================================
     // EVALUACIONES  — /capacitacion/evaluaciones/
     // ==========================================================
 
-    getEvaluacionesByCurso: builder.query<PaginatedResponse<Evaluacion>, number>({
-      query: (cursoId) => `/capacitacion/evaluaciones/?curso=${cursoId}`,
+    getEvaluacionesByCurso: builder.query<Evaluacion[], number>({
+      query: (cursoId) => `/capacitacion/evaluaciones/?curso=${cursoId}&pagination=false`,
       providesTags: [{ type: "Evaluacion", id: "LIST" }],
     }),
-    getEvaluacionesByModulo: builder.query<PaginatedResponse<Evaluacion>, number>({
-      query: (moduloId) => `/capacitacion/evaluaciones/?modulo=${moduloId}`,
+    getEvaluacionesByModulo: builder.query<Evaluacion[], number>({
+      query: (moduloId) => `/capacitacion/evaluaciones/?modulo=${moduloId}&pagination=false`,
       providesTags: [{ type: "Evaluacion", id: "LIST" }],
     }),
     createEvaluacion: builder.mutation<Evaluacion, EvaluacionForm>({
@@ -132,8 +176,8 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
     // PREGUNTAS  — /capacitacion/preguntas/
     // ==========================================================
 
-    getPreguntasByEvaluacion: builder.query<PaginatedResponse<Pregunta>, number>({
-      query: (evaluacionId) => `/capacitacion/preguntas/?evaluacion=${evaluacionId}`,
+    getPreguntasByEvaluacion: builder.query<Pregunta[], number>({
+      query: (evaluacionId) => `/capacitacion/preguntas/?evaluacion=${evaluacionId}&pagination=false`,
       providesTags: [{ type: "Pregunta", id: "LIST" }],
     }),
     createPregunta: builder.mutation<Pregunta, PreguntaForm>({
@@ -153,8 +197,8 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
     // OPCIONES DE PREGUNTA  — /capacitacion/opciones/
     // ==========================================================
 
-    getOpcionesByPregunta: builder.query<PaginatedResponse<OpcionPregunta>, number>({
-      query: (preguntaId) => `/capacitacion/opciones/?pregunta=${preguntaId}`,
+    getOpcionesByPregunta: builder.query<OpcionPregunta[], number>({
+      query: (preguntaId) => `/capacitacion/opciones/?pregunta=${preguntaId}&pagination=false`,
       providesTags: [{ type: "OpcionPregunta", id: "LIST" }],
     }),
     createOpcion: builder.mutation<OpcionPregunta, OpcionPreguntaForm>({
@@ -175,6 +219,7 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
 export const {
   // — cursos —
   useGetCursosQuery,
+  useGetCursosCatalogoQuery,
   useGetCursoQuery,
   useCreateCursoMutation,
   useUpdateCursoMutation,
@@ -197,6 +242,14 @@ export const {
   useCreateBloqueMutation,
   useUpdateBloqueMutation,
   useDeleteBloqueMutation,
+  useReordenarBloquesMutation,
+
+  // — ítems de bloque —
+  useGetBloqueItemsByBloqueQuery,
+  useCreateBloqueItemMutation,
+  useUpdateBloqueItemMutation,
+  useDeleteBloqueItemMutation,
+  useReordenarBloqueItemsMutation,
 
   // — evaluaciones —
   useGetEvaluacionesByCursoQuery,

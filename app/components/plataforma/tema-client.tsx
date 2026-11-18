@@ -6,6 +6,8 @@ import {
   useGetTemaQuery,
   useGetBloquesQuery,
   useGetTemasQuery,
+  useGetModulosQuery,
+  useGetEvaluacionesQuery,
   useGetMisProgresosQuery,
   useMarcarTemaCompletadoMutation,
   useGetCursoPlataformaQuery,
@@ -30,21 +32,60 @@ export default function TemaClient({
   const { data: progresosData } = useGetMisProgresosQuery();
   const [marcarCompletado, { isLoading: marcando }] = useMarcarTemaCompletadoMutation();
 
-  const bloques = bloquesData?.results ?? [];
+  const bloques = bloquesData ?? [];
   const progresos = progresosData?.results ?? [];
   const completado = progresos.some((p) => p.tema === temaId);
 
-  const hasVideo = bloques.some((b) => b.tipo_nombre?.toLowerCase() === "video");
+  const hasVideo = bloques.some((b) => {
+    const codigo = b.tipo_codigo?.toLowerCase().trim();
+    return codigo === "video" || codigo === "texto-video";
+  });
   const [videoEnded, setVideoEnded] = useState(false);
   const canComplete = completado || !hasVideo || videoEnded;
 
-  const temasModulo = temasModuloData?.results ?? [];
+  const temasModulo = temasModuloData ?? [];
   const currentIndex = temasModulo.findIndex((t) => t.id === temaId);
   const siguienteTema =
     currentIndex >= 0 && currentIndex < temasModulo.length - 1
       ? temasModulo[currentIndex + 1]
       : null;
   const temaAnterior = currentIndex > 0 ? temasModulo[currentIndex - 1] : null;
+
+  // Qué sigue al completar ESTE tema, cuando ya no hay otro tema en el mismo
+  // módulo: la evaluación del módulo (si tiene una), si no el primer tema del
+  // módulo siguiente, si no la evaluación final del curso, si no, se acabó.
+  const { data: modulosData } = useGetModulosQuery({ curso: cursoId });
+  const modulos = [...(modulosData ?? [])].sort((a, b) => a.orden - b.orden);
+  const moduloIndex = modulos.findIndex((m) => m.id === tema?.modulo);
+  const siguienteModulo =
+    moduloIndex >= 0 && moduloIndex < modulos.length - 1 ? modulos[moduloIndex + 1] : null;
+
+  const { data: evalsModuloData } = useGetEvaluacionesQuery(
+    { modulo: tema?.modulo ?? 0 },
+    { skip: !tema?.modulo },
+  );
+  const evalsModulo = evalsModuloData ?? [];
+
+  const { data: temasSiguienteModuloData } = useGetTemasQuery(
+    { modulo: siguienteModulo?.id ?? 0 },
+    { skip: !siguienteModulo },
+  );
+  const primerTemaSiguienteModulo = [...(temasSiguienteModuloData ?? [])].sort(
+    (a, b) => a.orden - b.orden,
+  )[0];
+
+  const { data: evalsCursoData } = useGetEvaluacionesQuery({ curso: cursoId });
+  const evalsCurso = evalsCursoData ?? [];
+
+  const siguientePaso = siguienteTema
+    ? { tipo: "tema" as const, id: siguienteTema.id, label: "Siguiente tema" }
+    : evalsModulo.length > 0
+      ? { tipo: "evaluacion" as const, id: evalsModulo[0].id, label: "Ir a la evaluación del módulo" }
+      : primerTemaSiguienteModulo
+        ? { tipo: "tema" as const, id: primerTemaSiguienteModulo.id, label: "Siguiente módulo" }
+        : evalsCurso.length > 0
+          ? { tipo: "evaluacion" as const, id: evalsCurso[0].id, label: "Ir a la evaluación final" }
+          : { tipo: "resumen" as const };
 
   // Progreso global del curso
   const totalTemas = curso?.progreso?.total ?? 0;
@@ -117,19 +158,23 @@ export default function TemaClient({
             </Link>
 
             {completado ? (
-              siguienteTema ? (
-                <Link
-                  href={`/plataforma/curso/${cursoId}/tema/${siguienteTema.id}`}
-                  className="flex items-center gap-2 px-6 py-3 bg-[#0056D2] text-white text-[15px] font-bold rounded-xl hover:bg-[#0047b3] transition-all shadow-[0_4px_12px_rgba(0,86,210,0.2)]"
-                >
-                  Siguiente tema <ChevronRight className="w-4 h-4" />
-                </Link>
-              ) : (
+              siguientePaso.tipo === "resumen" ? (
                 <Link
                   href={`/plataforma/curso/${cursoId}`}
                   className="flex items-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-700 text-[15px] font-bold rounded-xl hover:bg-emerald-100 transition-colors"
                 >
                   Ver resumen del curso <CheckCircle className="w-4 h-4" />
+                </Link>
+              ) : (
+                <Link
+                  href={
+                    siguientePaso.tipo === "evaluacion"
+                      ? `/plataforma/curso/${cursoId}/evaluacion/${siguientePaso.id}`
+                      : `/plataforma/curso/${cursoId}/tema/${siguientePaso.id}`
+                  }
+                  className="flex items-center gap-2 px-6 py-3 bg-[#0056D2] text-white text-[15px] font-bold rounded-xl hover:bg-[#0047b3] transition-all shadow-[0_4px_12px_rgba(0,86,210,0.2)]"
+                >
+                  {siguientePaso.label} <ChevronRight className="w-4 h-4" />
                 </Link>
               )
             ) : (

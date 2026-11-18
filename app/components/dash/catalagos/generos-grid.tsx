@@ -52,11 +52,11 @@ export default function GenerosGrid() {
         </button>
       </div>
       <div className="overflow-auto mt-4">
-        {generos?.results.length === 0 ? (
+        {!generos?.length ? (
           <div>No existen generos</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-            {generos?.results.map((genero) => (
+            {generos.map((genero) => (
               <div key={genero.id}>
                 <Card>{genero.nombre}</Card>
               </div>

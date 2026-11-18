@@ -19,13 +19,11 @@ interface WithInstituto {
 
 const catalogosCrmApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPipelines: builder.query<
-      PaginatedResponse<Pipeline>,
-      WithInstituto | void
-    >({
+    getPipelines: builder.query<Pipeline[], WithInstituto | void>({
       query: (params) => {
         const qs = new URLSearchParams();
         if (params?.instituto) qs.set("instituto", String(params.instituto));
+        qs.set("pagination", "false");
         return `/crm/catalogos/pipelines/?${qs.toString()}`;
       },
     }),
@@ -34,6 +32,8 @@ const catalogosCrmApiSlice = apiSlice.injectEndpoints({
       query: (id) => `/crm/catalogos/pipelines/${id}/`,
     }),
 
+    // Sin consumidores actuales en el frontend; se deja con paginación por
+    // defecto (no confirmado si solo alimenta selects).
     getEtapas: builder.query<
       PaginatedResponse<Etapa>,
       { pipeline?: number; instituto?: number } | void
@@ -47,49 +47,55 @@ const catalogosCrmApiSlice = apiSlice.injectEndpoints({
     }),
 
     getTiposInteraccion: builder.query<
-      PaginatedResponse<TipoInteraccion>,
+      TipoInteraccion[],
       WithInstituto | void
     >({
       query: (params) => {
         const qs = new URLSearchParams();
         if (params?.instituto) qs.set("instituto", String(params.instituto));
+        qs.set("pagination", "false");
         return `/crm/catalogos/tipos-interaccion/?${qs.toString()}`;
       },
     }),
 
     getEstadosInteraccion: builder.query<
-      PaginatedResponse<EstadoInteraccion>,
+      EstadoInteraccion[],
       WithInstituto | void
     >({
       query: (params) => {
         const qs = new URLSearchParams();
         if (params?.instituto) qs.set("instituto", String(params.instituto));
+        qs.set("pagination", "false");
         return `/crm/catalogos/estados-interaccion/?${qs.toString()}`;
       },
     }),
 
     getTiposSeguimiento: builder.query<
-      PaginatedResponse<TipoSeguimiento>,
+      TipoSeguimiento[],
       WithInstituto | void
     >({
       query: (params) => {
         const qs = new URLSearchParams();
         if (params?.instituto) qs.set("instituto", String(params.instituto));
+        qs.set("pagination", "false");
         return `/crm/catalogos/tipos-seguimiento/?${qs.toString()}`;
       },
     }),
 
     getNivelesTemperatura: builder.query<
-      PaginatedResponse<NivelTemperatura>,
+      NivelTemperatura[],
       WithInstituto | void
     >({
       query: (params) => {
         const qs = new URLSearchParams();
         if (params?.instituto) qs.set("instituto", String(params.instituto));
+        qs.set("pagination", "false");
         return `/crm/catalogos/niveles-temperatura/?${qs.toString()}`;
       },
     }),
 
+    // Sin consumidores actuales en el frontend; se deja con paginación por
+    // defecto (no confirmado si solo alimenta selects).
     getFuentes: builder.query<
       PaginatedResponse<FuenteLead>,
       WithInstituto | void
@@ -101,6 +107,8 @@ const catalogosCrmApiSlice = apiSlice.injectEndpoints({
       },
     }),
 
+    // Sin consumidores actuales en el frontend; se deja con paginación por
+    // defecto (no confirmado si solo alimenta selects).
     getEstatus: builder.query<
       PaginatedResponse<EstatusLead>,
       WithInstituto | void
@@ -112,12 +120,12 @@ const catalogosCrmApiSlice = apiSlice.injectEndpoints({
       },
     }),
 
-    getOrigenesPago: builder.query<PaginatedResponse<OrigenPago>, void>({
-      query: () => `/crm/catalogos/origenes-pago/`,
+    getOrigenesPago: builder.query<OrigenPago[], void>({
+      query: () => `/crm/catalogos/origenes-pago/?pagination=false`,
     }),
 
-    getEstadosPlan: builder.query<PaginatedResponse<EstadoPlan>, void>({
-      query: () => `/crm/catalogos/estados-plan/`,
+    getEstadosPlan: builder.query<EstadoPlan[], void>({
+      query: () => `/crm/catalogos/estados-plan/?pagination=false`,
     }),
   }),
 });

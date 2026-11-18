@@ -15,7 +15,7 @@ import {
   useUpdateCursoMutation,
   useDeleteCursoMutation,
 } from "@/redux/features/capacitacion/capacitacionApiSlice";
-import { useGetStatusCursoQuery } from "@/redux/features/catalogos/genericosApiSlice";
+import { useGetStatusCursoCatalogoQuery } from "@/redux/features/catalogos/genericosApiSlice";
 import { Curso, CursoForm } from "@/redux/features/types/capacitacion/types";
 
 const FORM_ID = "curso-form";
@@ -36,7 +36,7 @@ const STATUS_CLS: Record<string, string> = {
 export default function CursosCapacitacionView() {
   const router = useRouter();
   const { data, isLoading } = useGetCursosQuery();
-  const { data: statusList } = useGetStatusCursoQuery();
+  const { data: statusList } = useGetStatusCursoCatalogoQuery();
   const [create, { isLoading: creating }] = useCreateCursoMutation();
   const [update, { isLoading: updating }] = useUpdateCursoMutation();
   const [remove] = useDeleteCursoMutation();
@@ -50,7 +50,7 @@ export default function CursosCapacitacionView() {
 
   function openCreate() {
     setSelected(null);
-    setForm({ ...EMPTY, status: statusList?.results?.[0]?.id ?? 1 });
+    setForm({ ...EMPTY, status: statusList?.[0]?.id ?? 1 });
     setDrawerOpen(true);
   }
   function openEdit(c: Curso) {
@@ -256,7 +256,7 @@ export default function CursosCapacitacionView() {
               onChange={(e) => setForm((f) => ({ ...f, status: Number(e.target.value) }))}
               className={inputCls}
             >
-              {statusList?.results?.map((s) => (
+              {statusList?.map((s) => (
                 <option key={s.id} value={s.id}>{s.nombre}</option>
               ))}
             </select>

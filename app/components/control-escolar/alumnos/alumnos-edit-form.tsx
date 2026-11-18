@@ -436,7 +436,7 @@ export default function EstudianteEditPage({ uuid }: Props) {
                       className={selectClass}
                     >
                       <option value="">Seleccionar</option>
-                      {generos?.results.map((g) => (
+                      {generos?.map((g) => (
                         <option key={g.id} value={g.id}>{g.nombre}</option>
                       ))}
                     </select>

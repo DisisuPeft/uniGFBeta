@@ -1,11 +1,10 @@
 import { apiSlice } from "@/redux/services/apiSlice";
 import { Genero } from "../types/auth/auth-types";
-import { PaginatedResponse } from "../types/paginated";
 
 const generoApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getGeneros: builder.query<PaginatedResponse<Genero>, void>({
-      query: () => "/catalogos/generos/",
+    getGeneros: builder.query<Genero[], void>({
+      query: () => "/catalogos/generos/?pagination=false",
     }),
     addGeneros: builder.mutation({
       query: (formData) => ({

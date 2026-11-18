@@ -1,11 +1,10 @@
 import { apiSlice } from "@/redux/services/apiSlice";
-import { PaginatedResponse } from "../types/paginated";
 import { Instituciones } from "../types/catalagos/cat";
 
 const institucionesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getInstituciones: builder.query<PaginatedResponse<Instituciones>, void>({
-      query: () => "/catalogos/instituciones/",
+    getInstituciones: builder.query<Instituciones[], void>({
+      query: () => "/catalogos/instituciones/?pagination=false",
     }),
     addInstituciones: builder.mutation({
       query: (formData) => ({

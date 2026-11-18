@@ -13,7 +13,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
-  useGetCursosPlataformaQuery,
   useGetMisCursosQuery,
   useGetMisInscripcionesQuery,
   useInscribirseACursoMutation,
@@ -26,6 +25,7 @@ import {
 } from "@/redux/features/competencias/competenciasApiSlice";
 import { RutaRecomendada } from "@/redux/features/types/competencias/types";
 import { iconMap } from "@/app/ui/icon/icon-map";
+import { resolveCursoImagen, resolveInscripcionActual } from "./curso-helpers";
 
 function Spinner() {
   return (
@@ -58,32 +58,6 @@ function CompetenciaBadge({
     </span>
   );
 }
-
-const getPlaceholderImage = (id: string | number) => {
-  const images = [
-    "/assets/hero-image.jpg",
-    "/assets/place2.jpg",
-    "/assets/plataforma-img.png",
-    "/assets/vista-cursos.jpg",
-    "/assets/hero/thales-hero.webp",
-  ];
-  const strId = String(id);
-  let hash = 0;
-  for (let i = 0; i < strId.length; i++) {
-    hash = strId.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return images[Math.abs(hash) % images.length];
-};
-
-const getCursoImage = (curso: CursoPlataforma) => {
-  if (curso.imagen) return curso.imagen;
-  const titleLower = curso.titulo.toLowerCase();
-  if (titleLower.includes("analista")) {
-    return "/assets/Fotos de Curso/Analista.png";
-  }
-  return getPlaceholderImage(curso.id);
-};
-
 
 interface CursoCardProps {
   curso: CursoPlataforma;
@@ -121,7 +95,7 @@ function CursoRow({
       {/* Miniatura */}
       <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
         <img
-          src={getCursoImage(curso)}
+          src={resolveCursoImagen(curso)}
           alt={curso.titulo}
           className="w-full h-full object-cover"
           onError={(e) => {
@@ -242,7 +216,7 @@ function CursoCard({
     <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden flex flex-col hover:shadow-[0_15px_30px_rgba(0,0,0,0.03)] transition-all duration-300 relative group h-full">
       <div className="relative h-44 flex-shrink-0 overflow-hidden">
         <img
-          src={getCursoImage(curso)}
+          src={resolveCursoImagen(curso)}
           alt={curso.titulo}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => {
@@ -338,9 +312,7 @@ function CursoCard({
 
 export default function MisCursosDash() {
   const { data: userData } = useRetrieveUserQuery();
-  const { data: todosData, isLoading: loadingTodos } =
-    useGetCursosPlataformaQuery();
-  const { isLoading: loadingMis } = useGetMisCursosQuery();
+  const { data: misCursosData, isLoading: loadingMis } = useGetMisCursosQuery();
   const { data: inscripcionesData } = useGetMisInscripcionesQuery();
   const [inscribirse, { isLoading: inscribiendo }] =
     useInscribirseACursoMutation();
@@ -353,11 +325,11 @@ export default function MisCursosDash() {
   const [viewMode, setViewMode] = useState("grid");
   const [selectedCompId, setSelectedCompId] = useState<number | null>(null);
 
-  const todos = todosData?.results ?? [];
-  const inscripciones = inscripcionesData?.results ?? [];
+  const todos = misCursosData ?? [];
+  const inscripciones = inscripcionesData ?? [];
 
   const completadoMap = new Map(
-    inscripciones.map((i) => [i.curso, i.completado_at]),
+    todos.map((c) => [c.id, resolveInscripcionActual(inscripciones, c.id)?.completado_at ?? null]),
   );
 
   const nombre = userData?.nombre_completo?.split(" ")[0] ?? "Martha";
@@ -387,7 +359,7 @@ export default function MisCursosDash() {
             )
       : [];
 
-  if (loadingTodos || loadingMis) return <Spinner />;
+  if (loadingMis) return <Spinner />;
 
   async function handleAccionRuta(ruta: RutaRecomendada) {
     if (ruta.terminada || !ruta.curso_actual_id) return;
@@ -802,43 +774,6 @@ export default function MisCursosDash() {
             </p>
           </div>
         )}
-
-        {/* Paginación */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-slate-100 text-sm font-semibold text-slate-400">
-          <div>
-            Mostrando 1 a {filteredCursos.length} de {filteredCursos.length}{" "}
-            cursos
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              className="px-3.5 py-1.5 rounded-lg border border-slate-100 text-slate-400 hover:bg-slate-50 disabled:opacity-50"
-              disabled
-            >
-              &lt;
-            </button>
-            <span className="w-8 h-8 rounded-lg bg-blue-50 text-[#0056D2] flex items-center justify-center font-bold">
-              1
-            </span>
-            <button
-              className="px-3.5 py-1.5 rounded-lg border border-slate-100 text-slate-400 hover:bg-slate-50 disabled:opacity-50"
-              disabled
-            >
-              &gt;
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span>Mostrar</span>
-            <div className="relative">
-              <select className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg cursor-pointer text-slate-500 font-semibold text-[13px] focus:outline-none">
-                <option>8 por página</option>
-                <option>16 por página</option>
-              </select>
-              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

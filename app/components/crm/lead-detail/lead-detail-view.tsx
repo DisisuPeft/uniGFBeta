@@ -473,7 +473,7 @@ function InteraccionesTab({
   const [deleteInteraccion, { isLoading: isDeleting }] =
     useDeleteInteraccionMutation();
 
-  const tipoActual = tipos?.results?.find((t) => t.id === Number(form.tipo));
+  const tipoActual = tipos?.find((t) => t.id === Number(form.tipo));
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
@@ -578,7 +578,7 @@ function InteraccionesTab({
                 }
               >
                 <option value="">Seleccionar</option>
-                {tipos?.results?.map((t) => (
+                {tipos?.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.icono} {t.nombre}
                   </option>
@@ -597,7 +597,7 @@ function InteraccionesTab({
                 }
               >
                 <option value="">Seleccionar</option>
-                {estados?.results?.map((e) => (
+                {estados?.map((e) => (
                   <option key={e.id} value={e.id}>
                     {e.nombre}
                   </option>
@@ -676,7 +676,7 @@ function InteraccionesTab({
                 }
               >
                 <option value="">Sin cambio</option>
-                {temperaturas?.results?.map((t) => (
+                {temperaturas?.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.nombre}
                   </option>
@@ -994,7 +994,7 @@ function InteraccionesTab({
                               }))
                             }
                           >
-                            {tipos?.results?.map((t) => (
+                            {tipos?.map((t) => (
                               <option key={t.id} value={t.id}>
                                 {t.icono} {t.nombre}
                               </option>
@@ -1015,7 +1015,7 @@ function InteraccionesTab({
                               }))
                             }
                           >
-                            {estados?.results?.map((e) => (
+                            {estados?.map((e) => (
                               <option key={e.id} value={e.id}>
                                 {e.nombre}
                               </option>
@@ -1083,7 +1083,7 @@ function InteraccionesTab({
                             }
                           >
                             <option value="">Sin cambio</option>
-                            {temperaturas?.results?.map((t) => (
+                            {temperaturas?.map((t) => (
                               <option key={t.id} value={t.id}>
                                 {t.nombre}
                               </option>
@@ -1541,7 +1541,7 @@ function SeguimientosTab({ leadId }: { leadId: number }) {
                 }
               >
                 <option value="">Seleccionar</option>
-                {tipos?.results?.map((t) => (
+                {tipos?.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.nombre}
                   </option>
@@ -1715,7 +1715,7 @@ function SeguimientosTab({ leadId }: { leadId: number }) {
                                 }))
                               }
                             >
-                              {tipos?.results?.map((t) => (
+                              {tipos?.map((t) => (
                                 <option key={t.id} value={t.id}>
                                   {t.icono} {t.nombre}
                                 </option>
@@ -1898,7 +1898,7 @@ export default function LeadDetailView({ uuid, refParam }: Props) {
   const { data: pipelines } = useGetPipelinesQuery(
     unidadId ? { instituto: unidadId } : undefined,
   );
-  const etapas = pipelines?.results?.[0]?.etapas ?? [];
+  const etapas = pipelines?.[0]?.etapas ?? [];
 
   const tabs: {
     key: Tab;

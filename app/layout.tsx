@@ -4,6 +4,7 @@ import "./globals.css";
 import Provider from "@/redux/provider";
 import Setup from "./utils/auth/setup";
 import AlertSystem from "./utils/alert/alert";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -32,9 +33,11 @@ export default function RootLayout({
       </head>
       <body className={`font-sans antialiased`}>
         <Provider>
-          <Setup />
-          <AlertSystem />
-          {children}
+          <TooltipProvider>
+            <Setup />
+            <AlertSystem />
+            {children}
+          </TooltipProvider>
         </Provider>
       </body>
     </html>

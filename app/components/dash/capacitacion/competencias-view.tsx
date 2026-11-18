@@ -23,8 +23,8 @@ import {
   useCreateCompetenciaPuestoMutation,
   useDeleteCompetenciaPuestoMutation,
 } from "@/redux/features/competencias/competenciasApiSlice";
-import { useGetPuestosQuery } from "@/redux/features/sistema/sistemaApiSlice";
-import { useGetNivelesCompetenciaQuery } from "@/redux/features/catalogos/genericosApiSlice";
+import { useGetPuestosCatalogoQuery } from "@/redux/features/sistema/sistemaApiSlice";
+import { useGetNivelesCompetenciaCatalogoQuery } from "@/redux/features/catalogos/genericosApiSlice";
 import {
   Competencia,
   CompetenciaForm,
@@ -468,8 +468,8 @@ function InfoTab({
 function PuestosTab({ competenciaId }: { competenciaId: number }) {
   const { data: asociaciones, isLoading } =
     useGetCompetenciasPuestoByCompetenciaQuery(competenciaId);
-  const { data: todosLosPuestos } = useGetPuestosQuery();
-  const { data: niveles } = useGetNivelesCompetenciaQuery();
+  const { data: todosLosPuestos } = useGetPuestosCatalogoQuery();
+  const { data: niveles } = useGetNivelesCompetenciaCatalogoQuery();
   const [createAsoc, { isLoading: adding }] =
     useCreateCompetenciaPuestoMutation();
   const [deleteAsoc] = useDeleteCompetenciaPuestoMutation();
@@ -479,7 +479,7 @@ function PuestosTab({ competenciaId }: { competenciaId: number }) {
   const [nivelId, setNivelId] = useState<number>(0);
 
   const linkedIds = asociaciones?.results?.map((a) => a.puesto) ?? [];
-  const disponibles = (todosLosPuestos?.results ?? []).filter(
+  const disponibles = (todosLosPuestos ?? []).filter(
     (p) => !linkedIds.includes(p.id),
   );
 
@@ -610,7 +610,7 @@ function PuestosTab({ competenciaId }: { competenciaId: number }) {
               className={selectCls}
             >
               <option value={0}>Seleccionar nivel…</option>
-              {niveles?.results.map((n) => (
+              {niveles?.map((n) => (
                 <option key={n.id} value={n.id}>
                   {n.nombre}
                 </option>

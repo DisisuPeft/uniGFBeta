@@ -150,7 +150,7 @@ export default function EstudianteDetallePage() {
                 className={selectClass}
               >
                 <option value="">Seleccionar</option>
-                {generos?.results.map((genero) => (
+                {generos?.map((genero) => (
                   <option key={genero.id} value={genero.id}>
                     {genero.nombre}
                   </option>

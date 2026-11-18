@@ -125,7 +125,7 @@ export default function PlanPagoTab({
   const { data: origenes } = useGetOrigenesPagoQuery();
   const { data: estadosPlan } = useGetEstadosPlanQuery();
   const { data: empresas } = useGetEmpresasQuery();
-  const empresaId = empresas?.results?.[0]?.id;
+  const empresaId = empresas?.[0]?.id;
 
   // ─ Plan query
   const {
@@ -337,7 +337,7 @@ export default function PlanPagoTab({
                 }
               >
                 <option value="">Seleccionar</option>
-                {(origenes?.results ?? []).map((o) => (
+                {(origenes ?? []).map((o) => (
                   <option key={o.id} value={o.id}>
                     {o.nombre}
                   </option>
@@ -364,7 +364,7 @@ export default function PlanPagoTab({
                 }
               >
                 <option value="">Seleccionar</option>
-                {(estadosPlan?.results ?? []).map((e) => (
+                {(estadosPlan ?? []).map((e) => (
                   <option key={e.id} value={e.id}>
                     {e.nombre}
                   </option>

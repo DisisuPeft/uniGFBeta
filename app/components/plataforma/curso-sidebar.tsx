@@ -29,8 +29,8 @@ function ModuloItem({
   const { data: temasData } = useGetTemasQuery({ modulo: moduloId });
   const { data: evalsData } = useGetEvaluacionesQuery({ modulo: moduloId });
 
-  const temas = temasData?.results ?? [];
-  const evals = evalsData?.results ?? [];
+  const temas = temasData ?? [];
+  const evals = evalsData ?? [];
 
   return (
     <div className="mb-1">
@@ -110,10 +110,10 @@ export default function CursoSidebar({ cursoId }: Props) {
   const { data: progresosData } = useGetMisProgresosQuery();
   const { data: cursoevals } = useGetEvaluacionesQuery({ curso: cursoId });
 
-  const modulos = modulosData?.results ?? [];
+  const modulos = modulosData ?? [];
   const progresos = progresosData?.results ?? [];
   const temasCompletados = new Set(progresos.map((p) => p.tema));
-  const evalsFinales = cursoevals?.results ?? [];
+  const evalsFinales = cursoevals ?? [];
 
   return (
     <aside className="w-64 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col overflow-hidden">

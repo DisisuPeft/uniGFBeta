@@ -28,6 +28,11 @@ const competenciasApiSlice = apiSlice.injectEndpoints({
       query: () => `/competencias/competencias/`,
       providesTags: [{ type: "Competencia", id: "LIST" }],
     }),
+    // Variante catálogo (sin paginar) — para selects
+    getCompetenciasCatalogo: builder.query<Competencia[], void>({
+      query: () => `/competencias/competencias/?pagination=false`,
+      providesTags: [{ type: "Competencia", id: "LIST" }],
+    }),
     getCompetencia: builder.query<Competencia, number>({
       query: (id) => `/competencias/competencias/${id}/`,
       providesTags: (_, __, id) => [{ type: "Competencia", id }],
@@ -272,6 +277,7 @@ const competenciasApiSlice = apiSlice.injectEndpoints({
 export const {
   // — catálogo —
   useGetCompetenciasQuery,
+  useGetCompetenciasCatalogoQuery,
   useGetCompetenciaQuery,
   useCreateCompetenciaMutation,
   useUpdateCompetenciaMutation,

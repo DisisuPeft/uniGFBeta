@@ -8,7 +8,7 @@ import {
   useUpdateCompetenciaColaboradorMutation,
 } from "@/redux/features/competencias/competenciasApiSlice";
 import { useGetUsersQuery } from "@/redux/features/auth/userApiSlice";
-import { useGetNivelesCompetenciaQuery } from "@/redux/features/catalogos/genericosApiSlice";
+import { useGetNivelesCompetenciaCatalogoQuery } from "@/redux/features/catalogos/genericosApiSlice";
 import { CompetenciaColaborador } from "@/redux/features/types/competencias/types";
 import { User } from "@/redux/features/auth/userApiSlice";
 // import { DynamicIcon } from "@/app/ui/icon/dynamic-icon";
@@ -68,13 +68,13 @@ function ColaboradorSelector({ onSelect }: { onSelect: (user: User) => void }) {
 // ── Fila editable de competencia ──────────────────────────────
 
 function CompetenciaRow({ item }: { item: CompetenciaColaborador }) {
-  const { data: niveles } = useGetNivelesCompetenciaQuery();
+  const { data: niveles } = useGetNivelesCompetenciaCatalogoQuery();
   const [update, { isLoading: saving }] =
     useUpdateCompetenciaColaboradorMutation();
   const [editing, setEditing] = useState(false);
   const [nivelId, setNivelId] = useState<number>(item.nivel);
 
-  const listaNiveles = niveles?.results ?? [];
+  const listaNiveles = niveles ?? [];
 
   async function handleSave() {
     try {

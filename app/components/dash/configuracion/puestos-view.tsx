@@ -20,7 +20,7 @@ import {
   useCreatePuestoMutation,
   useUpdatePuestoMutation,
   useDeletePuestoMutation,
-  useGetDepartamentosQuery,
+  useGetDepartamentosCatalogoQuery,
 } from "@/redux/features/sistema/sistemaApiSlice";
 import { Puesto, PuestoForm } from "@/redux/features/types/sistema/types";
 import {
@@ -29,8 +29,8 @@ import {
   useUpdateCompetenciaPuestoMutation,
   useDeleteCompetenciaPuestoMutation,
 } from "@/redux/features/competencias/competenciasApiSlice";
-import { useGetCompetenciasQuery } from "@/redux/features/competencias/competenciasApiSlice";
-import { useGetNivelesCompetenciaQuery } from "@/redux/features/catalogos/genericosApiSlice";
+import { useGetCompetenciasCatalogoQuery } from "@/redux/features/competencias/competenciasApiSlice";
+import { useGetNivelesCompetenciaCatalogoQuery } from "@/redux/features/catalogos/genericosApiSlice";
 import { CompetenciaPuesto } from "@/redux/features/types/competencias/types";
 
 type Tab = "info" | "competencias";
@@ -46,7 +46,7 @@ const EMPTY: PuestoForm = {
 
 export default function PuestosView() {
   const { data, isLoading } = useGetPuestosQuery();
-  const { data: departamentos } = useGetDepartamentosQuery();
+  const { data: departamentos } = useGetDepartamentosCatalogoQuery();
   const [create, { isLoading: creating }] = useCreatePuestoMutation();
   const [update, { isLoading: updating }] = useUpdatePuestoMutation();
   const [remove] = useDeletePuestoMutation();
@@ -222,7 +222,7 @@ export default function PuestosView() {
         onTabChange={setActiveTab}
         form={form}
         setForm={setForm}
-        departamentos={departamentos?.results ?? []}
+        departamentos={departamentos ?? []}
         isSaving={isSaving}
         onSubmit={handleSubmit}
       />
@@ -424,8 +424,8 @@ function InfoTab({
 
 function CompetenciasTab({ puestoId }: { puestoId: number }) {
   const { data: asociaciones, isLoading } = useGetCompetenciasPuestoByPuestoQuery(puestoId);
-  const { data: todasLasCompetencias } = useGetCompetenciasQuery();
-  const { data: niveles } = useGetNivelesCompetenciaQuery();
+  const { data: todasLasCompetencias } = useGetCompetenciasCatalogoQuery();
+  const { data: niveles } = useGetNivelesCompetenciaCatalogoQuery();
   const [createAsoc, { isLoading: adding }] = useCreateCompetenciaPuestoMutation();
   const [updateAsoc] = useUpdateCompetenciaPuestoMutation();
   const [deleteAsoc] = useDeleteCompetenciaPuestoMutation();
@@ -435,7 +435,7 @@ function CompetenciasTab({ puestoId }: { puestoId: number }) {
   const [nivelId, setNivelId] = useState<number>(0);
 
   const linkedIds = asociaciones?.results?.map((a) => a.competencia) ?? [];
-  const disponibles = (todasLasCompetencias?.results ?? []).filter(
+  const disponibles = (todasLasCompetencias ?? []).filter(
     (c) => !linkedIds.includes(c.id),
   );
 
@@ -487,7 +487,7 @@ function CompetenciasTab({ puestoId }: { puestoId: number }) {
   }
 
   const lista = asociaciones?.results ?? [];
-  const nivelesOpts = niveles?.results ?? [];
+  const nivelesOpts = niveles ?? [];
 
   return (
     <div className="space-y-4">

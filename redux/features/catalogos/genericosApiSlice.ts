@@ -43,6 +43,11 @@ const generoApiSlice = apiSlice.injectEndpoints({
       query: () => "/catalogos/niveles-competencia/",
       providesTags: [{ type: "NivelCompetencia", id: "LIST" }],
     }),
+    // Variante catálogo (sin paginar) — para selects
+    getNivelesCompetenciaCatalogo: builder.query<NivelCompetencia[], void>({
+      query: () => "/catalogos/niveles-competencia/?pagination=false",
+      providesTags: [{ type: "NivelCompetencia", id: "LIST" }],
+    }),
     getNivelCompetencia: builder.query<NivelCompetencia, number>({
       query: (id) => `/catalogos/niveles-competencia/${id}/`,
       providesTags: (_, __, id) => [{ type: "NivelCompetencia", id }],
@@ -79,6 +84,11 @@ const generoApiSlice = apiSlice.injectEndpoints({
       query: () => "/catalogos/status/",
       providesTags: [{ type: "StatusCurso", id: "LIST" }],
     }),
+    // Variante catálogo (sin paginar) — para selects
+    getStatusCursoCatalogo: builder.query<StatusCurso[], void>({
+      query: () => "/catalogos/status/?pagination=false",
+      providesTags: [{ type: "StatusCurso", id: "LIST" }],
+    }),
     createStatusCurso: builder.mutation<StatusCurso, StatusCursoForm>({
       query: (body) => ({ url: "/catalogos/status/", method: "POST", body }),
       invalidatesTags: [{ type: "StatusCurso", id: "LIST" }],
@@ -98,6 +108,11 @@ const generoApiSlice = apiSlice.injectEndpoints({
 
     getTiposTema: builder.query<PaginatedResponse<TipoTema>, void>({
       query: () => "/catalogos/tipos-tema/",
+      providesTags: [{ type: "TipoTema", id: "LIST" }],
+    }),
+    // Variante catálogo (sin paginar) — para selects
+    getTiposTemaCatalogo: builder.query<TipoTema[], void>({
+      query: () => "/catalogos/tipos-tema/?pagination=false",
       providesTags: [{ type: "TipoTema", id: "LIST" }],
     }),
     createTipoTema: builder.mutation<TipoTema, TipoTemaForm>({
@@ -121,6 +136,11 @@ const generoApiSlice = apiSlice.injectEndpoints({
       query: () => "/catalogos/tipos-bloque/",
       providesTags: [{ type: "TipoBloque", id: "LIST" }],
     }),
+    // Variante catálogo (sin paginar) — para selects
+    getTiposBloqueCatalogo: builder.query<TipoBloque[], void>({
+      query: () => "/catalogos/tipos-bloque/?pagination=false",
+      providesTags: [{ type: "TipoBloque", id: "LIST" }],
+    }),
     createTipoBloque: builder.mutation<TipoBloque, TipoBloqueForm>({
       query: (body) => ({ url: "/catalogos/tipos-bloque/", method: "POST", body }),
       invalidatesTags: [{ type: "TipoBloque", id: "LIST" }],
@@ -140,6 +160,11 @@ const generoApiSlice = apiSlice.injectEndpoints({
 
     getTiposEvaluacion: builder.query<PaginatedResponse<TipoEvaluacion>, void>({
       query: () => "/catalogos/tipos-evaluacion/",
+      providesTags: [{ type: "TipoEvaluacion", id: "LIST" }],
+    }),
+    // Variante catálogo (sin paginar) — para selects
+    getTiposEvaluacionCatalogo: builder.query<TipoEvaluacion[], void>({
+      query: () => "/catalogos/tipos-evaluacion/?pagination=false",
       providesTags: [{ type: "TipoEvaluacion", id: "LIST" }],
     }),
     createTipoEvaluacion: builder.mutation<TipoEvaluacion, TipoEvaluacionForm>({
@@ -164,23 +189,28 @@ export const {
   useRetrieveLocalidadesQuery,
   useGetMetodoPagoQuery,
   useGetNivelesCompetenciaQuery,
+  useGetNivelesCompetenciaCatalogoQuery,
   useGetNivelCompetenciaQuery,
   useCreateNivelCompetenciaMutation,
   useUpdateNivelCompetenciaMutation,
   useDeleteNivelCompetenciaMutation,
   useGetStatusCursoQuery,
+  useGetStatusCursoCatalogoQuery,
   useCreateStatusCursoMutation,
   useUpdateStatusCursoMutation,
   useDeleteStatusCursoMutation,
   useGetTiposTemaQuery,
+  useGetTiposTemaCatalogoQuery,
   useCreateTipoTemaMutation,
   useUpdateTipoTemaMutation,
   useDeleteTipoTemaMutation,
   useGetTiposBloqueQuery,
+  useGetTiposBloqueCatalogoQuery,
   useCreateTipoBloqueMutation,
   useUpdateTipoBloqueMutation,
   useDeleteTipoBloqueMutation,
   useGetTiposEvaluacionQuery,
+  useGetTiposEvaluacionCatalogoQuery,
   useCreateTipoEvaluacionMutation,
   useUpdateTipoEvaluacionMutation,
   useDeleteTipoEvaluacionMutation,

@@ -80,23 +80,22 @@ export interface TemaPlataforma {
   orden: number;
 }
 
-export interface BloquePanelPlataforma {
-  titulo?: string;
-  texto?: string;
-  imagen_url?: string;
-  items?: string[];
-}
-
-export interface BloqueTarjetaPlataforma {
-  titulo: string;
-  texto?: string;
-  imagen_url?: string;
+export interface ContenidoBloqueItemPlataforma {
+  id: number;
+  bloque: number;
+  orden: number;
+  titulo: string | null;
+  texto: string | null;
+  imagen_url: string | null;
+  imagen_archivo: string | null;
+  items: string[] | null;
 }
 
 export interface BloqueContenido {
   id: number;
   tema: number;
   tipo_nombre: string;
+  tipo_codigo: string;
   orden: number;
   texto: string;
   variante: string;
@@ -105,8 +104,15 @@ export interface BloqueContenido {
   video_url: string | null;
   video_stream_url: string | null;
   imagen_url: string | null;
-  paneles: BloquePanelPlataforma[] | null;
-  tarjetas: BloqueTarjetaPlataforma[] | null;
+  // El backend guarda el archivo subido aquí en vez de imagen_url cuando la
+  // imagen viene de "Seleccionar archivo" (no de una URL externa) — ver
+  // redux/features/types/capacitacion/types.ts para el mismo campo del lado
+  // del editor.
+  imagen_archivo: string | null;
+  // Bloque tipo "embed" (Canva u otro iframe-embed) — texto libre, "" cuando
+  // no hay embed, igual que video_url/imagen_url (nunca null).
+  embed_url: string;
+  bloque_items: ContenidoBloqueItemPlataforma[] | null;
 }
 
 export interface EvaluacionPlataforma {
@@ -114,6 +120,11 @@ export interface EvaluacionPlataforma {
   titulo: string;
   tipo_nombre: string;
   puntaje_minimo: string;
+  // Límite de intentos por colaborador — varía por evaluación, nunca
+  // hardcodear un número fijo en el frontend. Los intentos restantes se
+  // calculan contando cuántos MiResultadoEvaluacion existen para esta
+  // evaluación en /capacitacion/mis-resultados/ y restando a este valor.
+  intentos_maximos: number;
   curso: number | null;
   modulo: number | null;
 }

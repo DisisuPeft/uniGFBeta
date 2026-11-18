@@ -11,10 +11,10 @@ import {
   useCreateUsuarioMutation,
   useUpdateUsuarioMutation,
   useDeleteUsuarioMutation,
-  useGetRolesQuery,
-  useGetDependenciasQuery,
-  useGetDepartamentosQuery,
-  useGetPuestosQuery,
+  useGetRolesCatalogoQuery,
+  useGetDependenciasCatalogoQuery,
+  useGetDepartamentosCatalogoQuery,
+  useGetPuestosCatalogoQuery,
 } from "@/redux/features/sistema/sistemaApiSlice";
 import { useGetGenerosQuery } from "@/redux/features/catalogos/generoApiSlice";
 import {
@@ -63,10 +63,10 @@ const EMPTY: UsuarioForm = {
 
 export default function UsuariosView() {
   const { data, isLoading } = useGetUsuariosQuery();
-  const { data: dependenciasData } = useGetDependenciasQuery();
-  const { data: departamentosData } = useGetDepartamentosQuery();
-  const { data: puestosData } = useGetPuestosQuery();
-  const { data: rolesData } = useGetRolesQuery();
+  const { data: dependenciasData } = useGetDependenciasCatalogoQuery();
+  const { data: departamentosData } = useGetDepartamentosCatalogoQuery();
+  const { data: puestosData } = useGetPuestosCatalogoQuery();
+  const { data: rolesData } = useGetRolesCatalogoQuery();
   const { data: generosData } = useGetGenerosQuery();
 
   const [create, { isLoading: creating }] = useCreateUsuarioMutation();
@@ -77,11 +77,11 @@ export default function UsuariosView() {
   const [selected, setSelected] = useState<Usuario | null>(null);
 
   const catalogs: DrawerCatalogs = {
-    dependencias: dependenciasData?.results ?? [],
-    departamentos: departamentosData?.results ?? [],
-    puestos: puestosData?.results ?? [],
-    roles: rolesData?.results ?? [],
-    generos: generosData?.results ?? [],
+    dependencias: dependenciasData ?? [],
+    departamentos: departamentosData ?? [],
+    puestos: puestosData ?? [],
+    roles: rolesData ?? [],
+    generos: generosData ?? [],
   };
 
   function openCreate() {

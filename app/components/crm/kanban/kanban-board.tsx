@@ -182,7 +182,7 @@ export default function KanbanBoard() {
     unidadId ? { instituto: unidadId } : undefined,
   );
 
-  const pipeline = pipelines?.results?.[0];
+  const pipeline = pipelines?.[0];
   const etapas = pipeline?.etapas ?? [];
 
   const leads = (leadsData?.results ?? []).filter((l) => {

@@ -55,11 +55,11 @@ export default function InstitucionesGrid() {
         </button>
       </div>
       <div className="overflow-auto mt-4">
-        {instituciones?.results.length === 0 || !instituciones ? (
+        {!instituciones?.length ? (
           <div>No existen instituciones</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-            {instituciones?.results.map((institucion) => (
+            {instituciones.map((institucion) => (
               <div key={institucion.id}>
                 <Card>{institucion.nombre}</Card>
               </div>
@@ -96,7 +96,7 @@ export default function InstitucionesGrid() {
           <div className="mt-2">
             <Select
               label="Empresa"
-              options={empresa?.results ?? []}
+              options={empresa ?? []}
               labelKey="slug"
               valueKey="id"
               {...register("empresa")}

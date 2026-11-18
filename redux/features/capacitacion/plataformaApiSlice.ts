@@ -16,8 +16,8 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // --- Catálogo de cursos (vista del colaborador, incluye inscrito + competencias) ---
 
-    getCursosPlataforma: builder.query<PaginatedResponse<CursoPlataforma>, void>({
-      query: () => "/capacitacion/ver/cursos/",
+    getCursosPlataforma: builder.query<CursoPlataforma[], void>({
+      query: () => "/capacitacion/ver/cursos/?pagination=false",
       providesTags: [{ type: "Curso", id: "PLATAFORMA-LIST" }],
     }),
 
@@ -26,20 +26,20 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
       providesTags: (_, __, id) => [{ type: "Curso", id: `PLATAFORMA-${id}` }],
     }),
 
-    getMisCursos: builder.query<PaginatedResponse<CursoPlataforma>, void>({
-      query: () => "/capacitacion/mis-cursos/",
+    getMisCursos: builder.query<CursoPlataforma[], void>({
+      query: () => "/capacitacion/mis-cursos/?pagination=false",
       providesTags: [{ type: "Curso", id: "MIS-CURSOS" }],
     }),
 
     // --- Contenido del curso (solo lectura) ---
 
-    getModulos: builder.query<PaginatedResponse<ModuloPlataforma>, { curso: number }>({
-      query: ({ curso }) => `/capacitacion/ver/modulos/?curso=${curso}`,
+    getModulos: builder.query<ModuloPlataforma[], { curso: number }>({
+      query: ({ curso }) => `/capacitacion/ver/modulos/?curso=${curso}&pagination=false`,
       providesTags: (_, __, { curso }) => [{ type: "Modulo", id: `PLATAFORMA-CURSO-${curso}` }],
     }),
 
-    getTemas: builder.query<PaginatedResponse<TemaPlataforma>, { modulo: number }>({
-      query: ({ modulo }) => `/capacitacion/ver/temas/?modulo=${modulo}`,
+    getTemas: builder.query<TemaPlataforma[], { modulo: number }>({
+      query: ({ modulo }) => `/capacitacion/ver/temas/?modulo=${modulo}&pagination=false`,
       providesTags: (_, __, { modulo }) => [{ type: "Tema", id: `PLATAFORMA-MODULO-${modulo}` }],
     }),
 
@@ -48,21 +48,21 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
       providesTags: (_, __, id) => [{ type: "Tema", id: `PLATAFORMA-${id}` }],
     }),
 
-    getBloques: builder.query<PaginatedResponse<BloqueContenido>, { tema: number }>({
-      query: ({ tema }) => `/capacitacion/ver/bloques/?tema=${tema}`,
+    getBloques: builder.query<BloqueContenido[], { tema: number }>({
+      query: ({ tema }) => `/capacitacion/ver/bloques/?tema=${tema}&pagination=false`,
       providesTags: (_, __, { tema }) => [
         { type: "ContenidoBloque", id: `PLATAFORMA-TEMA-${tema}` },
       ],
     }),
 
     getEvaluaciones: builder.query<
-      PaginatedResponse<EvaluacionPlataforma>,
+      EvaluacionPlataforma[],
       { curso?: number; modulo?: number }
     >({
       query: ({ curso, modulo }) => {
-        if (curso) return `/capacitacion/ver/evaluaciones/?curso=${curso}`;
-        if (modulo) return `/capacitacion/ver/evaluaciones/?modulo=${modulo}`;
-        return `/capacitacion/ver/evaluaciones/`;
+        if (curso) return `/capacitacion/ver/evaluaciones/?curso=${curso}&pagination=false`;
+        if (modulo) return `/capacitacion/ver/evaluaciones/?modulo=${modulo}&pagination=false`;
+        return `/capacitacion/ver/evaluaciones/?pagination=false`;
       },
       providesTags: [{ type: "Evaluacion", id: "PLATAFORMA-LIST" }],
     }),
@@ -73,8 +73,8 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
     }),
 
     // Preguntas con opciones anidadas — no hay endpoint separado para opciones
-    getPreguntas: builder.query<PaginatedResponse<PreguntaConOpciones>, { evaluacion: number }>({
-      query: ({ evaluacion }) => `/capacitacion/ver/preguntas/?evaluacion=${evaluacion}`,
+    getPreguntas: builder.query<PreguntaConOpciones[], { evaluacion: number }>({
+      query: ({ evaluacion }) => `/capacitacion/ver/preguntas/?evaluacion=${evaluacion}&pagination=false`,
       providesTags: (_, __, { evaluacion }) => [
         { type: "Pregunta", id: `PLATAFORMA-EVAL-${evaluacion}` },
       ],
@@ -82,8 +82,8 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
 
     // --- Inscripciones ---
 
-    getMisInscripciones: builder.query<PaginatedResponse<MiInscripcion>, void>({
-      query: () => "/capacitacion/mis-inscripciones/",
+    getMisInscripciones: builder.query<MiInscripcion[], void>({
+      query: () => "/capacitacion/mis-inscripciones/?pagination=false",
       providesTags: [{ type: "MiInscripcion", id: "LIST" }],
     }),
 

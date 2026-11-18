@@ -12,7 +12,7 @@ import {
   useCreatePestanaMutation,
   useUpdatePestanaMutation,
   useDeletePestanaMutation,
-  useGetModulosNavQuery,
+  useGetModulosNavCatalogoQuery,
   useGetPermisosQuery,
 } from "@/redux/features/sistema/sistemaApiSlice";
 import {
@@ -40,7 +40,7 @@ export default function PestanasView() {
   const page = Number(searchParams.get("page") ?? "1");
 
   const { data, isLoading } = useGetPestanasQuery({ page });
-  const { data: modulos } = useGetModulosNavQuery();
+  const { data: modulos } = useGetModulosNavCatalogoQuery();
   const { data: permisos } = useGetPermisosQuery();
   const [create, { isLoading: creating }] = useCreatePestanaMutation();
   const [update, { isLoading: updating }] = useUpdatePestanaMutation();
@@ -159,7 +159,7 @@ export default function PestanasView() {
       id: "modulo",
       header: "Módulo",
       cell: ({ row: { original: p } }) => {
-        const mod = (modulos?.results ?? []).find((m) => m.id === p.modulo);
+        const mod = (modulos ?? []).find((m) => m.id === p.modulo);
         return mod ? (
           <span
             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
@@ -285,7 +285,7 @@ export default function PestanasView() {
               className={inputCls}
             >
               <option value="">Seleccionar módulo…</option>
-              {(modulos?.results ?? []).map((m) => (
+              {(modulos ?? []).map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.nombre}
                 </option>

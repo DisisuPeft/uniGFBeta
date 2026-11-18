@@ -28,16 +28,21 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
     // ==========================================================
 
     // Compatibilidad con uso existente en instituciones-grid / plan-pago-tab
-    getEmpresa: builder.query<PaginatedResponse<Empresa>, string>({
-      query: (slug) => `/sistema/empresa/?slug=${slug}`,
+    getEmpresa: builder.query<Empresa[], string>({
+      query: (slug) => `/sistema/empresa/?slug=${slug}&pagination=false`,
     }),
-    getEmpresas: builder.query<PaginatedResponse<Empresa>, void>({
-      query: () => `/sistema/empresa/`,
+    getEmpresas: builder.query<Empresa[], void>({
+      query: () => `/sistema/empresa/?pagination=false`,
     }),
 
     // CRUD admin
     getEmpresasAdmin: builder.query<PaginatedResponse<Empresa>, void>({
       query: () => `/sistema/empresas/`,
+      providesTags: [{ type: "Empresa", id: "LIST" }],
+    }),
+    // Variante catálogo (sin paginar) — para selects que necesitan la lista completa
+    getEmpresasCatalogo: builder.query<Empresa[], void>({
+      query: () => `/sistema/empresas/?pagination=false`,
       providesTags: [{ type: "Empresa", id: "LIST" }],
     }),
     getEmpresaAdmin: builder.query<Empresa, number>({
@@ -76,6 +81,14 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
         empresaId
           ? `/sistema/dependencias/?empresa=${empresaId}`
           : `/sistema/dependencias/`,
+      providesTags: [{ type: "Dependencia", id: "LIST" }],
+    }),
+    // Variante catálogo (sin paginar) — para selects
+    getDependenciasCatalogo: builder.query<Dependencia[], number | void>({
+      query: (empresaId) =>
+        empresaId
+          ? `/sistema/dependencias/?empresa=${empresaId}&pagination=false`
+          : `/sistema/dependencias/?pagination=false`,
       providesTags: [{ type: "Dependencia", id: "LIST" }],
     }),
     getDependencia: builder.query<Dependencia, number>({
@@ -119,6 +132,11 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
 
     getDepartamentos: builder.query<PaginatedResponse<Departamento>, void>({
       query: () => `/sistema/departamentos/`,
+      providesTags: [{ type: "Departamento", id: "LIST" }],
+    }),
+    // Variante catálogo (sin paginar) — para selects
+    getDepartamentosCatalogo: builder.query<Departamento[], void>({
+      query: () => `/sistema/departamentos/?pagination=false`,
       providesTags: [{ type: "Departamento", id: "LIST" }],
     }),
     getDepartamento: builder.query<PaginatedResponse<Departamento>, number>({
@@ -167,6 +185,14 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
           : `/sistema/puestos/`,
       providesTags: [{ type: "Puesto", id: "LIST" }],
     }),
+    // Variante catálogo (sin paginar) — para selects
+    getPuestosCatalogo: builder.query<Puesto[], number | void>({
+      query: (departamentoId) =>
+        departamentoId
+          ? `/sistema/puestos/?departamento=${departamentoId}&pagination=false`
+          : `/sistema/puestos/?pagination=false`,
+      providesTags: [{ type: "Puesto", id: "LIST" }],
+    }),
     getPuesto: builder.query<Puesto, number>({
       query: (id) => `/sistema/puestos/${id}/`,
       providesTags: (_, __, id) => [{ type: "Puesto", id }],
@@ -201,6 +227,11 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
 
     getModulosNav: builder.query<PaginatedResponse<ModuloNav>, void>({
       query: () => `/sistema/modulos/`,
+      providesTags: [{ type: "ModuloNav", id: "LIST" }],
+    }),
+    // Variante catálogo (sin paginar) — para selects
+    getModulosNavCatalogo: builder.query<ModuloNav[], void>({
+      query: () => `/sistema/modulos/?pagination=false`,
       providesTags: [{ type: "ModuloNav", id: "LIST" }],
     }),
     getModuloNav: builder.query<ModuloNav, number>({
@@ -328,6 +359,11 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
       query: () => `/sistema/roles/`,
       providesTags: [{ type: "Rol", id: "LIST" }],
     }),
+    // Variante catálogo (sin paginar) — para selects
+    getRolesCatalogo: builder.query<Rol[], void>({
+      query: () => `/sistema/roles/?pagination=false`,
+      providesTags: [{ type: "Rol", id: "LIST" }],
+    }),
     createRol: builder.mutation<Rol, RolForm>({
       query: (body) => ({ url: `/sistema/roles/`, method: "POST", body }),
       invalidatesTags: [{ type: "Rol", id: "LIST" }],
@@ -374,6 +410,7 @@ export const {
 
   // — empresa admin —
   useGetEmpresasAdminQuery,
+  useGetEmpresasCatalogoQuery,
   useGetEmpresaAdminQuery,
   useCreateEmpresaMutation,
   useUpdateEmpresaMutation,
@@ -381,6 +418,7 @@ export const {
 
   // — dependencia —
   useGetDependenciasQuery,
+  useGetDependenciasCatalogoQuery,
   useGetDependenciaQuery,
   useCreateDependenciaMutation,
   useUpdateDependenciaMutation,
@@ -388,6 +426,7 @@ export const {
 
   // — departamento —
   useGetDepartamentosQuery,
+  useGetDepartamentosCatalogoQuery,
   useGetDepartamentoQuery,
   useCreateDepartamentoMutation,
   useUpdateDepartamentoMutation,
@@ -395,6 +434,7 @@ export const {
 
   // — puesto —
   useGetPuestosQuery,
+  useGetPuestosCatalogoQuery,
   useGetPuestoQuery,
   useCreatePuestoMutation,
   useUpdatePuestoMutation,
@@ -402,6 +442,7 @@ export const {
 
   // — módulos de navegación —
   useGetModulosNavQuery,
+  useGetModulosNavCatalogoQuery,
   useGetModuloNavQuery,
   useCreateModuloNavMutation,
   useUpdateModuloNavMutation,
@@ -422,6 +463,7 @@ export const {
 
   // — roles —
   useGetRolesQuery,
+  useGetRolesCatalogoQuery,
   useCreateRolMutation,
   useUpdateRolMutation,
   useDeleteRolMutation,

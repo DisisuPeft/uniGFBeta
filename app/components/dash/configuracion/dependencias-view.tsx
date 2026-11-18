@@ -12,7 +12,7 @@ import {
   useCreateDependenciaMutation,
   useUpdateDependenciaMutation,
   useDeleteDependenciaMutation,
-  useGetEmpresasAdminQuery,
+  useGetEmpresasCatalogoQuery,
 } from "@/redux/features/sistema/sistemaApiSlice";
 import { Dependencia } from "@/redux/features/types/sistema/types";
 
@@ -30,7 +30,7 @@ const EMPTY: Partial<Dependencia> = {
 
 export default function DependenciasView() {
   const { data, isLoading } = useGetDependenciasQuery();
-  const { data: empresas } = useGetEmpresasAdminQuery();
+  const { data: empresas } = useGetEmpresasCatalogoQuery();
   const [create, { isLoading: creating }] = useCreateDependenciaMutation();
   const [update, { isLoading: updating }] = useUpdateDependenciaMutation();
   const [remove] = useDeleteDependenciaMutation();
@@ -314,7 +314,7 @@ export default function DependenciasView() {
               className={inputCls}
             >
               <option value="">Seleccionar empresa…</option>
-              {empresas?.results.map((emp) => (
+              {empresas?.map((emp) => (
                 <option key={emp.id} value={emp.id}>
                   {emp.razon_social}
                 </option>
