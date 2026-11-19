@@ -28,9 +28,13 @@ const competenciasApiSlice = apiSlice.injectEndpoints({
       query: () => `/competencias/competencias/`,
       providesTags: [{ type: "Competencia", id: "LIST" }],
     }),
-    // Variante catálogo (sin paginar) — para selects
+    // Variante catálogo (sin paginar) — para selects.
+    // El backend no siempre respeta `pagination=false` en esta ruta
+    // (puede seguir devolviendo {count, results}), así que normalizamos aquí.
     getCompetenciasCatalogo: builder.query<Competencia[], void>({
       query: () => `/competencias/competencias/?pagination=false`,
+      transformResponse: (response: Competencia[] | PaginatedResponse<Competencia>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Competencia", id: "LIST" }],
     }),
     getCompetencia: builder.query<Competencia, number>({

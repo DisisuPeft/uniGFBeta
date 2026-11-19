@@ -30,9 +30,13 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
     // Compatibilidad con uso existente en instituciones-grid / plan-pago-tab
     getEmpresa: builder.query<Empresa[], string>({
       query: (slug) => `/sistema/empresa/?slug=${slug}&pagination=false`,
+      transformResponse: (response: Empresa[] | PaginatedResponse<Empresa>) =>
+        Array.isArray(response) ? response : response.results,
     }),
     getEmpresas: builder.query<Empresa[], void>({
       query: () => `/sistema/empresa/?pagination=false`,
+      transformResponse: (response: Empresa[] | PaginatedResponse<Empresa>) =>
+        Array.isArray(response) ? response : response.results,
     }),
 
     // CRUD admin
@@ -43,6 +47,8 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
     // Variante catálogo (sin paginar) — para selects que necesitan la lista completa
     getEmpresasCatalogo: builder.query<Empresa[], void>({
       query: () => `/sistema/empresas/?pagination=false`,
+      transformResponse: (response: Empresa[] | PaginatedResponse<Empresa>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Empresa", id: "LIST" }],
     }),
     getEmpresaAdmin: builder.query<Empresa, number>({
@@ -137,6 +143,8 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
     // Variante catálogo (sin paginar) — para selects
     getDepartamentosCatalogo: builder.query<Departamento[], void>({
       query: () => `/sistema/departamentos/?pagination=false`,
+      transformResponse: (response: Departamento[] | PaginatedResponse<Departamento>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Departamento", id: "LIST" }],
     }),
     getDepartamento: builder.query<PaginatedResponse<Departamento>, number>({
@@ -232,6 +240,8 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
     // Variante catálogo (sin paginar) — para selects
     getModulosNavCatalogo: builder.query<ModuloNav[], void>({
       query: () => `/sistema/modulos/?pagination=false`,
+      transformResponse: (response: ModuloNav[] | PaginatedResponse<ModuloNav>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "ModuloNav", id: "LIST" }],
     }),
     getModuloNav: builder.query<ModuloNav, number>({
@@ -362,6 +372,8 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
     // Variante catálogo (sin paginar) — para selects
     getRolesCatalogo: builder.query<Rol[], void>({
       query: () => `/sistema/roles/?pagination=false`,
+      transformResponse: (response: Rol[] | PaginatedResponse<Rol>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Rol", id: "LIST" }],
     }),
     createRol: builder.mutation<Rol, RolForm>({
@@ -383,11 +395,15 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
 
     getSidebarModulos: builder.query<SidebarModulo[], void>({
       query: () => `/sistema/sidebar/modulos/?pagination=false`,
+      transformResponse: (response: SidebarModulo[] | PaginatedResponse<SidebarModulo>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Sidebar", id: "MODULOS" }],
     }),
     // ref = uuid del módulo
     getSidebarPestanas: builder.query<SidebarPestana[], string>({
       query: (ref) => `/sistema/sidebar/pestanias/?ref=${ref}&pagination=false`,
+      transformResponse: (response: SidebarPestana[] | PaginatedResponse<SidebarPestana>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Sidebar", id: "MODULOS" }],
     }),
 

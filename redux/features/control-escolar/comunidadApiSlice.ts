@@ -10,6 +10,8 @@ const comunidadApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getMisClases: builder.query<EnlaceClase[], void>({
       query: () => "/control-escolar/comunidad/enlaces-clase/mis_clases/?pagination=false",
+      transformResponse: (response: EnlaceClase[] | PaginatedResponse<EnlaceClase>) =>
+        Array.isArray(response) ? response : response.results,
     }),
     getComentarios: builder.query<
       PaginatedResponse<Comentario>,

@@ -46,6 +46,8 @@ const generoApiSlice = apiSlice.injectEndpoints({
     // Variante catálogo (sin paginar) — para selects
     getNivelesCompetenciaCatalogo: builder.query<NivelCompetencia[], void>({
       query: () => "/catalogos/niveles-competencia/?pagination=false",
+      transformResponse: (response: NivelCompetencia[] | PaginatedResponse<NivelCompetencia>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "NivelCompetencia", id: "LIST" }],
     }),
     getNivelCompetencia: builder.query<NivelCompetencia, number>({
@@ -84,9 +86,13 @@ const generoApiSlice = apiSlice.injectEndpoints({
       query: () => "/catalogos/status/",
       providesTags: [{ type: "StatusCurso", id: "LIST" }],
     }),
-    // Variante catálogo (sin paginar) — para selects
+    // Variante catálogo (sin paginar) — para selects.
+    // El backend no siempre respeta `pagination=false` en esta ruta
+    // (puede seguir devolviendo {count, results}), así que normalizamos aquí.
     getStatusCursoCatalogo: builder.query<StatusCurso[], void>({
       query: () => "/catalogos/status/?pagination=false",
+      transformResponse: (response: StatusCurso[] | PaginatedResponse<StatusCurso>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "StatusCurso", id: "LIST" }],
     }),
     createStatusCurso: builder.mutation<StatusCurso, StatusCursoForm>({
@@ -113,6 +119,8 @@ const generoApiSlice = apiSlice.injectEndpoints({
     // Variante catálogo (sin paginar) — para selects
     getTiposTemaCatalogo: builder.query<TipoTema[], void>({
       query: () => "/catalogos/tipos-tema/?pagination=false",
+      transformResponse: (response: TipoTema[] | PaginatedResponse<TipoTema>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "TipoTema", id: "LIST" }],
     }),
     createTipoTema: builder.mutation<TipoTema, TipoTemaForm>({
@@ -139,6 +147,8 @@ const generoApiSlice = apiSlice.injectEndpoints({
     // Variante catálogo (sin paginar) — para selects
     getTiposBloqueCatalogo: builder.query<TipoBloque[], void>({
       query: () => "/catalogos/tipos-bloque/?pagination=false",
+      transformResponse: (response: TipoBloque[] | PaginatedResponse<TipoBloque>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "TipoBloque", id: "LIST" }],
     }),
     createTipoBloque: builder.mutation<TipoBloque, TipoBloqueForm>({
@@ -165,6 +175,8 @@ const generoApiSlice = apiSlice.injectEndpoints({
     // Variante catálogo (sin paginar) — para selects
     getTiposEvaluacionCatalogo: builder.query<TipoEvaluacion[], void>({
       query: () => "/catalogos/tipos-evaluacion/?pagination=false",
+      transformResponse: (response: TipoEvaluacion[] | PaginatedResponse<TipoEvaluacion>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "TipoEvaluacion", id: "LIST" }],
     }),
     createTipoEvaluacion: builder.mutation<TipoEvaluacion, TipoEvaluacionForm>({

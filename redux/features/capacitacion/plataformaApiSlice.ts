@@ -18,6 +18,8 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
 
     getCursosPlataforma: builder.query<CursoPlataforma[], void>({
       query: () => "/capacitacion/ver/cursos/?pagination=false",
+      transformResponse: (response: CursoPlataforma[] | PaginatedResponse<CursoPlataforma>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Curso", id: "PLATAFORMA-LIST" }],
     }),
 
@@ -28,6 +30,8 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
 
     getMisCursos: builder.query<CursoPlataforma[], void>({
       query: () => "/capacitacion/mis-cursos/?pagination=false",
+      transformResponse: (response: CursoPlataforma[] | PaginatedResponse<CursoPlataforma>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Curso", id: "MIS-CURSOS" }],
     }),
 
@@ -35,11 +39,15 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
 
     getModulos: builder.query<ModuloPlataforma[], { curso: number }>({
       query: ({ curso }) => `/capacitacion/ver/modulos/?curso=${curso}&pagination=false`,
+      transformResponse: (response: ModuloPlataforma[] | PaginatedResponse<ModuloPlataforma>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: (_, __, { curso }) => [{ type: "Modulo", id: `PLATAFORMA-CURSO-${curso}` }],
     }),
 
     getTemas: builder.query<TemaPlataforma[], { modulo: number }>({
       query: ({ modulo }) => `/capacitacion/ver/temas/?modulo=${modulo}&pagination=false`,
+      transformResponse: (response: TemaPlataforma[] | PaginatedResponse<TemaPlataforma>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: (_, __, { modulo }) => [{ type: "Tema", id: `PLATAFORMA-MODULO-${modulo}` }],
     }),
 
@@ -50,6 +58,8 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
 
     getBloques: builder.query<BloqueContenido[], { tema: number }>({
       query: ({ tema }) => `/capacitacion/ver/bloques/?tema=${tema}&pagination=false`,
+      transformResponse: (response: BloqueContenido[] | PaginatedResponse<BloqueContenido>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: (_, __, { tema }) => [
         { type: "ContenidoBloque", id: `PLATAFORMA-TEMA-${tema}` },
       ],
@@ -64,6 +74,8 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
         if (modulo) return `/capacitacion/ver/evaluaciones/?modulo=${modulo}&pagination=false`;
         return `/capacitacion/ver/evaluaciones/?pagination=false`;
       },
+      transformResponse: (response: EvaluacionPlataforma[] | PaginatedResponse<EvaluacionPlataforma>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Evaluacion", id: "PLATAFORMA-LIST" }],
     }),
 
@@ -75,6 +87,8 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
     // Preguntas con opciones anidadas — no hay endpoint separado para opciones
     getPreguntas: builder.query<PreguntaConOpciones[], { evaluacion: number }>({
       query: ({ evaluacion }) => `/capacitacion/ver/preguntas/?evaluacion=${evaluacion}&pagination=false`,
+      transformResponse: (response: PreguntaConOpciones[] | PaginatedResponse<PreguntaConOpciones>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: (_, __, { evaluacion }) => [
         { type: "Pregunta", id: `PLATAFORMA-EVAL-${evaluacion}` },
       ],
@@ -84,6 +98,8 @@ const plataformaApiSlice = apiSlice.injectEndpoints({
 
     getMisInscripciones: builder.query<MiInscripcion[], void>({
       query: () => "/capacitacion/mis-inscripciones/?pagination=false",
+      transformResponse: (response: MiInscripcion[] | PaginatedResponse<MiInscripcion>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "MiInscripcion", id: "LIST" }],
     }),
 

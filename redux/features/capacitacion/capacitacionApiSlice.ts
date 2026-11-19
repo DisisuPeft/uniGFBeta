@@ -21,9 +21,12 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
       query: () => "/capacitacion/cursos/",
       providesTags: [{ type: "Curso", id: "LIST" }],
     }),
-    // Variante catálogo (sin paginar) — para selects
+    // Variante catálogo (sin paginar) — para selects.
+    // El backend no siempre respeta `pagination=false`, normalizamos por si acaso.
     getCursosCatalogo: builder.query<Curso[], void>({
       query: () => "/capacitacion/cursos/?pagination=false",
+      transformResponse: (response: Curso[] | PaginatedResponse<Curso>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Curso", id: "LIST" }],
     }),
     getCurso: builder.query<Curso, number>({
@@ -52,6 +55,8 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
 
     getModulosByCurso: builder.query<Modulo[], number>({
       query: (cursoId) => `/capacitacion/modulos/?curso=${cursoId}&pagination=false`,
+      transformResponse: (response: Modulo[] | PaginatedResponse<Modulo>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Modulo", id: "LIST" }],
     }),
     createModulo: builder.mutation<Modulo, ModuloForm>({
@@ -73,6 +78,8 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
 
     getTemasByModulo: builder.query<Tema[], number>({
       query: (moduloId) => `/capacitacion/temas/?modulo=${moduloId}&pagination=false`,
+      transformResponse: (response: Tema[] | PaginatedResponse<Tema>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Tema", id: "LIST" }],
     }),
     createTema: builder.mutation<Tema, TemaForm>({
@@ -94,6 +101,8 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
 
     getBloquesByTema: builder.query<ContenidoBloque[], number>({
       query: (temaId) => `/capacitacion/bloques/?tema=${temaId}&pagination=false`,
+      transformResponse: (response: ContenidoBloque[] | PaginatedResponse<ContenidoBloque>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "ContenidoBloque", id: "LIST" }],
     }),
     createBloque: builder.mutation<ContenidoBloque, BloqueForm | FormData>({
@@ -122,6 +131,8 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
 
     getBloqueItemsByBloque: builder.query<ContenidoBloqueItem[], number>({
       query: (bloqueId) => `/capacitacion/bloque-items/?bloque=${bloqueId}&pagination=false`,
+      transformResponse: (response: ContenidoBloqueItem[] | PaginatedResponse<ContenidoBloqueItem>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "ContenidoBloque", id: "LIST" }],
     }),
     createBloqueItem: builder.mutation<ContenidoBloqueItem, ContenidoBloqueItemForm | FormData>({
@@ -153,10 +164,14 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
 
     getEvaluacionesByCurso: builder.query<Evaluacion[], number>({
       query: (cursoId) => `/capacitacion/evaluaciones/?curso=${cursoId}&pagination=false`,
+      transformResponse: (response: Evaluacion[] | PaginatedResponse<Evaluacion>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Evaluacion", id: "LIST" }],
     }),
     getEvaluacionesByModulo: builder.query<Evaluacion[], number>({
       query: (moduloId) => `/capacitacion/evaluaciones/?modulo=${moduloId}&pagination=false`,
+      transformResponse: (response: Evaluacion[] | PaginatedResponse<Evaluacion>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Evaluacion", id: "LIST" }],
     }),
     createEvaluacion: builder.mutation<Evaluacion, EvaluacionForm>({
@@ -178,6 +193,8 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
 
     getPreguntasByEvaluacion: builder.query<Pregunta[], number>({
       query: (evaluacionId) => `/capacitacion/preguntas/?evaluacion=${evaluacionId}&pagination=false`,
+      transformResponse: (response: Pregunta[] | PaginatedResponse<Pregunta>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "Pregunta", id: "LIST" }],
     }),
     createPregunta: builder.mutation<Pregunta, PreguntaForm>({
@@ -199,6 +216,8 @@ const capacitacionApiSlice = apiSlice.injectEndpoints({
 
     getOpcionesByPregunta: builder.query<OpcionPregunta[], number>({
       query: (preguntaId) => `/capacitacion/opciones/?pregunta=${preguntaId}&pagination=false`,
+      transformResponse: (response: OpcionPregunta[] | PaginatedResponse<OpcionPregunta>) =>
+        Array.isArray(response) ? response : response.results,
       providesTags: [{ type: "OpcionPregunta", id: "LIST" }],
     }),
     createOpcion: builder.mutation<OpcionPregunta, OpcionPreguntaForm>({

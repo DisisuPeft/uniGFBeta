@@ -122,10 +122,14 @@ const catalogosCrmApiSlice = apiSlice.injectEndpoints({
 
     getOrigenesPago: builder.query<OrigenPago[], void>({
       query: () => `/crm/catalogos/origenes-pago/?pagination=false`,
+      transformResponse: (response: OrigenPago[] | PaginatedResponse<OrigenPago>) =>
+        Array.isArray(response) ? response : response.results,
     }),
 
     getEstadosPlan: builder.query<EstadoPlan[], void>({
       query: () => `/crm/catalogos/estados-plan/?pagination=false`,
+      transformResponse: (response: EstadoPlan[] | PaginatedResponse<EstadoPlan>) =>
+        Array.isArray(response) ? response : response.results,
     }),
   }),
 });

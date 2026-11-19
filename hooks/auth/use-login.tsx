@@ -44,8 +44,8 @@ export default function useLogin() {
       router.replace("/dashboard");
     } catch (error) {
       const e = error as ErrorResponse;
-      // console.log(e ? e : null);
-      sweetAlert("error", `${e.data.detail}`, "Error");
+      const mensaje = e?.data?.detail ?? "No se pudo iniciar sesión. Intenta de nuevo.";
+      sweetAlert("error", mensaje, "Error");
     }
   };
 
