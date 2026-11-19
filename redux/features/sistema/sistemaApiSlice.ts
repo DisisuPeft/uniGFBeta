@@ -382,12 +382,12 @@ const sistemaApiSlice = apiSlice.injectEndpoints({
     // ==========================================================
 
     getSidebarModulos: builder.query<SidebarModulo[], void>({
-      query: () => `/sistema/sidebar/modulos/`,
+      query: () => `/sistema/sidebar/modulos/?pagination=false`,
       providesTags: [{ type: "Sidebar", id: "MODULOS" }],
     }),
     // ref = uuid del módulo
     getSidebarPestanas: builder.query<SidebarPestana[], string>({
-      query: (ref) => `/sistema/sidebar/pestanias/?ref=${ref}`,
+      query: (ref) => `/sistema/sidebar/pestanias/?ref=${ref}&pagination=false`,
       providesTags: [{ type: "Sidebar", id: "MODULOS" }],
     }),
 
