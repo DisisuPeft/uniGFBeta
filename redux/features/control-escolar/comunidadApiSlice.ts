@@ -9,7 +9,7 @@ import { PaginatedResponse } from "../types/paginated";
 const comunidadApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getMisClases: builder.query<EnlaceClase[], void>({
-      query: () => "/control-escolar/comunidad/enlaces-clase/mis_clases/",
+      query: () => "/control-escolar/comunidad/enlaces-clase/mis_clases/?pagination=false",
     }),
     getComentarios: builder.query<
       PaginatedResponse<Comentario>,
